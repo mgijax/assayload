@@ -8,54 +8,28 @@
 #
 
 # install directory
-setenv ASSAYLOADINSTALLDIR	/home/lec/loads/assayload
+setenv ASSAYLOADINSTALLDIR	/usr/local/mgi/live/dataload/assayload
 
 # system doc directory
-setenv ASSAYLOADSYSTEMDOCDIR	$ASSAYLOADINSTALLDIR/system_docs
+setenv ASSAYLOADSYSTEMDOCDIR	${ASSAYLOADINSTALLDIR}/system_docs
 
 # data directory
-setenv ASSAYLOADDATADIR		$ASSAYLOADINSTALLDIR/data
+setenv ASSAYLOADDATADIR		${ASSAYLOADINSTALLDIR}/data
 
-# SYBASE
-setenv SYBASE	/opt/sybase/12.5
-
-# LD LIBRARY PATH
-setenv LD_LIBRARY_PATH         $SYBASE/OCS-12_5/lib
-
-# PYTHON
-setenv PYTHONPATH         /usr/local/mgi/lib/python
-
-# DB UTILITIES
-setenv DBUTILITIESPATH	/usr/local/mgi/dbutils/mgidbutilities
-
-# PATH
-set path = ($DBUTILITIESPATH/bin $path $SYBASE/ASE-12_5/bin $SYBASE/OCS-12_5/bin)
-
-# Database Server; for backwards compatibility, also define DSQUERY
-setenv DBSERVER	DEV_MGI
-setenv DSQUERY $DBSERVER
-
-# Database; for backwards compatibility, also define MGD
-setenv DBNAME	mgd_release
-setenv MGD $DBNAME
-
-# Super User
-setenv DBUSER	mgd_dbo
-
-# Password
-setenv DBPASSWORDFILE	$DBUTILITIESPATH/.mgd_dbo_password
+# schema directory
+setenv SCHEMADIR		/usr/local/mgi/live/dbutils/mgd/mgddbschema
 
 # RT-PCR data
-setenv RTPCRDATADIR	$ASSAYLOADDATADIR/rtpcr
+setenv RTPCRDATADIR	${ASSAYLOADDATADIR}/rtpcr
 
 # In Situ data
-setenv INSITUDATADIR	$ASSAYLOADDATADIR/insitu
+setenv INSITUDATADIR	${ASSAYLOADDATADIR}/insitu
 
 # Probe load
-setenv PROBELOAD	/home/lec/loads/probeload/probeload.py
+setenv PROBELOAD	/usr/local/mgi/live/dataload/probeload/probeload.py
 
 # Primer load
-setenv PRIMERLOAD	/home/lec/loads/probeload/primerload.py
+setenv PRIMERLOAD	/usr/local/mgi/live/dataload/probeload/primerload.py
 
 # Load Mode
 setenv LOADMODE		load
@@ -66,4 +40,6 @@ setenv IDXCOMMENTS      ""
 
 # Created By
 setenv CREATEDBY	jfinger
+
+source ${SCHEMADIR}/Configuration
 
