@@ -294,7 +294,6 @@ def bcpFiles():
 
     bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
     bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
-    truncateDB = 'dump transaction %s with truncate_only' % (db.get_sqlDatabase())
 
     bcp1 = '%s%s in %s %s' % (bcpI, indexTable, outIndexFileName, bcpII)
     bcp2 = '%s%s in %s %s' % (bcpI, stagesTable, outStagesFileName, bcpII)
@@ -302,7 +301,6 @@ def bcpFiles():
     for bcpCmd in [bcp1, bcp2]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
-	db.sql(truncateDB, None)
 
     # update statistics
     db.sql('update statistics %s' % (indexTable), None)
@@ -415,6 +413,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.12  2004/09/08 17:30:12  lec
+# TR 6118
+#
 # Revision 1.11  2004/09/08 17:25:08  lec
 # TR 6118
 #

@@ -514,7 +514,6 @@ def bcpFiles(
 
     bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
     bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
-    truncateDB = 'dump transaction %s with truncate_only' % (db.get_sqlDatabase())
 
     bcp1 = '%s%s in %s %s' % (bcpI, probeTable, outPrimerFileName, bcpII)
     bcp2 = '%s%s in %s %s' % (bcpI, markerTable, outMarkerFileName, bcpII)
@@ -530,7 +529,6 @@ def bcpFiles(
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8, bcp9, bcp10]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
-	db.sql(truncateDB, None)
 
     # load the cache tables for the records processed (by assay Key)
 
@@ -983,6 +981,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.12  2003/10/01 17:53:08  lec
+# removed unnecessary imports
+#
 # Revision 1.11  2003/10/01 17:48:27  lec
 # removed unnecessary imports
 #
