@@ -359,8 +359,6 @@ def process1():
         try:
 	    mouseGene = tokens[0]
 	    mtf = tokens[1]
-#		field 3: Image file name
-#		field 4: Informativity (ignore)
 	    eExpression = tokens[4]
 	    eSpecificity = tokens[5]
 	    eCNS = tokens[6]
@@ -509,8 +507,6 @@ def process2():
         try:
 	    mouseGene = tokens[0]
 	    mtf = tokens[1]
-#		field 3: Image file name
-#		field 4: Informativity (ignore)
 	    pExpression = tokens[4]
 	    pSpecificity = tokens[5]
 	    pCNS = tokens[6]
@@ -617,6 +613,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.2  2004/09/08 17:09:30  lec
+# TR 6118
+#
 # Revision 1.1  2004/09/08 12:41:15  lec
 # TR 6118
 #
