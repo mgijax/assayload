@@ -71,7 +71,7 @@ assayFile = ''          # file descriptor
 specimenFile = ''       # file descriptor
 resultsFile = ''        # file descriptor
 
-datadir = os.environ['ASSAYLOADDATADIR']
+datadir = os.environ['INSITUDATADIR']
 
 inInSituFileName = datadir + '/tr4800/In_Situ.txt'
 inTissueFileName = datadir + '/tr4800/In_Situ_Tissues.txt'
@@ -84,7 +84,7 @@ resultsFileName = datadir + '/In_Situ_results.txt'
 prepType = 'RNA'
 hybridization = 'Antisense'
 labelledWith = 'Digoxigenin'
-labelCoverage = 'continously'
+labelCoverage = 'continuously'
 visualizedWith = 'Alkaline phosphatase'
 
 # constants for assay
@@ -99,8 +99,9 @@ ageNote = 'Age of embryo at noon of plug day not specified in reference.'
 sex = 'Not Specified'
 fixation = '4% Paraformaldehyde'
 embedding = 'Not Applicable'
-hybridization = 'whole mount'
+specimenHybridization = 'whole mount'
 specimenNote = ''
+resultNote = ''
 pattern1 = 'Not Specified'
 pattern2 = 'Regionally restricted'
 
@@ -222,6 +223,8 @@ def process():
 	    accID = tokens[2]
 	    humanGene = tokens[3]
 	    results = tokens[4:-1]
+	    probeID = 'MGI:35046'
+#	    probeID = tokens[]
 
         except:
             print 'Invalid Line (%d): %s\n' % (assay, line)
@@ -232,6 +235,7 @@ def process():
 	# write the probe prep information
 
 	prepFile.write(str(assay) + TAB + \
+	    probeID + TAB + \
 	    prepType + TAB + \
 	    hybridization + TAB + \
 	    labelledWith + TAB + \
@@ -245,19 +249,11 @@ def process():
 	    reference + TAB + \
 	    assayType + CRT)
 
-	# write the specimen and results information
+	# write the specimen (one for each Assay)
 
 	specimen = 1
-	result = 1
 
-	# for each Tissue from the heading (Brain, Heart, etc.)
-
-	for i in range(len(tissueLabels)):
-
-	    # Translate the Tissue into a Tissue and Age
-	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
-
-	    specimenFile.write(str(assay) + TAB + \
+	specimenFile.write(str(assay) + TAB + \
 		str(specimen) + TAB + \
 		specimenLabel % (mouseGene) + TAB + \
 		genotype + TAB + \
@@ -266,8 +262,16 @@ def process():
 		sex + TAB + \
 		fixation + TAB + \
 		embedding + TAB + \
-		hybridization + TAB + \
+		specimenHybridization + TAB + \
 		specimenNote + CRT)
+
+	# one result for each Tissue 
+
+	result = 1
+	for i in range(len(tissueLabels)):
+
+	    # Translate the Tissue into a Tissue and Age
+	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
 
 	    if strengthTrans.has_key(results[i]):
 		strength = strengthTrans[results[i]]
@@ -285,10 +289,12 @@ def process():
 		strength + TAB + \
 		pattern + TAB + \
 		tissue + TAB + \
-		theilerStage + CRT)
+		theilerStage + TAB + \
+		resultNote + CRT)
 
-	    specimen = specimen + 1
+	    result = result + 1
 
+	specimen = specimen + 1
 	assay = assay + 1
 
     #	end of "for line in inInSituFile.readlines():"
@@ -302,4 +308,7 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/06/17 19:24:10  lec
+# new
+#
 #

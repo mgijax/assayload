@@ -133,7 +133,7 @@ bcpdelim = TAB		# bcp file delimiter
 
 bcpon = 1		# can the bcp files be bcp-ed into the database?  default is yes.
 
-datadir = os.environ['ASSAYLOADDATADIR']	# file which contains the data files
+datadir = os.environ['RTPCRDATADIR']	# file which contains the data files
 
 diagFile = ''		# diagnostic file descriptor
 errorFile = ''		# error file descriptor
@@ -211,6 +211,9 @@ dnaType = 'primer'	# PRB_Probe.DNAtype
 relationship = 'A'	# PRB_Marker.relationship
 NA = '-2'		# for Not Applicable fields
 primerMgiTypeKey = '3'	# Molecular Segment
+
+# accession constants
+
 assayMgiTypeKey = '8'	# Assay
 mgiPrefix = "MGI:"	# Prefix for MGI accession ID
 accLogicalDBKey = '1'	# Logical DB Key for MGI accession ID
@@ -1389,3 +1392,6 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/06/17 12:17:49  lec
+# TR 4800
+#

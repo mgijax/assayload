@@ -75,7 +75,7 @@ assayFile = ''          # file descriptor
 gellaneFile = ''        # file descriptor
 gelbandFile = ''        # file descriptor
 
-datadir = os.environ['ASSAYLOADDATADIR']
+datadir = os.environ['RTPCRDATADIR']
 
 inRTPCRFileName = datadir + '/tr4800/RT_PCR.txt'
 inTissueFileName = datadir + '/tr4800/RT_PCR_Tissues.txt'
@@ -107,7 +107,7 @@ control = 'No'
 genotype = 'MGI:2166310'	# Not Specified
 sampleAmount = ''
 rnaType = 'total'
-ageNote = 'Age of embryo at noon of plug day not specified in reference.'
+embryonicAgeNote = 'Age of embryo at noon of plug day not specified in reference.'
 sex = 'Not Specified'
 laneNote = ''
 rowNote = ''
@@ -287,7 +287,12 @@ def process():
 	for i in range(len(tissueLabels)):
 
 	    # Translate the Tissue into a Tissue and Age
-	    [tissue, age] = string.split(tissueTrans[tissueLabels[i]], '|')
+	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
+
+	    if theilerStage == 28:
+		ageNote = ''
+            else:
+		ageNote = embryonicAgeNote
 
 	    gellaneFile.write(str(assay) + TAB + \
 		str(lane) + TAB + \
@@ -297,11 +302,11 @@ def process():
 		control + TAB + \
 		sampleAmount + TAB + \
 		sex + TAB + \
-		ageTrans[age] + TAB + \
+		ageTrans[theilerStage] + TAB + \
 		ageNote + TAB + \
 		laneNote + TAB + \
 		tissue + TAB + \
-		age + CRT)
+		theilerStage + CRT)
 
 	    gelbandFile.write(str(assay) + TAB + \
 	        str(lane) + TAB + \
@@ -327,6 +332,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/06/17 15:57:02  lec
+# ok
+#
 # Revision 1.1  2003/06/17 15:55:23  lec
 # new
 #
