@@ -207,7 +207,9 @@ def process():
 
 	key = badTissue
 	value = goodTissue + '|' + theilerStage
-	tissueTrans[key] = value
+	if not tissueTrans.has_key(key):
+	    tissueTrans[key] = []
+	tissueTrans[key].append(value)
 
     # For each line in the input file
 
@@ -223,7 +225,7 @@ def process():
 	# grab the Tissue headings
 
 	if lineNum == 1:
-	    tissueLabels = tokens[5:23]
+	    tissueLabels = tokens[5:24]
 	    continue
 
 	# else process an actual data line
@@ -234,8 +236,8 @@ def process():
 	    mgiCloneID = tokens[2]
 	    mouseGene = tokens[3]
 	    accID = tokens[4]
-	    results = tokens[5:23]
-	    imageFileName = tokens[24:26]
+	    results = tokens[5:24]
+	    imageFileName = tokens[25:27]
 
         except:
             print 'Invalid Line (%d): %s\n' % (lineNum, line)
@@ -286,43 +288,45 @@ def process():
 	resultKey = 1
 	for i in range(len(tissueLabels)):
     
-	    # Translate the Tissue into a Tissue and Age
-	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
-	    resultNote = NULL
+	    for t in tissueTrans[tissueLabels[i]]:
 
-	    # if Wh_emb = (+) and other tissues have no results, then ignore other tissues
-	    # if Wh_emb = (+) and other tissues have results, then process other tissues
-	    # if Wh_emb = ND, then ignore other tissues
-	    # if Wh_emb = null, then process other tissues
+	        # Translate the Tissue into a Tissue and Age
+	        [tissue, theilerStage] = string.split(t, '|')
+	        resultNote = NULL
 
-	    if tissueLabels[i] == 'Wh_emb':
+	        # if Wh_emb = (+) and other tissues have no results, then ignore other tissues
+	        # if Wh_emb = (+) and other tissues have results, then process other tissues
+	        # if Wh_emb = ND, then ignore other tissues
+	        # if Wh_emb = null, then process other tissues
 
-		if results[i] == '':
-		    continue	# skip processing of Wh_emb
+	        if tissueLabels[i] == 'Wh_emb':
 
-		# deterimne if remaining tissues have results
+		    if results[i] == '':
+		        continue	# skip processing of Wh_emb
 
-		ignoreRemainingTissues = 1
+		    # deterimne if remaining tissues have results
 
-	        if results[i] == '(+)':
-	            resultNote = resultNoteTrans[tissueLabels[i]]
-		    for j in range(2, len(tissueLabels)):
-	                if results[j] != '':
-		            ignoreRemainingTissues = 0
+		    ignoreRemainingTissues = 1
 
-	    # process tissue
+	            if results[i] == '(+)':
+	                resultNote = resultNoteTrans[tissueLabels[i]]
+		        for j in range(2, len(tissueLabels)):
+	                    if results[j] != '':
+		                ignoreRemainingTissues = 0
 
-	    strength = strengthTrans[results[i]]
-	    pattern = patternTrans[results[i]]
+	        # process tissue
 
-	    resultsFile.write(str(assayKey) + TAB + \
-	        str(specimenKey) + TAB + \
-	        str(resultKey) + TAB + \
-		strength + TAB + \
-		pattern + TAB + \
-		tissue + TAB + \
-		theilerStage + TAB + \
-		resultNote + CRT)
+	        strength = strengthTrans[results[i]]
+	        pattern = patternTrans[results[i]]
+
+	        resultsFile.write(str(assayKey) + TAB + \
+	            str(specimenKey) + TAB + \
+	            str(resultKey) + TAB + \
+		    strength + TAB + \
+		    pattern + TAB + \
+		    tissue + TAB + \
+		    theilerStage + TAB + \
+		    resultNote + CRT)
 
 	    resultKey = resultKey + 1
 
@@ -343,6 +347,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.4  2003/09/22 13:00:30  lec
+# TR 5154
+#
 # Revision 1.3  2003/09/19 19:32:58  lec
 # TR 5154
 #
