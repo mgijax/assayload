@@ -23,7 +23,7 @@
 #
 # Inputs:
 #
-#       tr6118/Probes_Table.txt, a tab-delimited file in the format:
+#       tr6118/Probes_table.txt, a tab-delimited file in the format:
 #               field 1: Marker Symbol
 #               field 2: Probe Name
 #               field 3: RCN5
@@ -77,7 +77,7 @@ probeFile = ''		# file descriptor
 
 datadir = os.environ['INSITUDATADIR']
 
-inProbeFileName = datadir + '/tr6118/Probes_Table.txt'
+inProbeFileName = datadir + '/tr6118/Probes_table.txt'
 
 probeFileName = datadir + '/probe.txt'
 
@@ -189,13 +189,18 @@ def process():
 	    primer5 = tokens[10]
 #	    author3 = tokens[11]
 	    primer3 = tokens[12]
-	    adnote = tokens[13]
+#	    adnote = tokens[13]
 #	    note = tokens[14]
 #	    note = tokens[15]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (lineNum, line)
+            print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
 	    continue
+
+	try:
+	    adnote = tokens[13]
+        except:
+	    adnote = ''
 
 	if not mgiMarkers.has_key(markerSymbol):
 	    print 'Invalid Marker: %s' % (markerSymbol)
@@ -257,6 +262,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2004/10/14 16:58:10  lec
+# TR 6118
+#
 # Revision 1.1  2004/09/08 12:41:15  lec
 # TR 6118
 #
