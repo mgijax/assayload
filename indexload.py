@@ -59,8 +59,6 @@ import string
 import getopt
 import db
 import mgi_utils
-import accessionlib
-import agelib
 import loadlib
 import gxdloadlib
 
@@ -414,6 +412,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.6  2003/09/26 17:30:15  lec
+# MGI 2.97
+#
 # Revision 1.5  2003/09/26 16:23:56  lec
 # MGI 2.97
 #
