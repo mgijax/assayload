@@ -96,13 +96,14 @@ mode = ''		# processing mode (load, preview)
 reference = ''		# reference (J:)
 referenceKey = ''	# reference key
 priorityKey = ''	# priority key
+createdByKey = ''	# created by key
+indexComments = 'Age of embryo at noon of plug day not specified in reference.'
 
 # primary keys
 
 indexKey = 0		# GXD_Index._Index_key
 
 # constants
-indexComments = 'Age of embryo at noon of plug day not specified in reference.'
 
 loaddate = loadlib.loaddate
 
@@ -159,10 +160,10 @@ def init():
     global diagFile, errorFile, errorFileName, diagFileName, passwordFileName
     global mode, reference
     global outIndexFile, outStagesFile
-    global referenceKey, priorityKey
+    global referenceKey, priorityKey, createdByKey
  
     try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'S:D:U:P:M:R:')
+        optlist, args = getopt.getopt(sys.argv[1:], 'S:D:U:P:M:R:C:')
     except:
         showUsage()
  
@@ -242,6 +243,7 @@ def init():
 
     referenceKey = loadlib.verifyReference(reference, 0, errorFile)
     priorityKey = gxdloadlib.verifyIdxPriority(os.environ['IDXPRIORITY'], 0, errorFile)
+    createdByKey = loadlib.verifyUser(createdBy, 0, errorFile)
 
     return
 
@@ -349,7 +351,7 @@ def processAssay():
 	     str(r['_Marker_key']) + TAB + \
 	     str(priorityKey) + TAB + \
 	     indexComments + TAB + \
-	     createdBy + TAB + createdBy + TAB + \
+	     str(createdByKey) + TAB + str(createdByKey) + TAB + \
 	     loaddate + TAB + loaddate + CRT)
 
 	 indexAssay[r['_Marker_key']] = indexKey
@@ -395,7 +397,7 @@ def processAssay():
         outStagesFile.write(str(indexKey) + TAB + \
             str(idxAssayKey) + TAB + \
             str(idxStageKey) + TAB + \
-	    createdBy + TAB + createdBy + TAB + \
+	    str(createdByKey) + TAB + str(createdByKey) + TAB + \
             loaddate + TAB + loaddate + CRT)
 
     return
@@ -412,6 +414,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.9  2003/10/01 17:47:39  lec
+# removed unnecessary imports
+#
 # Revision 1.8  2003/10/01 17:44:45  lec
 # removed unnecessary imports
 #
