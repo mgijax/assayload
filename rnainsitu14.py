@@ -105,18 +105,20 @@ specimenNote = NULL
 resultNote = NULL
 epiTissue = 'epithalamus'
 epiNote = 'Expression was restricted to the pineal gland primordium.'
+ubiExpression = 'ubiquitous'
+ubiPattern = 'R'
 
 # translation of patterns
 
 patternTrans = {'U':'Homogeneous', 'R':'Regionally restricted', 'I':'Regionally restricted', \
-   'U,R':'Not Specified', 'R,U':'Not Specified', 'i':'Regionally restricted'}
+   'U,R':'Regionally restricted', 'R,U':'Regionally restricted', 'i':'Regionally restricted'}
 
-patternNA = 'Not Applicable'
+NA = 'Not Applicable'
 
 # translation of input file strengths and MGI strengths
 
 strengthTrans = {'*':'Weak', '**':'Moderate', '***':'Strong', '':'Absent', \
-    'U,R':'Present', 'R,U':'Present', '-':'Not Applicable'}
+    'U,R':'Present', 'R,U':'Present', '-':'Absent', '+':'Weak'}
 presentStrength = ['U,R', 'R,U']
 
 mgiTypeKey = 8		# Assay
@@ -274,6 +276,24 @@ def process():
 		specimenHybridization + TAB + \
 		specimenNote + CRT)
 
+	# set default strength to null
+	defaultStrength = NULL
+	defaultPattern = NA
+
+	# if overall expression is ubiquitous, then set the default Strength to
+	# the strength value specified in this column
+
+	if len(overallExpression) > 0:
+	    try:
+	        [oExpression, oStrength] = string.split(overallExpression, ' ')
+
+	        if oExpression == ubiExpression:
+		    defaultStrength = strengthTrans[oStrength]
+		    defaultPattern = patternTrans[ubiPattern]
+
+            except:
+		pass
+
 	# one result for each Tissue 
 
 	result = 1
@@ -308,17 +328,18 @@ def process():
 	        # no strength or pattern given
 
 	        else:
-	            strength = strengthTrans[results[i]]
-	            pattern = patternNA
+	            strength = defaultStrength
+	            pattern = defaultPattern
 
-	        resultsFile.write(str(assay) + TAB + \
-	            str(specimen) + TAB + \
-	            str(result) + TAB + \
-		    strength + TAB + \
-		    pattern + TAB + \
-		    tissue + TAB + \
-		    theilerStage + TAB + \
-		    resultNote + CRT)
+		if len(strength) > 0:
+	            resultsFile.write(str(assay) + TAB + \
+	                str(specimen) + TAB + \
+	                str(result) + TAB + \
+		        strength + TAB + \
+		        pattern + TAB + \
+		        tissue + TAB + \
+		        theilerStage + TAB + \
+		        resultNote + CRT)
 
 	    result = result + 1
 
@@ -336,6 +357,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.7  2003/06/18 19:24:54  lec
+# TR 4800
+#
 # Revision 1.6  2003/06/18 18:47:45  lec
 # TR 4800
 #
