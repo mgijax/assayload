@@ -574,7 +574,7 @@ def processPrimerFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
@@ -983,6 +983,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.11  2003/10/01 17:48:27  lec
+# removed unnecessary imports
+#
 # Revision 1.10  2003/09/26 16:23:55  lec
 # MGI 2.97
 #

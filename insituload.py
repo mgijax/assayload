@@ -482,7 +482,7 @@ def processPrepFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
@@ -549,7 +549,7 @@ def processAssayFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
@@ -640,7 +640,7 @@ def processSpecimenFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
@@ -722,7 +722,7 @@ def processResultsFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
@@ -804,6 +804,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.12  2003/10/01 17:48:27  lec
+# removed unnecessary imports
+#
 # Revision 1.11  2003/09/26 17:12:59  lec
 # was assuming only one specimen
 #
