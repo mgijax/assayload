@@ -76,9 +76,12 @@ NULL = ''
 datadir = os.environ['INSITUDATADIR']
 
 inProbeFile1 = ''	# file descriptor
-probeFile1 = ''		# file descriptor
-inProbeFile1Name1 = datadir + '/tr6118/Probes_Table.txt'
-probeFileName1 = datadir + '/probe.txt'
+inProbeFileName1 = datadir + '/tr6118/Probes_Table.txt'
+inProbeFile2 = ''	# file descriptor
+inProbeFileName2 = datadir + '/tr6118/Generic_Probes.txt'
+
+probeFile = ''		# file descriptor
+probeFileName = datadir + '/probe.txt'
 
 # dictionary of MGI Marker Symbol/MGI Acc IDs
 mgiMarkers = {}
@@ -136,19 +139,24 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inProbeFile1
-    global probeFile1
+    global inProbeFile1, inProbeFile2
+    global probeFile
     global mgiMarkers
  
     try:
-        inProbeFile1 = open(inProbeFile1Name1, 'r')
+        inProbeFile1 = open(inProbeFileName1, 'r')
     except:
-        exit(1, 'Could not open file %s\n' % inProbeFile1Name1)
+        exit(1, 'Could not open file %s\n' % inProbeFileName1)
 
     try:
-        probeFile1 = open(probeFileName1, 'w')
+        inProbeFile2 = open(inProbeFileName2, 'r')
     except:
-        exit(1, 'Could not open file %s\n' % probeFileName1)
+        exit(1, 'Could not open file %s\n' % inProbeFileName2)
+
+    try:
+        probeFile = open(probeFileName, 'w')
+    except:
+        exit(1, 'Could not open file %s\n' % probeFileName)
 
     results = db.sql('select a.accID, m.symbol from ACC_Accession a, MRK_Marker m ' + \
 	'where a._MGIType_key = 2 ' + \
@@ -161,18 +169,18 @@ def init():
 
     return
 
-# Purpose:  processes data
+# Purpose:  processes data for probe file
 # Returns:  nothing
 # Assumes:  nothing
 # Effects:  writes data to output files
 # Throws:   nothing
 
-def process1():
+def process(inFile, vectorType, strain, tissue, age):
 
     # For each line in the input file
 
     lineNum = 0
-    for line in inProbeFile1.readlines():
+    for line in inFile.readlines():
 
 	lineNum = lineNum + 1
 
@@ -180,7 +188,6 @@ def process1():
         tokens = string.split(line[:-1], TAB)
 
 	# processing first line (header)
-	# grab the Tissue headings
 
 	if lineNum == 1:
 	    continue
@@ -220,37 +227,37 @@ def process1():
 
 	# write the probe 
 
-	probeFile1.write(name % (mtf) + TAB + \
+	probeFile.write(name % (mtf) + TAB + \
 	    jnum + TAB + \
 	    organism + TAB + \
-	    strain1 + TAB + \
-	    tissue1 + TAB + \
+	    strain + TAB + \
+	    tissue + TAB + \
 	    gender + TAB + \
 	    cellLine + TAB + \
-	    age1 + TAB + \
-	    vectorType1 + TAB + \
+	    age + TAB + \
+	    vectorType + TAB + \
 	    segmentType + TAB)
 
         if len(rcn5) > 0:
-	    probeFile1.write(regionCovered % (rcn5, rcn3))
-        probeFile1.write(TAB)
+	    probeFile.write(regionCovered % (rcn5, rcn3))
+        probeFile.write(TAB)
 
         if len(site1) > 0 and len(site2) > 0:
-	    probeFile1.write(insertSite % (site1, site2))
+	    probeFile.write(insertSite % (site1, site2))
         elif if len(site1) > 0:
-	    probeFile1.write(site1)
-        probeFile1.write(TAB)
+	    probeFile.write(site1)
+        probeFile.write(TAB)
 
         if len(iSize) > 0:
-	    probeFile1.write(insertSize % (iSize))
-        probeFile1.write(TAB)
+	    probeFile.write(insertSize % (iSize))
+        probeFile.write(TAB)
 
-        probeFile1.write(mgiMarkers[markerSymbol] + TAB + \
+        probeFile.write(mgiMarkers[markerSymbol] + TAB + \
 	    relationship + TAB)
 
         if len(sequenceID) > 0:
-	    probeFile1.write(sequenceLogicalDB % (sequenceID))
-        probeFile1.write(TAB)
+	    probeFile.write(sequenceLogicalDB % (sequenceID))
+        probeFile.write(TAB)
 
 	note = ''
         if len(primer5) > 0:
@@ -260,10 +267,10 @@ def process1():
 	    note = note + adnote
 
 	if (len(note) > 0):
-	    probeFile1.write(note)
-        probeFile1.write(TAB)
+	    probeFile.write(note)
+        probeFile.write(TAB)
 
-	probeFile1.write(createdBy + CRT)
+	probeFile.write(createdBy + CRT)
 
     # end of "for line in inProbeFile1.readlines():"
 
@@ -272,10 +279,14 @@ def process1():
 #
 
 init()
-process1()
+process(inProbeFile1, vectorType1, strain1, tissue1, age1)
+process(inProbeFile2, vectorType2, strain2, tissue2, age2)
 exit(0)
 
 # $Log$
+# Revision 1.5  2004/11/19 16:26:32  lec
+# TR 6118
+#
 # Revision 1.4  2004/11/11 20:37:45  lec
 # TR 6118
 #
