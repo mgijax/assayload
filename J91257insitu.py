@@ -365,16 +365,20 @@ def process1():
 
 	# else process an actual data line
 
-        try:
+	if len(tokens) > 5:
 	    mouseGene = tokens[0]
 	    mtf = tokens[1]
 	    eExpression = tokens[4]
 	    eSpecificity = tokens[5]
 	    eCNS = tokens[6]
 	    eResults = tokens[7:19]
-
-        except:
-            print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
+        else:
+	    mouseGene = tokens[0]
+	    mtf = tokens[1]
+	    eExpression = tokens[4]
+	    eSpecificity = tokens[5]
+	    eCNS = ''
+	    eResults = ''
 
 	if not mgiMarker.has_key(mouseGene):
 	    continue
@@ -451,6 +455,7 @@ def process1():
 	# E-CNS
 	t = tissueTrans1['E-CNS overall'][0]
 	[tissue, theilerStage] = string.split(t, '|')
+
 	strength = strengthTrans2[eCNS]
 	pattern = patternTrans2[eCNS]
 	resultNote = resultNoteTrans2[pattern]
@@ -472,9 +477,14 @@ def process1():
 	        # Translate the Tissue into a Tissue and Stage
 	        [tissue, theilerStage] = string.split(t, '|')
 
-		strength = strengthTrans3[eResults[i]]
-	        pattern = patternTrans3[eResults[i]]
-	        resultNote = resultNoteTrans3[pattern]
+		if len(eResults) > 0:
+		    strength = strengthTrans3[eResults[i]]
+	            pattern = patternTrans3[eResults[i]]
+	            resultNote = resultNoteTrans3[pattern]
+                else:
+		    strength = strengthTrans3[eResults]
+	            pattern = patternTrans3[eResults]
+	            resultNote = resultNoteTrans3[pattern]
 
                 if tissueLabels[i] in ['E-ear', 'E-OLF']:
 	            tNote = tissueNote[tissueLabels[i]]
@@ -527,16 +537,20 @@ def process2():
 
 	# else process an actual data line
 
-        try:
+        if len(tokens) > 5:
 	    mouseGene = tokens[0]
 	    mtf = tokens[1]
 	    pExpression = tokens[4]
 	    pSpecificity = tokens[5]
 	    pCNS = tokens[6]
 	    pResults = tokens[7:21]
-
-        except:
-            print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
+        else:
+	    mouseGene = tokens[0]
+	    mtf = tokens[1]
+	    pExpression = tokens[4]
+	    pSpecificity = ''
+	    pCNS = ''
+	    pResults = ''
 
 	if not mgiMarker.has_key(mouseGene):
 	    continue
@@ -611,13 +625,18 @@ def process2():
 	        # Translate the Tissue into a Tissue and Stage
 	        [tissue, theilerStage] = string.split(t, '|')
 
-		if i > len(pResults) - 1:
-		    strength = strengthTrans3['']
-		    pattern = patternTrans3['']
-		    resultNote = resultNoteTrans3[pattern]
+		if len(pResults) > 0:
+		    if i > len(pResults) - 1:
+		        strength = strengthTrans3['']
+		        pattern = patternTrans3['']
+		        resultNote = resultNoteTrans3[pattern]
+		    else:
+		        strength = strengthTrans3[pResults[i]]
+		        pattern = patternTrans3[pResults[i]]
+		        resultNote = resultNoteTrans3[pattern]
 		else:
-		    strength = strengthTrans3[pResults[i]]
-		    pattern = patternTrans3[pResults[i]]
+		    strength = strengthTrans3[pResults]
+		    pattern = patternTrans3[pResults]
 		    resultNote = resultNoteTrans3[pattern]
 
                 if tissueLabels[i] in ['P-ear', 'P-OLF']:
@@ -650,6 +669,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.10  2004/11/19 18:28:00  lec
+# TR 6118
+#
 # Revision 1.9  2004/11/19 16:50:33  lec
 # TR 6118
 #
