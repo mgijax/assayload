@@ -90,7 +90,8 @@ mgiMarkers = {}
 segmentType = 'cDNA'
 jnum = 'J:91257'
 name = 'MTF#%s'
-regionCovered = 'Nucleotides %s-%s.'
+regionCovered1 = 'Nucleotides %s-%s.'
+regionCovered2 = 'Nucleotides %s-%s of GenBank Accession ID %s.'
 insertSite = '%s/%s'
 insertSize = '%skb'
 organism = 'mouse, laboratory'
@@ -239,7 +240,10 @@ def process(inFile, vectorType, strain, tissue, age):
 	    segmentType + TAB)
 
         if len(rcn5) > 0:
-	    probeFile.write(regionCovered % (rcn5, rcn3))
+	    if len(sequenceID) > 0:
+	      probeFile.write(regionCovered2 % (rcn5, rcn3, sequenceID))
+	    else:
+	      probeFile.write(regionCovered1 % (rcn5, rcn3))
         probeFile.write(TAB)
 
         if len(site1) > 0 and len(site2) > 0:
@@ -284,6 +288,9 @@ process(inProbeFile2, vectorType2, strain2, tissue2, age2)
 exit(0)
 
 # $Log$
+# Revision 1.6  2004/11/19 16:40:17  lec
+# TR 6118
+#
 # Revision 1.5  2004/11/19 16:26:32  lec
 # TR 6118
 #
