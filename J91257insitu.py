@@ -374,7 +374,7 @@ def process1():
 	    eResults = tokens[7:19]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (lineNum, line)
+            print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
 
 	if not mgiMarker.has_key(mouseGene):
 	    continue
@@ -536,7 +536,7 @@ def process2():
 	    pResults = tokens[7:21]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (lineNum, line)
+            print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
 
 	if not mgiMarker.has_key(mouseGene):
 	    continue
@@ -650,6 +650,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.9  2004/11/19 16:50:33  lec
+# TR 6118
+#
 # Revision 1.8  2004/11/19 16:26:32  lec
 # TR 6118
 #
