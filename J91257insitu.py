@@ -474,7 +474,7 @@ def process1():
                 if tissueLabels[i] in ['E-ear', 'E-OLF']:
 	            tNote = tissueNote[tissueLabels[i]]
 		    if len(resultNote) > 0:
-	                resultNote = resultNote + '  ' + tNote
+	                resultNote = tNote + '  ' + resultNote
 		    else:
 			resultNote = tNote
 
@@ -613,7 +613,7 @@ def process2():
                 if tissueLabels[i] in ['P-ear', 'P-OLF']:
 	            tNote = tissueNote[tissueLabels[i]]
 		    if len(resultNote) > 0:
-	                resultNote = resultNote + '  ' + tNote
+	                resultNote = tNote + ' ' + resultNote
 		    else:
 			resultNote = tNote
 
@@ -640,6 +640,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.7  2004/11/15 13:31:25  lec
+# assayload-2-0-0
+#
 # Revision 1.6  2004/11/15 13:21:13  lec
 # assayload-2-0-0
 #
