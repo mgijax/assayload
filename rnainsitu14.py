@@ -127,6 +127,7 @@ ubiPattern = 'R'
 patternTrans = {'U':'Homogeneous', 'R':'Regionally restricted', 'I':'Regionally restricted', \
    'U,R':'Regionally restricted', 'R,U':'Regionally restricted', 'i':'Regionally restricted'}
 
+ABSENT = 'Absent'
 NA = 'Not Applicable'
 
 # translation of input file strengths and MGI strengths
@@ -319,8 +320,8 @@ def process():
 		    specimenHybridization + TAB + \
 		    specimenNote + CRT)
 
-	    # set default strength to null
-	    defaultStrength = NULL
+	    # set defaults
+	    defaultStrength = ABSENT
 	    defaultPattern = NA
 
 	    # if overall expression is ubiquitous, then set the default Strength to
@@ -376,17 +377,14 @@ def process():
 	                strength = defaultStrength
 	                pattern = defaultPattern
 
-		    # only record non-null results
-
-		    if len(strength) > 0:
-	                resultsFile.write(str(assay) + TAB + \
-	                    str(specimen) + TAB + \
-	                    str(result) + TAB + \
-		            strength + TAB + \
-		            pattern + TAB + \
-		            tissue + TAB + \
-		            theilerStage + TAB + \
-		            resultNote + CRT)
+	            resultsFile.write(str(assay) + TAB + \
+	                str(specimen) + TAB + \
+	                str(result) + TAB + \
+		        strength + TAB + \
+		        pattern + TAB + \
+		        tissue + TAB + \
+		        theilerStage + TAB + \
+		        resultNote + CRT)
 
 	        result = result + 1
 
@@ -405,6 +403,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.10  2003/06/20 16:46:51  lec
+# TR 4800
+#
 # Revision 1.9  2003/06/20 15:16:12  lec
 # TR 4800
 #
