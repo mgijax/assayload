@@ -41,7 +41,7 @@
 #		field 5: P-expression
 #		field 6: P-specificity
 #		field 7: E-CNS
-#	        field 8-20: remaining expression
+#	        field 8-21: remaining expression
 #
 # Outputs:
 #
@@ -135,16 +135,18 @@ strengthTrans1 = {'1':'Present',
 # translation of input file patterns and MGI patterns
 patternTrans1 = {'1':'Regionally restricted', 
                 '2':'Regionally restricted', 
-		'3':'Regionally restricted', 
+		'3':'Not Specified', 
 		'4':'Not Specified',
-		 NULL:'Not Applicable'
+		 NULL:'Not Specified',
+		 'Absent':'Not Applicable'
 		} 
 
 resultNoteTrans1 = {'1':'Expression was neural specific.', 
 		   '2':'Expression was non-neural specific.', 
 		   '3':'Expression was detected in neural and non-neural tissue.',
 		   'Not Specified':NULL,
-		   'Not Applicable':NULL
+		   'Not Applicable':NULL,
+		   NULL:NULL,
 		   }
 
 # E-CNS, P-CNS
@@ -161,7 +163,8 @@ patternTrans2 = {'1':'Single cells',
 
 resultNoteTrans2 = {'Single cells':'Expression was detected in some cells.', 
 		   'Homogeneous':'Expression was ubiquitous.',
-		   'Not Applicable':NULL
+		   'Not Applicable':NULL,
+		   NULL:NULL
 		   }
 
 # other tissues
@@ -180,7 +183,8 @@ patternTrans3 = {'1':'Single cells',
 
 resultNoteTrans3 = {'Single cells':'Expression was detected in some cells.', 
 		   'Homogeneous':'Expression was detected in all cells.', 
-		   'Not Applicable':NULL
+		   'Not Applicable':NULL,
+		   NULL:NULL
 		   }
 
 mgiProbe = {}	 # dictionary of Probe Name/MGI Acc ID
@@ -416,11 +420,13 @@ def process1():
 	t = tissueTrans1['E-expression'][0]
 	[tissue, theilerStage] = string.split(t, '|')
 	strength = strengthTrans1[eExpression]
-	pattern = patternTrans1[eSpecificity]
-	if pattern == 'Regionally restricted':
-	    resultNote = resultNoteTrans1[eSpecificity]
+
+	if strength == 'Absent':
+	    pattern = patternTrans1[strength]
 	else:
-	    resultNote = resultNoteTrans1[pattern]
+	    pattern = patternTrans1[eSpecificity]
+
+	resultNote = resultNoteTrans1[eSpecificity]
 
 	resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
@@ -499,7 +505,7 @@ def process2():
 	# grab the Tissue headings
 
 	if lineNum == 1:
-	    tissueLabels = tokens[7:20]
+	    tissueLabels = tokens[7:21]
 	    continue
 
 	# else process an actual data line
@@ -510,7 +516,7 @@ def process2():
 	    pExpression = tokens[4]
 	    pSpecificity = tokens[5]
 	    pCNS = tokens[6]
-	    pResults = tokens[7:20]
+	    pResults = tokens[7:21]
 
         except:
             print 'Invalid Line (%d): %s\n' % (lineNum, line)
@@ -541,11 +547,13 @@ def process2():
 	t = tissueTrans2['P-expression'][0]
 	[tissue, theilerStage] = string.split(t, '|')
 	strength = strengthTrans1[pExpression]
-	pattern = patternTrans1[pSpecificity]
-	if pattern == 'Regionally restricted':
-	    resultNote = resultNoteTrans1[pSpecificity]
+
+	if strength == 'Absent':
+	    pattern = patternTrans1[strength]
 	else:
-	    resultNote = resultNoteTrans1[pattern]
+	    pattern = patternTrans1[pSpecificity]
+
+	resultNote = resultNoteTrans1[pSpecificity]
 
 	resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
@@ -613,6 +621,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.3  2004/09/16 13:25:03  lec
+# TR 6118
+#
 # Revision 1.2  2004/09/08 17:09:30  lec
 # TR 6118
 #

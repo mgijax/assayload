@@ -63,6 +63,8 @@ import os
 import db
 import string
 
+# insert into PRB_Source values (52416,63468,316367,1,433,450,315167,316335,null,null,null,'embryonic day 13.5',13.5,13.5,0,1001,1001,getdate(),getdate())
+
 #globals
 
 TAB = '\t'		# tab
@@ -88,7 +90,7 @@ vectorType = 'Plasmid'
 insertSite = '%s/%s'
 insertSize = '%skb'
 organism = 'mouse, laboratory'
-strain = 'C57BL/6J'
+strain = 'C57BL'
 tissue = 'brain'
 age = 'embryonic day 13.5'
 gender = 'Not Specified'
@@ -255,3 +257,6 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2004/09/08 12:41:15  lec
+# TR 6118
+#
