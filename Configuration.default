@@ -45,6 +45,15 @@ setenv DBUSER	mgd_dbo
 # Password
 setenv DBPASSWORDFILE	$DBUTILITIESPATH/.mgd_dbo_password
 
+# RT-PCR data
+setenv RTPCRDATADIR     $ASSAYLOADDATADIR/rtpcr
+
+# In Situ data
+setenv INSITU10DATADIR  $ASSAYLOADDATADIR/insitu10.5
+
+# In Situ data
+setenv INSITU14DATADIR  $ASSAYLOADDATADIR/insitu14.5
+
 # Load Mode
 setenv LOADMODE		load
 

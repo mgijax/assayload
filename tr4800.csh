@@ -21,7 +21,19 @@ touch $LOG
  
 date > $LOG
  
+rtpcr.py
 gelload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+exit 0
+
+setenv INSITUDATALOAD $INSITU10DATALOAD
+setenv INSITUDATA 10
+rnainsitu.py
+insituload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+#setenv INSITUDATALOAD $INSITU14DATALOAD
+#setenv INSITUDATA 14
+#rnainsitu.py
+#rnainsitu.py
+#insituload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
 
 date >> $LOG
 
