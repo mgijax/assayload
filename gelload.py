@@ -951,9 +951,16 @@ def bcpFiles(
     db.sql('exec ACC_setMax %d' % (recordsProcessed), None)
 
     # update statistics
-    db.sql('update statistics %s' % (accTable), None)
-    db.sql('update statistics %s' % (assayTable), None)
     db.sql('update statistics %s' % (probeTable), None)
+    db.sql('update statistics %s' % (markerTable), None)
+    db.sql('update statistics %s' % (refTable), None)
+    db.sql('update statistics %s' % (probeprepTable), None)
+    db.sql('update statistics %s' % (assayTable), None)
+    db.sql('update statistics %s' % (gelLaneTable), None)
+    db.sql('update statistics %s' % (gelLaneStTable), None)
+    db.sql('update statistics %s' % (gelRowTable), None)
+    db.sql('update statistics %s' % (gelBandTable), None)
+    db.sql('update statistics %s' % (accTable), None)
 
     return
 

@@ -107,7 +107,7 @@ control = 'No'
 genotype = 'MGI:2166310'	# Not Specified
 sampleAmount = ''
 rnaType = 'total'
-ageNote = 'Age normalized so that noon of plug day = E0.5.'
+ageNote = 'Age of embryo at noon of plug day not specified in reference.'
 sex = 'Not Specified'
 laneNote = ''
 rowNote = ''
@@ -245,6 +245,9 @@ def process():
         except:
             print 'Invalid Line (%d): %s\n' % (assay, line)
 
+	if len(mouseGene) == 0:
+	    continue
+
 	# write the primer information
 
 	primerFile.write(str(assay) + TAB + \
@@ -324,3 +327,6 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/06/17 12:08:05  lec
+# new
+#
