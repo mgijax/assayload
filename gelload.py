@@ -1184,9 +1184,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
-#	    TAB + \
-#	    createdBy + TAB + \
-#	    createdBy + TAB + \
+	    TAB + \
+	    createdBy + TAB + \
+	    createdBy + TAB + \
 	    cdate + TAB + cdate + CRT)
 
         # MGI Accession ID for the assay
@@ -1399,6 +1399,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.5  2003/06/23 17:20:44  lec
+# TR4800
+#
 # Revision 1.4  2003/06/18 15:56:16  lec
 # TR 4800
 #
