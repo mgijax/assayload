@@ -367,7 +367,8 @@ def process10():
 		    strength = strengthTrans[results[i]]
 		    if strength == ABSENT:
 			pattern = NA
-		    pattern = pattern1
+		    else:
+			pattern = pattern1
 	        elif len(results[i]) > 3:
 		    strength = strengthTrans['+']
 		    pattern = pattern2
@@ -620,6 +621,9 @@ process14()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/07/18 18:02:10  lec
+# TR 4800
+#
 # Revision 1.2  2003/07/18 16:15:53  lec
 # TR 4800
 #

@@ -292,7 +292,7 @@ def process():
 	    # Translate the Tissue into a Tissue and Age
 	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
 
-	    if theilerStage == 28:
+	    if theilerStage == '28':
 		ageNote = NULL
             else:
 		ageNote = embryonicAgeNote
@@ -335,6 +335,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/07/18 18:02:11  lec
+# TR 4800
+#
 # Revision 1.2  2003/07/18 15:44:58  lec
 # TR 4800
 #
