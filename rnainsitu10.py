@@ -35,6 +35,18 @@
 #		field 2: MGI Tissue
 #		field 3: Theiler Stage
 #
+#	probe_table.txt, a tab-delimited file in the format:
+#		field 1: Human Gene
+#		field 2: Mouse Gene
+#               field 3: MGI Marker Accession ID
+#		field 4: Clone Name
+#		field 5: Clone Origin
+#		field 6: Clone Acc ID
+#		field 7: Clone Mapping
+#		field 8: Clone MGI ID
+#		field 9: Clone Library ID
+#		field 10: Clone Library Name
+#
 # Outputs:
 #
 #       4 tab-delimited files:
@@ -67,6 +79,7 @@ NULL = ''
 
 inInSituFile = ''	# file descriptor
 inTissueFile = ''	# file descriptor
+inProbeFile = ''	# file descriptor
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
 specimenFile = ''       # file descriptor
@@ -76,6 +89,7 @@ datadir = os.environ['INSITU10DATADIR']
 
 inInSituFileName = datadir + '/tr4800/E10.5_In_situ.txt'
 inTissueFileName = datadir + '/tr4800/E10.5_In_situ_tissues.txt'
+inProbeFileName = datadir + '/tr4800/probe_table.txt'
 prepFileName = datadir + '/In_Situ_probeprep.txt'
 assayFileName = datadir + '/In_Situ_assay.txt'
 specimenFileName = datadir + '/In_Situ_specimen.txt'
@@ -137,7 +151,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inInSituFile, inTissueFile, prepFile, assayFile, specimenFile, resultsFile
+    global inInSituFile, inTissueFile, inProbeFile, prepFile, assayFile, specimenFile, resultsFile
  
     try:
         inInSituFile = open(inInSituFileName, 'r')
@@ -148,6 +162,11 @@ def init():
         inTissueFile = open(inTissueFileName, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inTissueFileName)
+
+    try:
+        inProbeFile = open(inProbeFileName, 'r')
+    except:
+        exit(1, 'Could not open file %s\n' % inProbeFileName)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -180,6 +199,7 @@ def init():
 def process():
 
     tissueTrans = {}	# maps input tissue to MGI tissue and Theiler Stage
+    probeTrans = {}	# maps probe to MGI Gene
 
     for line in inTissueFile.readlines():
 	tokens = string.split(line[:-1], TAB)
@@ -190,6 +210,23 @@ def process():
 	key = badTissue
 	value = goodTissue + '|' + theilerStage
 	tissueTrans[key] = value
+
+    for line in inProbeFile.readlines():
+	tokens = string.split(line[:-1], TAB)
+	mgiID = tokens[2]
+	probeID = tokens[7]
+
+	if len(mgiID) == 0:
+	    continue
+
+	if len(probeID) == 1:
+	    probeID = 'MGI:35046'
+
+	key = mgiID
+	value = probeID
+	if not probeTrans.has_key(key):
+	    probeTrans[key] = []
+        probeTrans[key].append(value)
 
     assay = 0	# unique Assay ID
 
@@ -225,69 +262,74 @@ def process():
 	if len(mouseGene) == 0:
 	    continue
 
-	# write the probe prep information
+	# create one assay per probe for given marker
 
-	prepFile.write(str(assay) + TAB + \
-	    probeID + TAB + \
-	    prepType + TAB + \
-	    hybridization + TAB + \
-	    labelledWith + TAB + \
-	    labelCoverage + TAB + \
-	    visualizedWith + CRT)
+	for probeID in probeTrans[accID]:
 
-	# write the assay information
+	    # write the probe prep information
 
-	assayFile.write(str(assay) + TAB + \
-	    accID + TAB + \
-	    reference + TAB + \
-	    assayType + CRT)
+	    prepFile.write(str(assay) + TAB + \
+	        probeID + TAB + \
+	        prepType + TAB + \
+	        hybridization + TAB + \
+	        labelledWith + TAB + \
+	        labelCoverage + TAB + \
+	        visualizedWith + CRT)
 
-	# write the specimen (one for each Assay)
+	    # write the assay information
 
-	specimen = 1
+	    assayFile.write(str(assay) + TAB + \
+	        accID + TAB + \
+	        reference + TAB + \
+	        assayType + CRT)
 
-	specimenFile.write(str(assay) + TAB + \
-		str(specimen) + TAB + \
-		specimenLabel % (mouseGene) + TAB + \
-		genotype + TAB + \
-		age + TAB + \
-		ageNote + TAB + \
-		sex + TAB + \
-		fixation + TAB + \
-		embedding + TAB + \
-		specimenHybridization + TAB + \
-		specimenNote + CRT)
+	    # write the specimen (one for each Assay)
 
-	# one result for each Tissue 
+	    specimen = 1
 
-	result = 1
-	for i in range(len(tissueLabels)):
+	    specimenFile.write(str(assay) + TAB + \
+		    str(specimen) + TAB + \
+		    specimenLabel % (mouseGene) + TAB + \
+		    genotype + TAB + \
+		    age + TAB + \
+		    ageNote + TAB + \
+		    sex + TAB + \
+		    fixation + TAB + \
+		    embedding + TAB + \
+		    specimenHybridization + TAB + \
+		    specimenNote + CRT)
 
-	    # Translate the Tissue into a Tissue and Age
-	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
+	    # one result for each Tissue 
 
-	    if strengthTrans.has_key(results[i]):
-		strength = strengthTrans[results[i]]
-		pattern = pattern1
-	    elif len(results[i]) > 3:
-		strength = strengthTrans['+']
-		pattern = pattern2
+	    result = 1
+	    for i in range(len(tissueLabels)):
+    
+	        # Translate the Tissue into a Tissue and Age
+	        [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
 
-	    resultsFile.write(str(assay) + TAB + \
-	        str(specimen) + TAB + \
-	        str(result) + TAB + \
-		strength + TAB + \
-		pattern + TAB + \
-		tissue + TAB + \
-		theilerStage + TAB + \
-		resultNote + CRT)
+	        if strengthTrans.has_key(results[i]):
+		    strength = strengthTrans[results[i]]
+		    pattern = pattern1
+	        elif len(results[i]) > 3:
+		    strength = strengthTrans['+']
+		    pattern = pattern2
 
-	    result = result + 1
+	        resultsFile.write(str(assay) + TAB + \
+	            str(specimen) + TAB + \
+	            str(result) + TAB + \
+		    strength + TAB + \
+		    pattern + TAB + \
+		    tissue + TAB + \
+		    theilerStage + TAB + \
+		    resultNote + CRT)
 
-	specimen = specimen + 1
-	assay = assay + 1
+	        result = result + 1
 
-    #	end of "for line in inInSituFile.readlines():"
+	    specimen = specimen + 1
+	    assay = assay + 1
+
+        # end of "for line in inProbeFile.readlines():"
+    # end of "for line in inInSituFile.readlines():"
 
 #
 # Main
@@ -298,6 +340,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.4  2003/06/18 19:24:53  lec
+# TR 4800
+#
 # Revision 1.3  2003/06/18 18:26:55  lec
 # TR 4800
 #
