@@ -131,7 +131,7 @@ assayType = 'RNA In Situ'
 createdBy = os.environ['CREATEDBY']
 
 # next available assay key
-assay = 1
+assayKey = 1
 
 # dictionary of probe to MGI Gene
 geneProbe = {}
@@ -238,7 +238,7 @@ def init():
 
 def process10():
 
-    global assay, geneProbeAssay
+    global assayKey, geneProbeAssay
 
     # constants for specimen
     specimenLabel = '%s 10.5dpc'
@@ -303,7 +303,7 @@ def process10():
 	    imageFileName = tokens[15]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (assay, line)
+            print 'Invalid Line (%d): %s\n' % (lineNum, line)
 
 	if len(mouseGene) == 0:
 	    continue
@@ -314,7 +314,7 @@ def process10():
 
 	    # write the probe prep information
 
-	    prepFile.write(str(assay) + TAB + \
+	    prepFile.write(str(assayKey) + TAB + \
 	        probeID + TAB + \
 	        prepType + TAB + \
 	        hybridization + TAB + \
@@ -324,7 +324,7 @@ def process10():
 
 	    # write the assay information
 
-	    assayFile.write(str(assay) + TAB + \
+	    assayFile.write(str(assayKey) + TAB + \
 	        accID + TAB + \
 	        reference + TAB + \
 	        assayType + TAB + \
@@ -333,14 +333,14 @@ def process10():
 
 	    # save the gene/probe/assay information
 	    key = accID + ';' + probeID
-	    geneProbeAssay[key] = assay
+	    geneProbeAssay[key] = assayKey
 
 	    # write the specimen (one for each Assay)
 
-	    specimen = 1
+	    specimenKey = 1
 
-	    specimenFile.write(str(assay) + TAB + \
-		    str(specimen) + TAB + \
+	    specimenFile.write(str(assayKey) + TAB + \
+		    str(specimenKey) + TAB + \
 		    specimenLabel % (mouseGene) + TAB + \
 		    genotype + TAB + \
 		    age + TAB + \
@@ -353,7 +353,7 @@ def process10():
 
 	    # one result for each Tissue 
 
-	    result = 1
+	    resultKey = 1
 	    for i in range(len(tissueLabels)):
     
 	        # Translate the Tissue into a Tissue and Age
@@ -366,19 +366,19 @@ def process10():
 		    strength = strengthTrans['+']
 		    pattern = pattern2
 
-	        resultsFile.write(str(assay) + TAB + \
-	            str(specimen) + TAB + \
-	            str(result) + TAB + \
+	        resultsFile.write(str(assayKey) + TAB + \
+	            str(specimenKey) + TAB + \
+	            str(resultKey) + TAB + \
 		    strength + TAB + \
 		    pattern + TAB + \
 		    tissue + TAB + \
 		    theilerStage + TAB + \
 		    resultNote + CRT)
 
-	        result = result + 1
+	        resultKey = resultKey + 1
 
-	    specimen = specimen + 1
-	    assay = assay + 1
+	    specimenKey = specimenKey + 1
+	    assayKey = assayKey + 1
 
         # end of "for line in inProbeFile.readlines():"
     # end of "for line in inInSitu10File.readlines():"
@@ -391,7 +391,7 @@ def process10():
 
 def process14():
 
-    global assay
+    global assayKey
 
     # constants for specimen
     specimenLabel = '%s 14.5dpc'
@@ -475,7 +475,7 @@ def process14():
 	    imageFileName2= tokens[51]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (assay, line)
+            print 'Invalid Line (%d): %s\n' % (lineNum, line)
 
 	if len(mouseGene) == 0:
 	    continue
@@ -491,36 +491,40 @@ def process14():
 	    # retrieve the gene/probe/assay information
 	    key = accID + ';' + probeID
 	    if geneProbeAssay.has_key(key):
-		useAssay = geneProbeAssay[key]
+		useAssayKey = geneProbeAssay[key]
+		sameAssay = 1
+		specimenKey = 2
             else:
-		useAssay = assay
-		assay = assay + 1
+		useAssayKey = assayKey
+		assayKey = assayKey + 1
+		sameAssay = 0
+		specimenKey = 1
 
-	    # write the probe prep information
+	    if sameAssay == 0:
 
-	    prepFile.write(str(useAssay) + TAB + \
-	        probeID + TAB + \
-	        prepType + TAB + \
-	        hybridization + TAB + \
-	        labelledWith + TAB + \
-	        labelCoverage + TAB + \
-	        visualizedWith + CRT)
+	        # write the probe prep information
 
-	    # write the assay information
+	        prepFile.write(str(useAssayKey) + TAB + \
+	            probeID + TAB + \
+	            prepType + TAB + \
+	            hybridization + TAB + \
+	            labelledWith + TAB + \
+	            labelCoverage + TAB + \
+	            visualizedWith + CRT)
 
-	    assayFile.write(str(useAssay) + TAB + \
-	        accID + TAB + \
-	        reference + TAB + \
-	        assayType + TAB + \
-		TAB + \
-		createdBy + CRT)
+	        # write the assay information
+
+	        assayFile.write(str(useAssayKey) + TAB + \
+	            accID + TAB + \
+	            reference + TAB + \
+	            assayType + TAB + \
+		    TAB + \
+		    createdBy + CRT)
 
 	    # write the specimen (one for each Assay)
 
-	    specimen = 1
-
-	    specimenFile.write(str(useAssay) + TAB + \
-		    str(specimen) + TAB + \
+	    specimenFile.write(str(useAssayKey) + TAB + \
+		    str(specimenKey) + TAB + \
 		    specimenLabel % (mouseGene) + TAB + \
 		    genotype + TAB + \
 		    age + TAB + \
@@ -551,7 +555,7 @@ def process14():
 
 	    # one result for each Tissue 
 
-	    result = 1
+	    resultKey = 1
 	    for i in range(len(tissueLabels)):
 
 	        # Translate the Tissue into a Tissue and Age
@@ -588,18 +592,18 @@ def process14():
 	                strength = defaultStrength
 	                pattern = defaultPattern
 
-	            resultsFile.write(str(useAssay) + TAB + \
-	                str(specimen) + TAB + \
-	                str(result) + TAB + \
+	            resultsFile.write(str(useAssayKey) + TAB + \
+	                str(specimenKey) + TAB + \
+	                str(resultKey) + TAB + \
 		        strength + TAB + \
 		        pattern + TAB + \
 		        tissue + TAB + \
 		        theilerStage + TAB + \
 		        resultNote + CRT)
 
-	        result = result + 1
+	        resultKey = resultKey + 1
 
-	    specimen = specimen + 1
+	    specimenKey = specimenKey + 1
 
     # end of "for line in inInSitu14File.readlines():"
 
@@ -613,4 +617,7 @@ process14()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/07/18 15:43:18  lec
+# new
+#
 #

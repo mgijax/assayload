@@ -21,7 +21,7 @@ touch $LOG
  
 date > $LOG
  
-rtpcr.py
+J80502rtpcr.py
 gelload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
 
 J80502rnainsitu.py
