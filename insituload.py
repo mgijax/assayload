@@ -104,7 +104,6 @@ import string
 import getopt
 import db
 import mgi_utils
-import accessionlib
 import agelib
 import loadlib
 import gxdloadlib
@@ -236,7 +235,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global diagFile, errorFile, inputFile, errorFileName, diagFileName, passwordFileName
+    global diagFile, errorFile, errorFileName, diagFileName, passwordFileName
     global mode
     global outAccFile, outPrepFile, outAssayFile
     global outSpecimenFile, outResultStFile, outResultFile
@@ -805,6 +804,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.11  2003/09/26 17:12:59  lec
+# was assuming only one specimen
+#
 # Revision 1.10  2003/09/26 16:23:56  lec
 # MGI 2.97
 #

@@ -156,7 +156,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global diagFile, errorFile, inputFile, errorFileName, diagFileName, passwordFileName
+    global diagFile, errorFile, errorFileName, diagFileName, passwordFileName
     global mode, reference
     global outIndexFile, outStagesFile
     global referenceKey, priorityKey
@@ -412,6 +412,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.8  2003/10/01 17:44:45  lec
+# removed unnecessary imports
+#
 # Revision 1.7  2003/10/01 17:43:34  lec
 # removed unnecessary imports
 #
