@@ -280,7 +280,6 @@ def process():
 #		print 'No Results for %s:%s' % (mouseGene, tissueLabels[i])
 		continue
 
-	    print results[i]
 	    if len(results[i]) > 1:
 	        [inStrength, inPattern] = string.split(results[i], ' ')
 		if inPattern in presentStrength:
@@ -321,6 +320,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/06/18 15:38:25  lec
+# new
+#
 # Revision 1.1  2003/06/18 13:34:23  lec
 # new
 #
