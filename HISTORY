@@ -1,3 +1,9 @@
+TAG: assayload-3-1-0-1
+DATE: 02/03/2005
+STAFF: lec
+RELEASE: A
+CHANGES: fixed duplicate GXD_Index_Stages record creation
+
 TAG: assayload-2-0-2
 DATE: 11/30/2004
 STAFF: lec
