@@ -106,6 +106,8 @@ import db
 import mgi_utils
 import accessionlib
 import agelib
+import loadlib
+import gxdloadlib
 
 #globals
 
@@ -179,31 +181,11 @@ accLogicalDBKey = '1'   # Logical DB Key for MGI accession ID
 accPrivate = '0'        # Private status for MGI accession ID (false)
 accPreferred = '1'      # Preferred status MGI accession ID (true)
 
-# dictionaries to cache data for quicker lookup
-
-referenceDict = {}      # references
-markerDict = {}      	# markers
-probeDict = {}		# probes
-assayTypeDict = {}	# assay type
-senseDict = {}          # probe sense
-labelDict = {}          # probe label
-coverageDict = {}       # probe coverage
-visualDict = {}         # probe visualization
-embeddingDict = {}	# embedding method
-fixationDict = {}	# fixation
-genotypeDict = {}	# genotype
-strengthDict = {}	# strength
-patternDict = {}	# pattern
-structureDict = {}      # anatomical structures
-reporterGeneDict = {}	# reporter gene
-prepTypeList = ['DNA', 'RNA', 'Not Specified'] 	# lookup of probe prep types
-hybridizationList = ['section', 'whole mount', 'section from whole mount']
-
 assayProbePrep = {}	# Assay ID/Probe Prep keys
 assayAssay= {}		# Assay ID/Assay keys
 assaySpecimen = {}	# Assay ID/Specimen ID and Specimen keys
 
-cdate = mgi_utils.date('%m/%d/%Y')	# current date
+loaddate = loadlib.loaddate
 
 # Purpose: displays correct usage of this program
 # Returns: nothing
@@ -398,486 +380,6 @@ def verifyMode():
     elif mode != 'load':
         exit(1, 'Invalid Processing Mode:  %s\n' % (mode))
 
-
-# Purpose:  verify Marker Accession ID
-# Returns:  Marker Key if Marker is valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Marker exists either in the marker dictionary or the database
-#	writes to the error file if the Marker is invalid
-#	adds the marker id and key to the marker dictionary if the Marker is valid
-# Throws:  nothing
-
-def verifyMarker(
-    markerID, 	# Accession ID of the Marker (string)
-    lineNum	# line number (integer)
-    ):
-
-    global markerDict
-
-    markerKey = 0
-
-    if markerDict.has_key(markerID):
-        return markerDict[markerID]
-    else:
-        results = db.sql('select _Object_key from MRK_Acc_View where accID = "%s" ' % (markerID), 'auto')
-
-        for r in results:
-            if r['_Object_key'] is None:
-                errorFile.write('Invalid Mouse Marker (%d) %s\n' % (lineNum, markerID))
-                markerKey = 0
-            else:
-                markerKey = r['_Object_key']
-                markerDict[markerID] = markerKey
-
-    return markerKey
-
-# Purpose:  verify Probe Accession ID
-# Returns:  Probe Key if Probe is valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Probe exists either in the probe dictionary or the database
-#	writes to the error file if the Probe is invalid
-#	adds the probe id and key to the probe dictionary if the Probe is valid
-# Throws:  nothing
-
-def verifyProbe(
-    probeID, 	# Accession ID of the Probe (string)
-    lineNum	# line number (integer)
-    ):
-
-    global probeDict
-
-    probeKey = 0
-
-    if probeDict.has_key(probeID):
-        return probeDict[probeID]
-    else:
-        results = db.sql('select _Object_key from PRB_Acc_View where accID = "%s" ' % (probeID), 'auto')
-
-        for r in results:
-            if r['_Object_key'] is None:
-                errorFile.write('Invalid Mouse Probe (%d) %s\n' % (lineNum, probeID))
-                probeKey = 0
-            else:
-                probeKey = r['_Object_key']
-                probeDict[probeID] = probeKey
-
-    return probeKey
-
-# Purpose:  verifies the input reference (J:)
-# Returns:  the primary key of the reference or 0 if invalid
-# Assumes:  nothing
-# Effects:  verifies that the Reference exists by checking the referenceDict
-#	dictionary for the reference ID or the database.
-#	writes to the error file if the Reference is invalid.
-#	adds the Reference ID/Key to the global referenceDict dictionary if the
-#	reference is valid.
-# Throws:
-
-def verifyReference(
-    referenceID,          # reference accession ID; J:#### (string)
-    lineNum		  # line number (integer)
-    ):
-
-    global referenceDict
-
-    if referenceDict.has_key(referenceID):
-        referenceKey = referenceDict[referenceID]
-    else:
-        referenceKey = accessionlib.get_Object_key(referenceID, 'Reference')
-        if referenceKey is None:
-            errorFile.write('Invalid Reference (%d): %s\n' % (lineNum, referenceID))
-            referenceKey = 0
-        else:
-            referenceDict[referenceID] = referenceKey
-
-    return(referenceKey)
-
-# Purpose:  verify Probe Prep Coverage
-# Returns:  Probe Prep Coverage key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Prep Coverage exists in the Coverage dictionary
-#	writes to the error file if the Prep Coverage is invalid
-# Throws:  nothing
-
-def verifyPrepCoverage(
-    coverage, 	# Coverage value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global coverageDict
-
-    coverageKey = 0
-
-    if len(coverageDict) == 0:
-	results = db.sql('select _Coverage_key, coverage from GXD_LabelCoverage', 'auto')
-	for r in results:
-	    coverageDict[r['coverage']] = r['_Coverage_key']
-
-    if coverageDict.has_key(coverage):
-        coverageKey = coverageDict[coverage]
-    else:
-        errorFile.write('Invalid Prep Coverage (%d): %s\n' % (lineNum, coverage))
-
-    return coverageKey
-
-# Purpose:  verify Probe Prep Label
-# Returns:  Probe Prep Label key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Prep Label exists in the Label dictionary
-#	writes to the error file if the Prep Label is invalid
-# Throws:  nothing
-
-def verifyPrepLabel(
-    label, 	# Label value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global labelDict
-
-    labelKey = 0
-
-    if len(labelDict) == 0:
-	results = db.sql('select _Label_key, label from GXD_Label', 'auto')
-	for r in results:
-	    labelDict[r['label']] = r['_Label_key']
-
-    if labelDict.has_key(label):
-        labelKey = labelDict[label]
-    else:
-        errorFile.write('Invalid Prep Label (%d): %s\n' % (lineNum, label))
-
-    return labelKey
-
-# Purpose:  verify Probe Prep Sense
-# Returns:  Probe Prep Sense key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Prep Sense exists in the sense dictionary
-#	writes to the error file if the Prep Sense is invalid
-# Throws:  nothing
-
-def verifyPrepSense(
-    sense, 	# Sense value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global senseDict
-
-    senseKey = 0
-
-    if len(senseDict) == 0:
-	results = db.sql('select _Sense_key, sense from GXD_ProbeSense', 'auto')
-	for r in results:
-	    senseDict[r['sense']] = r['_Sense_key']
-
-    if senseDict.has_key(sense):
-        senseKey = senseDict[sense]
-    else:
-        errorFile.write('Invalid Prep Sense (%d): %s\n' % (lineNum, sense))
-
-    return senseKey
-
-# Purpose:  verify Probe Prep Type
-# Returns:  1 if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Prep Type exists in the probeType list
-#	writes to the error file if the Prep Type is invalid
-# Throws:  nothing
-
-def verifyPrepType(
-    prepType, 	# Type value (string)
-    lineNum	# line number (integer)
-    ):
-
-    if prepType in prepTypeList:
-	return 1
-    else:
-        errorFile.write('Invalid Prep Type (%d): %s\n' % (lineNum, prepType))
-        return 0
-
-# Purpose:  verify Probe Prep Visualization
-# Returns:  Probe Prep Visualization key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Prep Visualization exists in the Visualization dictionary
-#	writes to the error file if the Prep Visualization is invalid
-# Throws:  nothing
-
-def verifyPrepVisualization(
-    visualization, 	# Visualization value (string)
-    lineNum		# line number (integer)
-    ):
-
-    global visualDict
-
-    visualKey = 0
-
-    if len(visualDict) == 0:
-	results = db.sql('select _Visualization_key, visualization from GXD_VisualizationMethod', 'auto')
-	for r in results:
-	    visualDict[r['visualization']] = r['_Visualization_key']
-
-    if visualDict.has_key(visualization):
-        visualKey = visualDict[visualization]
-    else:
-        errorFile.write('Invalid Prep Visualization (%d): %s\n' % (lineNum, visualization))
-
-    return visualKey
-
-# Purpose:  verify Assay Type
-# Returns:  Assay Type key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Assay Type exists in the Assay Type dictionary
-#	writes to the error file if the Assay Type is invalid
-# Throws:  nothing
-
-def verifyAssayType(
-    assayType, 	# Assay Type value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global assayTypeDict
-
-    assayTypeKey = 0
-
-    if len(assayTypeDict) == 0:
-	results = db.sql('select _AssayType_key, assayType from GXD_AssayType', 'auto')
-	for r in results:
-	    assayTypeDict[r['assayType']] = r['_AssayType_key']
-
-    if assayTypeDict.has_key(assayType):
-        assayTypeKey = assayTypeDict[assayType]
-    else:
-        errorFile.write('Invalid Assay Type (%d): %s\n' % (lineNum, assayType))
-
-    return assayTypeKey
-
-# Purpose:  verify Embedding Method
-# Returns:  Embedding Method key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Embedding Method exists in the Embedding Method dictionary
-#	writes to the error file if the Embedding Method is invalid
-# Throws:  nothing
-
-def verifyEmbeddingMethod(
-    embedding, 	# Embedding Method value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global embeddingDict
-
-    embeddingKey = 0
-
-    if len(embeddingDict) == 0:
-	results = db.sql('select _Embedding_key, embeddingMethod from GXD_EmbeddingMethod', 'auto')
-	for r in results:
-	    embeddingDict[r['embeddingMethod']] = r['_Embedding_key']
-
-    if embeddingDict.has_key(embedding):
-        embeddingKey = embeddingDict[embedding]
-    else:
-        errorFile.write('Invalid Embedding Method (%d): %s\n' % (lineNum, embedding))
-
-    return embeddingKey
-
-# Purpose:  verify Fixation Method
-# Returns:  Fixation key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Fixation Method exists in the Fixation dictionary
-#	writes to the error file if the Fixation Method is invalid
-# Throws:  nothing
-
-def verifyFixationMethod(
-    fixation, 	# Fixation Method value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global fixationDict
-
-    fixationKey = 0
-
-    if len(fixationDict) == 0:
-	results = db.sql('select _Fixation_key, fixation from GXD_FixationMethod', 'auto')
-	for r in results:
-	    fixationDict[r['fixation']] = r['_Fixation_key']
-
-    if fixationDict.has_key(fixation):
-        fixationKey = fixationDict[fixation]
-    else:
-        errorFile.write('Invalid Fixation (%d): %s\n' % (lineNum, fixation))
-
-    return fixationKey
-
-# Purpose:  verifies the genotype
-# Returns:  the primary key of the genotype or 0 if invalid
-# Assumes:  nothing
-# Effects:  verifies that the Genotype exists by checking the genotypeDict
-#	dictionary for the Genotype ID or the database.
-#	writes to the error file if the Genotype is invalid.
-#	adds the Genotype ID/Key to the global genotypeDict dictionary if the
-#	genotype is valid.
-# Throws:
-
-def verifyGenotype(
-    genotypeID,          # genotype accession ID; MGI:#### (string)
-    lineNum		 # line number (integer)
-    ):
-
-    global genotypeDict
-
-    if genotypeDict.has_key(genotypeID):
-        genotypeKey = genotypeDict[genotypeID]
-    else:
-        genotypeKey = accessionlib.get_Object_key(genotypeID, 'Genotype')
-        if genotypeKey is None:
-            errorFile.write('Invalid Genotype (%d): %s\n' % (lineNum, genotypeID))
-            genotypeKey = 0
-        else:
-            genotypeDict[genotypeID] = genotypeKey
-
-    return(genotypeKey)
-
-# Purpose:  verifies the anatomical structure
-# Returns:  the primary key of the anatomical structure or 0 if invalid
-# Assumes:  nothing
-# Effects:  verifies that the Anatomical Structure exists by checking the structureDict
-#	dictionary for the Structure Name or the database.
-#	writes to the error file if the Anatomical Structure is invalid.
-#	adds the Structure Name/TS/Key to the global structureDict dictionary if the
-#	structure is valid.
-# Throws:
-
-def verifyStructure(
-    structureName,       # structure name (string)
-    theilerStage,	 # theiler stage (string)
-    lineNum		 # line number (integer)
-    ):
-
-    global structureDict
-
-    key = '%s:%s' % (structureName, theilerStage)
-
-    if structureDict.has_key(key):
-        structureKey = structureDict[key]
-    else:
-	results = db.sql('select s._Structure_key ' + \
-		'from GXD_Structure s, GXD_TheilerStage t ' + \
-		'where s._Stage_key = t._Stage_key ' + \
-		'and t.stage = %s ' % (str(theilerStage)) + \
-		'and s.printName = "%s" ' % (structureName), 'auto')
-        if len(results) == 0:
-            errorFile.write('Invalid Structure (%d): %s:%s\n' % (lineNum, structureName, theilerStage))
-            structureKey = 0
-        else:
-	    for r in results:
-                structureKey = r['_Structure_key']
-                structureDict[key] = structureKey
-
-    return(structureKey)
-
-# Purpose:  verify Strength
-# Returns:  Strength key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Strength exists in the Strength dictionary
-#	writes to the error file if the Strength is invalid
-# Throws:  nothing
-
-def verifyStrength(
-    strength, 	# Strength value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global strengthDict
-
-    strengthKey = 0
-
-    if len(strengthDict) == 0:
-	results = db.sql('select _Strength_key, strength from GXD_Strength', 'auto')
-	for r in results:
-	    strengthDict[r['strength']] = r['_Strength_key']
-
-    if strengthDict.has_key(strength):
-        strengthKey = strengthDict[strength]
-    else:
-        errorFile.write('Invalid Strength (%d): %s\n' % (lineNum, strength))
-
-    return strengthKey
-
-# Purpose:  verify Pattern
-# Returns:  Pattern key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Pattern exists in the Pattern dictionary
-#	writes to the error file if the Pattern is invalid
-# Throws:  nothing
-
-def verifyPattern(
-    pattern, 	# Pattern value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global patternDict
-
-    patternKey = 0
-
-    if len(patternDict) == 0:
-	results = db.sql('select _Pattern_key, pattern from GXD_Pattern', 'auto')
-	for r in results:
-	    patternDict[r['pattern']] = r['_Pattern_key']
-
-    if patternDict.has_key(pattern):
-        patternKey = patternDict[pattern]
-    else:
-        errorFile.write('Invalid Pattern (%d): %s\n' % (lineNum, pattern))
-
-    return patternKey
-
-# Purpose:  verify Hybridization Type
-# Returns:  1 if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Hybridization exists in the hybridization list
-#	writes to the error file if the Hybridization is invalid
-# Throws:  nothing
-
-def verifyHybridization(
-    hybridization, # value (string)
-    lineNum	# line number (integer)
-    ):
-
-    if hybridization in hybridizationList:
-	return 1
-    else:
-        errorFile.write('Invalid Prep Type (%d): %s\n' % (lineNum, hybridization))
-        return 0
-
-# Purpose:  verify Reporter Gene
-# Returns:  Reporter Gene key if valid, else 0
-# Assumes:  nothing
-# Effects:  verifies that the Reporter Gene exists in the Reporter Gene dictionary
-#	writes to the error file if the Reporter Gene is invalid
-# Throws:  nothing
-
-def verifyReporterGene(
-    reporterGene, # Reporter Gene value (string)
-    lineNum	# line number (integer)
-    ):
-
-    global reporterGeneDict
-
-    reporterGeneKey = 0
-
-    if len(reporterGeneDict) == 0:
-	results = db.sql('select t._Term_key, t.term ' + \
-	    'from VOC_Vocab v, VOC_Term t ' + \
-	    'where v.name = "GXD Reporter Gene" ' + \
-	    'and v._Vocab_key = t._Vocab_key', 'auto')
-	for r in results:
-	    reporterGeneDict[r['term']] = r['_Term_key']
-
-    if reporterGeneDict.has_key(reporterGene):
-        reporterGeneKey = reporterGeneDict[reporterGene]
-    else:
-        errorFile.write('Invalid Reporter Gene (%d): %s\n' % (lineNum, reporterGene))
-
-    return reporterGeneKey
-
 # Purpose:  sets global primary key variables
 # Returns:  nothing
 # Assumes:  nothing
@@ -994,14 +496,14 @@ def processPrepFile():
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	if verifyPrepType(prepType, lineNum) == 0:
+	if gxdloadlib.verifyPrepType(prepType, lineNum, errorFile) == 0:
 	    error = 1
 
-	probeKey = verifyProbe(probeID, lineNum)
-	senseKey = verifyPrepSense(hybridization, lineNum)
-	labelKey = verifyPrepLabel(labelledWith, lineNum)
-	coverageKey = verifyPrepCoverage(labelCoverage, lineNum)
-	visualizationKey = verifyPrepVisualization(visualization, lineNum)
+	probeKey = loadlib.verifyProbe(probeID, lineNum, errorFile)
+	senseKey = gxdloadlib.verifyPrepSense(hybridization, lineNum, errorFile)
+	labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
+	coverageKey = gxdloadlib.verifyPrepCoverage(labelCoverage, lineNum, errorFile)
+	visualizationKey = gxdloadlib.verifyPrepVisualization(visualization, lineNum, errorFile)
 
         if probeKey == 0 or senseKey == 0 or labelKey == 0 or coverageKey == 0:
             # set error flag to true
@@ -1020,7 +522,7 @@ def processPrepFile():
 	    str(coverageKey) + TAB + \
 	    str(visualizationKey) + TAB + \
 	    prepType + TAB + \
-	    cdate + TAB + cdate + CRT)
+	    loaddate + TAB + loaddate + CRT)
 
 	assayProbePrep[assayID] = prepKey
         prepKey = prepKey + 1
@@ -1060,16 +562,16 @@ def processAssayFile():
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	markerKey = verifyMarker(markerID, lineNum)
-        referenceKey = verifyReference(jnum, lineNum)
-	assayTypeKey = verifyAssayType(assayType, lineNum)
+	markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
+        referenceKey = loadlib.verifyReference(jnum, lineNum, errorFile)
+	assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
 
         if markerKey == 0 or referenceKey == 0 or assayTypeKey == 0:
             # set error flag to true
             error = 1
 
 #        if len(reporterGene) > 0:
-#            reporterGeneKey = verifyReporterGene(reporterGene, lineNum)
+#            reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
 #	    if reporterGeneKey == 0:
 #                error = 1
 #        else:
@@ -1092,7 +594,7 @@ def processAssayFile():
 #            str(reporterGeneKey) + TAB + \
 #            createdBy + TAB + \
 #            createdBy + TAB + \
-	    cdate + TAB + cdate + CRT)
+	    loaddate + TAB + loaddate + CRT)
 
         # MGI Accession ID for the assay
 
@@ -1105,7 +607,7 @@ def processAssayFile():
 	    assayMgiTypeKey + TAB + \
 	    accPrivate + TAB + \
 	    accPreferred + TAB + \
-	    cdate + TAB + cdate + TAB + cdate + CRT)
+	    loaddate + TAB + loaddate + TAB + loaddate + CRT)
 
 	assayAssay[assayID] = assayKey
 	accKey = accKey + 1
@@ -1152,12 +654,12 @@ def processSpecimenFile():
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	if verifyHybridization(hybridization, lineNum) == 0:
+	if gxdloadlib.verifyHybridization(hybridization, lineNum, errorFile) == 0:
 	    error = 1
 
-	genotypeKey = verifyGenotype(genotypeID, lineNum)
-	fixationKey = verifyFixationMethod(fixation, lineNum)
-	embeddingKey = verifyEmbeddingMethod(embedding, lineNum)
+	genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
+	fixationKey = gxdloadlib.verifyFixationMethod(fixation, lineNum, errorFile)
+	embeddingKey = gxdloadlib.verifyEmbeddingMethod(embedding, lineNum, errorFile)
 	ageMin, ageMax = agelib.ageMinMax(age)
 
         if genotypeKey == 0 or ageMin < 0 or ageMax < 0:
@@ -1185,7 +687,7 @@ def processSpecimenFile():
 	    mgi_utils.prvalue(ageNote) + TAB + \
 	    hybridization + TAB + \
 	    mgi_utils.prvalue(specimenNote) + TAB + \
-	    cdate + TAB + cdate + CRT)
+	    loaddate + TAB + loaddate + CRT)
 
 	key = '%s:%s' % (assayID, specimenID)
 	assaySpecimen[key] = specimenKey
@@ -1230,9 +732,9 @@ def processResultsFile():
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	strengthKey = verifyStrength(strength, lineNum)
-	patternKey = verifyPattern(pattern, lineNum)
-	structureKey = verifyStructure(structureName, structureTS, lineNum)
+	strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
+	patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
+	structureKey = gxdloadlib.verifyStructure(structureName, structureTS, lineNum, errorFile)
 
         if strengthKey == 0 or patternKey == 0 or structureKey == 0:
             # set error flag to true
@@ -1261,12 +763,12 @@ def processResultsFile():
 	      str(patternKey) + TAB + \
 	      resultID + TAB + \
 	      mgi_utils.prvalue(resultNote) + TAB + \
-	      cdate + TAB + cdate + CRT)
+	      loaddate + TAB + loaddate + CRT)
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
 	    str(structureKey) + TAB + \
-	    cdate + TAB + cdate + CRT)
+	    loaddate + TAB + loaddate + CRT)
 
 	prevAssay = assayID
 	prevResult = resultID
@@ -1294,6 +796,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.8  2003/07/18 15:44:09  lec
+# rtpcr.py
+#
 # Revision 1.7  2003/07/11 16:24:15  lec
 # TR 4800
 #

@@ -61,6 +61,7 @@ import db
 import mgi_utils
 import accessionlib
 import agelib
+import loadlib
 
 #globals
 
@@ -145,7 +146,7 @@ stageDict = {'0.5' : 0, \
     'E' : 40, \
     'A' : 41}
 
-cdate = mgi_utils.date('%m/%d/%Y')	# current date
+loaddate = loadlib.loaddate
 
 # Purpose: displays correct usage of this program
 # Returns: nothing
@@ -200,6 +201,7 @@ def init():
     global diagFile, errorFile, inputFile, errorFileName, diagFileName, passwordFileName
     global mode, reference
     global outIndexFile, outStagesFile
+    global referenceKey
  
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'S:D:U:P:M:R:')
@@ -280,6 +282,8 @@ def init():
 
     errorFile.write('Start Date/Time: %s\n\n' % (mgi_utils.date()))
 
+    referenceKey = loadlib.verifyReference(reference, 0, errorFile)
+
     return
 
 # Purpose: verify processing mode
@@ -298,22 +302,6 @@ def verifyMode():
         bcpon = 0
     elif mode != 'load':
         exit(1, 'Invalid Processing Mode:  %s\n' % (mode))
-
-
-# Purpose:  verifies the input reference (J:)
-# Returns:  nothing
-# Assumes:  nothing
-# Effects:  if the reference is not valid, exits.
-#	else, sets global variable referenceKey.
-# Throws: nothing
-
-def verifyReference():
-
-    global referenceKey
-
-    referenceKey = accessionlib.get_Object_key(reference, 'Reference')
-    if referenceKey is None:
-        exit(1, 'Invalid Reference:  %s\n' % (reference))
 
 # Purpose:  sets global primary key variables
 # Returns:  nothing
@@ -401,7 +389,7 @@ def processAssay():
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
 	     indexComments + TAB + \
-	     cdate + TAB + cdate + CRT)
+	     loaddate + TAB + loaddate + CRT)
 
 	 indexAssay[r['_Marker_key']] = indexKey
 	 indexKey = indexKey + 1
@@ -438,7 +426,7 @@ def processAssay():
 	           str(rnase) + TAB + \
 	           str(nuclease) + TAB + \
 	           str(primer_extension) + TAB + \
-	           cdate + TAB + cdate + CRT)
+	           loaddate + TAB + loaddate + CRT)
 
 	   insitu_protein_section = 0
 	   insitu_rna_section = 0
@@ -484,7 +472,7 @@ def processAssay():
         str(rnase) + TAB + \
         str(nuclease) + TAB + \
         str(primer_extension) + TAB + \
-        cdate + TAB + cdate + CRT)
+        loaddate + TAB + loaddate + CRT)
 
     return
 
@@ -494,13 +482,15 @@ def processAssay():
 
 init()
 verifyMode()
-verifyReference()
 setPrimaryKeys()
 processAssay()
 bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/09/22 13:24:00  lec
+# TR 5154
+#
 # Revision 1.2  2003/09/22 11:56:56  lec
 # TR 5154
 #
