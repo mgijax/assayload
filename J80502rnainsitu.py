@@ -125,6 +125,10 @@ labelledWith = 'Digoxigenin'
 labelCoverage = 'continuously'
 visualizedWith = 'Alkaline phosphatase'
 
+# constants for Absent
+ABSENT = 'Absent'
+NA = 'Not Applicable'
+
 # constants for assay
 reference = 'J:80502'
 assayType = 'RNA In Situ'
@@ -361,6 +365,8 @@ def process10():
 
 	        if strengthTrans.has_key(results[i]):
 		    strength = strengthTrans[results[i]]
+		    if strength == ABSENT:
+			pattern = NA
 		    pattern = pattern1
 	        elif len(results[i]) > 3:
 		    strength = strengthTrans['+']
@@ -413,9 +419,6 @@ def process14():
 
     patternTrans = {'U':'Homogeneous', 'R':'Regionally restricted', 'I':'Regionally restricted', \
        'U,R':'Regionally restricted', 'R,U':'Regionally restricted', 'i':'Regionally restricted'}
-
-    ABSENT = 'Absent'
-    NA = 'Not Applicable'
 
     # translation of input file strengths and MGI strengths
 
@@ -617,6 +620,9 @@ process14()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/07/18 16:15:53  lec
+# TR 4800
+#
 # Revision 1.1  2003/07/18 15:43:18  lec
 # new
 #

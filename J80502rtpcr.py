@@ -93,7 +93,7 @@ moreProduct = '0'
 productSize = NULL
 
 # constants for probe prep
-prepType = 'DNA'
+prepType = 'Not Specified'
 hybridization = 'Not Applicable'
 labelledWith = 'Not Applicable'
 labelCoverage = 'Not Applicable'
@@ -335,6 +335,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/07/18 15:44:58  lec
+# TR 4800
+#
 # Revision 1.1  2003/07/18 15:44:27  lec
 # TR 4800
 #
