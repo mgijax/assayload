@@ -391,7 +391,7 @@ def processAssay():
 	'where i._Refs_key = a._Refs_key ' + \
 	'and i._Marker_key = a._Marker_key ' + \
 	'and a._Assay_key = s._Assay_key ' + \
-	'order by i._Marker_key, s.age')
+	'order by i._Marker_key, a._AssayType_key, s.age')
 
     results = db.sql(cmds, 'auto')
 
@@ -460,20 +460,11 @@ def processAssay():
 
 	indexKey = indexAssay[r['_Marker_key']]
 
-	if r['age'] == 'postnatal adult':
+	if string.find(r['age'], 'embryonic day') >= 0:
+	    i = string.find(r['age'], 'embryonic day')
+	    stage = r['age'][i + 14:]
+	elif string.find(r['age'], 'postnatal') >= 0:
 	   stage = 'A'
-	elif r['age'] == 'embryonic day 8.5':
-	   stage = '8.5'
-	elif r['age'] == 'embryonic day 9.5':
-	   stage = '9.5'
-	elif r['age'] == 'embryonic day 10.5':
-	   stage = '10.5'
-	elif r['age'] == 'embryonic day 12.5':
-	   stage = '12.5'
-	elif r['age'] == 'embryonic day 14.5':
-	   stage = '14.5'
-	elif r['age'] == 'embryonic day 19.0':
-	   stage = '19.0'
 
 	stageKey = stageDict[stage]
 	prevStage = r['age']
@@ -508,4 +499,7 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/09/09 15:29:48  lec
+# TR 5125
+#
 #
