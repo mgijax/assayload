@@ -116,7 +116,7 @@ specimenNote = NULL
 # translation of input file strengths and MGI strengths
 strengthTrans = {'(+)':'Present', '(+)rr':'Present', NULL:'Absent', 'ND':'Absent'}
 # translation of input file patterns and MGI patterns
-patternTrans = {'(+)':'Not Specified', '(+)rr':'Regionally Restricted', NULL:'Not Specified', 'ND':'Not Specified'}
+patternTrans = {'(+)':'Not Specified', '(+)rr':'Regionally restricted', NULL:'Not Specified', 'ND':'Not Specified'}
 resultNoteTrans = {'Wh_emb':'The expression was widespread.'}
 
 # next available assay key
@@ -343,6 +343,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/09/19 19:32:58  lec
+# TR 5154
+#
 # Revision 1.2  2003/09/19 18:42:55  lec
 # TR 5154
 #
