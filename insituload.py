@@ -1165,6 +1165,7 @@ def processResultsFile():
 
     global resultKey
 
+    prevAssay = 0
     prevResult = 0
     lineNum = 0
     # For each line in the input file
@@ -1206,6 +1207,9 @@ def processResultsFile():
 	key = '%s:%s' % (assayID, specimenID)
 	specimenKey = assaySpecimen[key]
 
+	if prevAssay != assayID:
+	    prevResult = 0
+
 	if prevResult != resultID:
 
           resultKey = resultKey + 1
@@ -1224,6 +1228,7 @@ def processResultsFile():
 	    str(structureKey) + TAB + \
 	    cdate + TAB + cdate + CRT)
 
+	prevAssay = assayID
 	prevResult = resultID
 
     #	end of "for line in inResultsFile.readlines():"
@@ -1249,6 +1254,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.4  2003/06/18 18:21:50  lec
+# TR 4800
+#
 # Revision 1.3  2003/06/18 17:57:14  lec
 # TR 4800
 #

@@ -233,7 +233,7 @@ def process():
 	    specimen = tokens[4]
 	    tissueQuality = tokens[5]
 	    overallExpression = tokens[6]
-	    results = tokens[7:50]
+	    results = tokens[7:]
 	    probeID = 'MGI:35046'
 #	    probeID = tokens[]
 
@@ -357,6 +357,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.8  2003/06/20 12:36:54  lec
+# TR 4800
+#
 # Revision 1.7  2003/06/18 19:24:54  lec
 # TR 4800
 #
