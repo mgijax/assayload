@@ -71,5 +71,7 @@ ${ASSAYLOADINSTALLDIR}/insituload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${D
 cd `dirname $0`
 ${ASSAYLOADINSTALLDIR}/indexload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} -RJ:91257 >>& $LOG
 
+${MRKREFLOAD} >>& ${LOG}
+
 date >> $LOG
 
