@@ -127,7 +127,7 @@ specimenNote = NULL
 
 # translation of input file strengths and MGI strengths
 strengthTrans1 = {'1':'Present', 
-		 '2':'Weak', 
+		 '2':'Ambiguous', 
 		 '3':'Absent',
 		 ' ':'Absent',
 		 NULL:'Absent'
@@ -431,7 +431,12 @@ def process1():
 	else:
 	    pattern = patternTrans1[eSpecificity]
 
-	resultNote = resultNoteTrans1[eSpecificity]
+	if strength == 'Ambiguous':
+	    resultNote = 'Expression was low or absent.  '
+        else:
+	    resultNote = ''
+
+	resultNote = resultNote + resultNoteTrans1[eSpecificity]
 
 	resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
@@ -565,7 +570,12 @@ def process2():
 	else:
 	    pattern = patternTrans1[pSpecificity]
 
-	resultNote = resultNoteTrans1[pSpecificity]
+	if strength == 'Ambiguous':
+	    resultNote = 'Expression was low or absent.  '
+        else:
+	    resultNote = ''
+
+	resultNote = resultNote + resultNoteTrans1[pSpecificity]
 
 	resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
@@ -640,6 +650,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.8  2004/11/19 16:26:32  lec
+# TR 6118
+#
 # Revision 1.7  2004/11/15 13:31:25  lec
 # assayload-2-0-0
 #
