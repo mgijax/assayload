@@ -54,6 +54,9 @@ setenv INSITUDATADIR  $ASSAYLOADDATADIR/insitu
 # Load Mode
 setenv LOADMODE		load
 
+# Priority
+setenv IDXPRIORITY	Low
+
 # Created By
 setenv CREATEDBY	dph
 
