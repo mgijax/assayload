@@ -99,7 +99,7 @@ priorityKey = ''	# priority key
 
 # primary keys
 
-indexKey = 0		# GXD_ProbePrep._ProbePrep_key
+indexKey = 0		# GXD_Index._Index_key
 
 # constants
 indexComments = 'Age of embryo at noon of plug day not specified in reference.'
@@ -412,6 +412,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.7  2003/10/01 17:43:34  lec
+# removed unnecessary imports
+#
 # Revision 1.6  2003/09/26 17:30:15  lec
 # MGI 2.97
 #
