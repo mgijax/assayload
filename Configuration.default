@@ -25,6 +25,9 @@ setenv RTPCRDATADIR	${ASSAYLOADDATADIR}/rtpcr
 # In Situ data
 setenv INSITUDATADIR	${ASSAYLOADDATADIR}/insitu
 
+# Whole Mount In Situ data
+setenv WMDATADIR	${ASSAYLOADDATADIR}/insituWM
+
 # Probe load
 setenv PROBELOAD	/usr/local/mgi/live/dataload/probeload/probeload.py
 
