@@ -71,10 +71,10 @@ assayFile = ''          # file descriptor
 specimenFile = ''       # file descriptor
 resultsFile = ''        # file descriptor
 
-datadir = os.environ['INSITUDATADIR']
+datadir = os.environ['INSITU14DATADIR']
 
-inInSituFileName = datadir + '/tr4800/In_Situ.txt'
-inTissueFileName = datadir + '/tr4800/In_Situ_Tissues.txt'
+inInSituFileName = datadir + '/tr4800/14.5_In_situ.txt'
+inTissueFileName = datadir + '/tr4800/14.5_In_Situ_tissues.txt'
 prepFileName = datadir + '/In_Situ_probeprep.txt'
 assayFileName = datadir + '/In_Situ_assay.txt'
 specimenFileName = datadir + '/In_Situ_specimen.txt'
@@ -92,33 +92,32 @@ reference = 'J:80502'
 assayType = 'RNA In Situ'
 
 # constants for specimen
-specimenLabel = '%s 10.5dpc'
-genotype = 'MGI:2166348'
-age = 'embryonic day 10.5'
+specimenLabel = '%s 14.5dpc'
+genotype = 'MGI:2166653'
+age = 'embryonic day 14.5'
 ageNote = 'Age of embryo at noon of plug day not specified in reference.'
 sex = 'Not Specified'
 fixation = '4% Paraformaldehyde'
-embedding = 'Not Applicable'
-specimenHybridization = 'whole mount'
+embedding = 'Cryosection'
+specimenHybridization = 'section'
 specimenNote = ''
 resultNote = ''
-pattern1 = 'Not Specified'
-pattern2 = 'Regionally restricted'
 
-mgiTypeKey = 8		# Assay
-mgiPrefix = "MGI:"
+# translation of patterns
 
-# translation of ages to theiler stages
+patternTrans = {'U':'Homogeneous', 'R':'Regionally restricted', 'I':'Regionally restricted', \
+   'U,R':'Not Specified', 'R,U':'Not Specified', 'i':'Regionally restricted'}
 
-ageTrans = {'28':'postnatal adult', \
-    '13':'embryonic day 8.5', \
-    '15':'embryonic day 9.5', \
-    '20':'embryonic day 12.5', \
-    '26':'embryonic day 19.0'}
+patternNA = 'Not Applicable'
 
 # translation of input file strengths and MGI strengths
 
-strengthTrans = {'+':'Present', '++':'Strong', '+/-':'Ambiguous', '':'Absent'}
+strengthTrans = {'*':'Weak', '**':'Moderate', '***':'Strong', '':'Absent', \
+    'U,R':'Present', 'R,U':'Present', '-':'Not Applicable'}
+presentStrength = ['U,R', 'R,U']
+
+mgiTypeKey = 8		# Assay
+mgiPrefix = "MGI:"
 
 # Purpose: prints error message and exits
 # Returns: nothing
@@ -211,18 +210,21 @@ def process():
 	# grab the Tissue headings
 
 	if assay == 0:
-	    tissueLabels = tokens[4:-1]
+	    tissueLabels = tokens[7:-1]
 	    assay = assay + 1
 	    continue
 
 	# else process an actual data line
 
         try:
-	    vial = tokens[0]
+	    humanGene = tokens[0]
 	    mouseGene = tokens[1]
 	    accID = tokens[2]
-	    humanGene = tokens[3]
-	    results = tokens[4:-1]
+	    ishNumber = tokens[3]
+	    specimen = tokens[4]
+	    tissueQuality = tokens[5]
+	    overallExpression = tokens[6]
+	    results = tokens[7:50]
 	    probeID = 'MGI:35046'
 #	    probeID = tokens[]
 
@@ -273,15 +275,26 @@ def process():
 	    # Translate the Tissue into a Tissue and Age
 	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
 
-	    if strengthTrans.has_key(results[i]):
-		strength = strengthTrans[results[i]]
-		pattern = pattern1
-	    elif len(results[i]) > 3:
-		strength = strengthTrans['+']
-		pattern = pattern2
+	    if len(results) < i + 1:
+                # not every tissue was assayed
+#		print 'No Results for %s:%s' % (mouseGene, tissueLabels[i])
+		continue
+
+	    print results[i]
+	    if len(results[i]) > 1:
+	        [inStrength, inPattern] = string.split(results[i], ' ')
+		if inPattern in presentStrength:
+		  strength = strengthTrans[inPattern]
+		  pattern = patternTrans[inPattern]
+		else:
+	          strength = strengthTrans[inStrength]
+	          pattern = patternTrans[inPattern]
+
+	    # no strength or pattern given
+
 	    else:
-		print results[i]
-		strength = 'Invalid'
+	        strength = strengthTrans[results[i]]
+	        pattern = patternNA
 
 	    resultsFile.write(str(assay) + TAB + \
 	        str(specimen) + TAB + \
@@ -308,6 +321,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/06/18 13:34:23  lec
+# new
+#
 # Revision 1.2  2003/06/18 13:19:33  lec
 # TR 4800
 #
