@@ -4,20 +4,20 @@
 # $Name$
 
 #
-# Program: rtpcr80502.py
+# Program: rtpcr.py
 #
 # Original Author: Lori Corbani
 #
 # Purpose:
 #
-#	To translate J:80502 RT-PCR input files into input files
+#	To translate RT-PCR input files into input files
 #	for the assayload/gelload.py program.
 #
 # Requirements Satisfied by This Program:
 #
 # Usage:
 #
-#	rtpcr80502.py
+#	rtpcr.py
 #
 # Envvars:
 #
@@ -327,6 +327,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/06/17 15:55:23  lec
+# new
+#
 # Revision 1.2  2003/06/17 12:17:50  lec
 # TR 4800
 #
