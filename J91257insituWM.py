@@ -381,21 +381,21 @@ def process():
 		    pattern = 'Not Specified'
 
 	        if tissueLabels[i] in ['Telencephalon - d', 'Diencephalon - d', 'Spinal cord - d']:
-		    if eResults[i] == 'x' and eResults[i - 1] == ' ':
+		    if eResults[i] == 'x' and eResults[i - 1] != 'x':
 			pattern = 'Regionally restricted'
-		    elif eResults[i - 1] == 'x' and eResults[i] == ' ':
+		    elif eResults[i - 1] == 'x' and eResults[i] != 'x':
 			pattern = 'Regionally restricted'
 
 	        if tissueLabels[i] == 'Mid-hindbrain boundary':
 		    if eResults[i] == 'x':
 		        pattern = 'Regionally restricted'
-		    elif tissue == 'midbrain' and eResults[i - 2] == 'x' and eResults[i - 1] == ' ':
+		    elif tissue == 'midbrain' and eResults[i - 2] == 'x' and eResults[i - 1] != 'x':
 		        pattern = 'Regionally restricted'
-		    elif tissue == 'midbrain' and eResults[i - 2] == ' ' and eResults[i - 1] == 'x':
+		    elif tissue == 'midbrain' and eResults[i - 2] != 'x' and eResults[i - 1] == 'x':
 		        pattern = 'Regionally restricted'
-		    elif tissue == 'hindbrain' and eResults[i + 1] == 'x' and eResults[i + 2] == ' ':
+		    elif tissue == 'hindbrain' and eResults[i + 1] == 'x' and eResults[i + 2] != 'x':
 		        pattern = 'Regionally restricted'
-		    elif tissue == 'hindbrain' and eResults[i + 1] == ' ' and eResults[i + 2] == 'x':
+		    elif tissue == 'hindbrain' and eResults[i + 1] != 'x' and eResults[i + 2] == 'x':
 		        pattern = 'Regionally restricted'
 
 		## Note
@@ -406,17 +406,17 @@ def process():
 		    resultNote = tissueNote[tissueLabels[i]]
 
 	        if tissueLabels[i] == 'Telencephalon - d':
-		    if eResults[i - 1] == 'x' and eResults[i] == ' ':
+		    if eResults[i - 1] == 'x' and eResults[i] != 'x':
 			resultNote = 'Expression was detected in ventral telencephalon.'
-		    elif eResults[i] == 'x' and eResults[i - 1] == ' ':
+		    elif eResults[i] == 'x' and eResults[i - 1] != 'x':
 			resultNote = 'Expression was detected in dorsal telencephalon.'
 		    elif eResults[i] == 'x' and eResults[i - 1] == 'x':
 			resultNote = 'Expression was detected in dorsal and ventral telencephalon.'
 
 	        if tissueLabels[i] == 'Diencephalon - d':
-		    if eResults[i - 1] == 'x' and eResults[i] == ' ':
+		    if eResults[i - 1] == 'x' and eResults[i] != 'x':
 			resultNote = 'Expression was detected in ventral diencephalon.'
-		    elif eResults[i] == 'x' and eResults[i - 1] == ' ':
+		    elif eResults[i] == 'x' and eResults[i - 1] != 'x':
 			resultNote = 'Expression was detected in dorsal diencephalon.'
 		    elif eResults[i] == 'x' and eResults[i - 1] == 'x':
 			resultNote = 'Expression was detected in dorsal and ventral diencephalon.'
@@ -432,16 +432,16 @@ def process():
 			note1 = '  Expression was detected in the mid-hindbrain boundary.'
 
 		    if tissue == 'midbrain':
-		        if eResults[i - 2] == 'x' and eResults[i - 1] == ' ':
+		        if eResults[i - 2] == 'x' and eResults[i - 1] != 'x':
 			    note2 = 'Expression was detected in ventral mesencephalon.'
-		        elif eResults[i - 2] == ' ' and eResults[i - 1] == 'x':
+		        elif eResults[i - 2] != 'x' and eResults[i - 1] == 'x':
 			    note2 = 'Expression was detected in dorsal mesencephalon.'
 		        elif eResults[i - 2] == 'x' and eResults[i - 1] == 'x':
 			    note2 = 'Expression was detected in dorsal and ventral mesencephalon.'
 		    elif tissue == 'hindbrain':
-		        if eResults[i + 1] == 'x' and eResults[i + 2] == ' ':
+		        if eResults[i + 1] == 'x' and eResults[i + 2] != 'x':
 			    note2 = 'Expression was detected in ventral rhombencephalon.'
-		        elif eResults[i + 1] == ' ' and eResults[i + 2] == 'x':
+		        elif eResults[i + 1] != 'x' and eResults[i + 2] == 'x':
 			    note2 = 'Expression was detected in dorsal rhombencephalon.'
 		        elif eResults[i + 1] == 'x' and eResults[i + 2] == 'x':
 			    note2 = 'Expression was detected in dorsal and ventral rhombencephalon.'
@@ -449,9 +449,9 @@ def process():
 		    resultNote = note2 + note1
 
 	        if tissueLabels[i] == 'Spinal cord - d':
-		    if eResults[i - 1] == 'x' and eResults[i] == ' ':
+		    if eResults[i - 1] == 'x' and eResults[i] != 'x':
 			resultNote = 'Expression was detected in ventral spinal cord.'
-		    elif eResults[i] == 'x' and eResults[i - 1] == ' ':
+		    elif eResults[i] == 'x' and eResults[i - 1] != 'x':
 			resultNote = 'Expression was detected in dorsal spinal cord.'
 		    elif eResults[i] == 'x' and eResults[i - 1] == 'x':
 			resultNote = 'Expression was detected in dorsal and ventral spinal cord.'
@@ -481,6 +481,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2004/11/12 20:20:54  lec
+# TR 6118
+#
 # Revision 1.1  2004/11/12 17:39:24  lec
 # TR 6118
 #

@@ -471,6 +471,13 @@ def process1():
 	        pattern = patternTrans3[eResults[i]]
 	        resultNote = resultNoteTrans3[pattern]
 
+                if tissueLabels[i] in ['E-ear', 'E-OLF']:
+	            tNote = tissueNote[tissueLabels[i]]
+		    if len(resultNote) > 0:
+	                resultNote = resultNote + '  ' + tNote
+		    else:
+			resultNote = tNote
+
 	        resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
 	            str(resultKey) + TAB + \
@@ -603,6 +610,13 @@ def process2():
 		    pattern = patternTrans3[pResults[i]]
 		    resultNote = resultNoteTrans3[pattern]
 
+                if tissueLabels[i] in ['P-ear', 'p_OLF']:
+	            tNote = tissueNote[tissueLabels[i]]
+		    if len(resultNote) > 0:
+	                resultNote = resultNote + '  ' + tNote
+		    else:
+			resultNote = tNote
+
 	        resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
 	            str(resultKey) + TAB + \
@@ -626,6 +640,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.5  2004/11/11 20:37:45  lec
+# TR 6118
+#
 # Revision 1.4  2004/10/14 16:58:10  lec
 # TR 6118
 #
