@@ -41,7 +41,7 @@
 #		field 5: P-expression
 #		field 6: P-specificity
 #		field 7: E-CNS
-#	        field 8-19: remaining expression
+#	        field 8-20: remaining expression
 #
 # Outputs:
 #
@@ -473,7 +473,7 @@ def process1():
 
 	    resultKey = resultKey + 1
 
-	assays[mouseGene] = assayKey
+	assays[probeName] = assayKey
 	assayKey = assayKey + 1
 
     # end of "for line in inInSituFile1.readlines():"
@@ -501,7 +501,7 @@ def process2():
 	# grab the Tissue headings
 
 	if lineNum == 1:
-	    tissueLabels = tokens[7:19]
+	    tissueLabels = tokens[7:20]
 	    continue
 
 	# else process an actual data line
@@ -514,7 +514,7 @@ def process2():
 	    pExpression = tokens[4]
 	    pSpecificity = tokens[5]
 	    pCNS = tokens[6]
-	    pResults = tokens[7:19]
+	    pResults = tokens[7:20]
 
         except:
             print 'Invalid Line (%d): %s\n' % (lineNum, line)
@@ -522,7 +522,8 @@ def process2():
 	if not mgiMarker.has_key(mouseGene):
 	    continue
 
-	assayKey = assays[mouseGene]
+	probeName = 'MTF#' + mtf
+	assayKey = assays[probeName]
 
 	specimenFile.write(str(assayKey) + TAB + \
 	    str(specimenKey) + TAB + \
@@ -584,9 +585,14 @@ def process2():
 	        # Translate the Tissue into a Tissue and Stage
 	        [tissue, theilerStage] = string.split(t, '|')
 
-		strength = strengthTrans3[pResults[i]]
-	        pattern = patternTrans3[pResults[i]]
-	        resultNote = resultNoteTrans3[pattern]
+		if i > len(pResults) - 1:
+		    strength = strengthTrans3['']
+		    pattern = patternTrans3['']
+		    resultNote = resultNoteTrans3[pattern]
+		else:
+		    strength = strengthTrans3[pResults[i]]
+		    pattern = patternTrans3[pResults[i]]
+		    resultNote = resultNoteTrans3[pattern]
 
 	        resultsFile.write(str(assayKey) + TAB + \
 	            str(specimenKey) + TAB + \
@@ -611,3 +617,6 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.1  2004/09/08 12:41:15  lec
+# TR 6118
+#
