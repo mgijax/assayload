@@ -228,8 +228,6 @@ def process():
 	    tissueLabels = tokens[5:24]
 	    continue
 
-	print tissueLabels
-
 	# else process an actual data line
 
         try:
@@ -239,7 +237,6 @@ def process():
 	    mouseGene = tokens[3]
 	    accID = tokens[4]
 	    results = tokens[5:24]
-	    imageFileName = tokens[25:27]
 
         except:
             print 'Invalid Line (%d): %s\n' % (lineNum, line)
@@ -349,6 +346,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.6  2003/09/24 14:53:57  lec
+# TR 5154
+#
 # Revision 1.5  2003/09/24 14:32:35  lec
 # TR 5154
 #
