@@ -274,7 +274,7 @@ def setPrimaryKeys():
 
     global indexKey
 
-    results = db.sql('select maxKey = max(index_id) + 1 from GXD_Index', 'auto')
+    results = db.sql('select maxKey = max(_Index_key) + 1 from GXD_Index', 'auto')
     indexKey = results[0]['maxKey']
 
 # Purpose:  BCPs the data into the database
@@ -349,6 +349,7 @@ def processAssay():
 	 outIndexFile.write(str(indexKey) + TAB + \
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
+	     str(priorityKey) + TAB + \
 	     indexComments + TAB + \
 	     createdBy + TAB + createdBy + TAB + \
 	     loaddate + TAB + loaddate + CRT)
@@ -364,8 +365,26 @@ def processAssay():
 	    idxAssayKey = gxdloadlib.verifyIdxAssay('RNA-WM', 0, errorFile)
 	elif r['_AssayType_key'] == 1 and r['hybridization'] == 'section':
 	    idxAssayKey = gxdloadlib.verifyIdxAssay('RNA-sxn', 0, errorFile)
+	elif r['_AssayType_key'] == 2:
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Northern', 0, errorFile)
+	elif r['_AssayType_key'] == 3:
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('S1 nuc', 0, errorFile)
+	elif r['_AssayType_key'] == 4:
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('RNAse prot', 0, errorFile)
 	elif r['_AssayType_key'] == 5:
 	    idxAssayKey = gxdloadlib.verifyIdxAssay('RT-PCR', 0, errorFile)
+	elif r['_AssayType_key'] == 6 and r['hybridization'] == 'whole mount':
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Prot-WM', 0, errorFile)
+	elif r['_AssayType_key'] == 6 and r['hybridization'] == 'section':
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Prot-sxn', 0, errorFile)
+	elif r['_AssayType_key'] == 7 and r['hybridization'] == 'whole mount':
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Prot-WM', 0, errorFile)
+	elif r['_AssayType_key'] == 7 and r['hybridization'] == 'section':
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Prot-sxn', 0, errorFile)
+	elif r['_AssayType_key'] == 8:
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Western', 0, errorFile)
+	elif r['_AssayType_key'] == 9:
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('Knock in', 0, errorFile)
 
 	if string.find(r['age'], 'embryonic day') >= 0:
 	    i = string.find(r['age'], 'embryonic day')
@@ -395,6 +414,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.5  2003/09/26 16:23:56  lec
+# MGI 2.97
+#
 # Revision 1.4  2003/09/24 12:29:58  lec
 # TR 5154
 #
