@@ -1165,6 +1165,7 @@ def processResultsFile():
 
     global resultKey
 
+    prevResult = 0
     lineNum = 0
     # For each line in the input file
 
@@ -1219,7 +1220,10 @@ def processResultsFile():
 	    str(structureKey) + TAB + \
 	    cdate + TAB + cdate + CRT)
 
-        resultKey = resultKey + 1
+	if prevResult != resultID:
+            resultKey = resultKey + 1
+
+	prevResult = resultID
 
     #	end of "for line in inResultsFile.readlines():"
 
@@ -1244,6 +1248,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/06/18 15:56:16  lec
+# TR 4800
+#
 # Revision 1.1  2003/06/18 13:19:23  lec
 # new
 #

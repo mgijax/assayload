@@ -63,6 +63,7 @@ import string
 
 TAB = '\t'		# tab
 CRT = '\n'		# carriage return/newline
+NULL = ''
 
 inInSituFile = ''	# file descriptor
 inTissueFile = ''	# file descriptor
@@ -100,8 +101,10 @@ sex = 'Not Specified'
 fixation = '4% Paraformaldehyde'
 embedding = 'Cryosection'
 specimenHybridization = 'section'
-specimenNote = ''
-resultNote = ''
+specimenNote = NULL
+resultNote = NULL
+epiTissue = 'epithalamus'
+epiNote = 'Expression was restricted to the pineal gland primordium.'
 
 # translation of patterns
 
@@ -185,6 +188,8 @@ def init():
 
 def process():
 
+    global resultNote
+
     tissueTrans = {}	# maps input tissue to MGI tissue and Theiler Stage
 
     for line in inTissueFile.readlines():
@@ -195,7 +200,9 @@ def process():
 
 	key = badTissue
 	value = goodTissue + '|' + theilerStage
-	tissueTrans[key] = value
+	if not tissueTrans.has_key(key):
+	    tissueTrans[key] = []
+	tissueTrans[key].append(value)
 
     assay = 0	# unique Assay ID
 
@@ -273,36 +280,45 @@ def process():
 	for i in range(len(tissueLabels)):
 
 	    # Translate the Tissue into a Tissue and Age
-	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
 
-	    if len(results) < i + 1:
-                # not every tissue was assayed
-#		print 'No Results for %s:%s' % (mouseGene, tissueLabels[i])
-		continue
+	    for t in tissueTrans[tissueLabels[i]]:
 
-	    if len(results[i]) > 1:
-	        [inStrength, inPattern] = string.split(results[i], ' ')
-		if inPattern in presentStrength:
-		  strength = strengthTrans[inPattern]
-		  pattern = patternTrans[inPattern]
-		else:
-	          strength = strengthTrans[inStrength]
-	          pattern = patternTrans[inPattern]
+	        [tissue, theilerStage] = string.split(t, '|')
+                resultNote = NULL
 
-	    # no strength or pattern given
+	        if len(results) < i + 1:
+                    # not every tissue was assayed; no results
+		    continue
 
-	    else:
-	        strength = strengthTrans[results[i]]
-	        pattern = patternNA
+	        if len(results[i]) > 1:
 
-	    resultsFile.write(str(assay) + TAB + \
-	        str(specimen) + TAB + \
-	        str(result) + TAB + \
-		strength + TAB + \
-		pattern + TAB + \
-		tissue + TAB + \
-		theilerStage + TAB + \
-		resultNote + CRT)
+	            [inStrength, inPattern] = string.split(results[i], ' ')
+
+		    if inPattern in presentStrength:
+		        strength = strengthTrans[inPattern]
+		        pattern = patternTrans[inPattern]
+		    else:
+	                strength = strengthTrans[inStrength]
+	                pattern = patternTrans[inPattern]
+
+		    if tissue == epiTissue:
+		       resultNote = epiNote
+	               pattern = patternTrans['R']
+
+	        # no strength or pattern given
+
+	        else:
+	            strength = strengthTrans[results[i]]
+	            pattern = patternNA
+
+	        resultsFile.write(str(assay) + TAB + \
+	            str(specimen) + TAB + \
+	            str(result) + TAB + \
+		    strength + TAB + \
+		    pattern + TAB + \
+		    tissue + TAB + \
+		    theilerStage + TAB + \
+		    resultNote + CRT)
 
 	    result = result + 1
 
@@ -320,6 +336,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/06/18 15:39:24  lec
+# new
+#
 # Revision 1.2  2003/06/18 15:38:25  lec
 # new
 #
