@@ -14,6 +14,7 @@
 #
 #	GXD_ProbePrep
 #	GXD_Assay
+#	GXD_AssayNote***new
 #	GXD_Specimen
 #	GXD_InSituResults
 #	GXD_ISResultStructure
@@ -48,7 +49,8 @@
 #		field 3: Reference (J:#####)
 #		field 4: Assay Type
 #		field 5: Reporter Gene
-#		field 6: Created By
+#		field 6: Assay Note
+#		field 7: Created By
 #
 #	Specimen file, a tab-delimited file in the format:
 #		field 1: Assay #
@@ -79,6 +81,7 @@
 #
 #	GXD_ProbePrep.bcp		Probe Prep records
 #	GXD_Assay.bcp			Assay records
+#	GXD_AssayNote.bcp		Assay Note records
 #	GXD_Specimen.bcp		Specimens
 #	GXD_InSituResult.bcp		InSitu Results
 #	GXD_ISResultStructure.bcp	InSitu Result Structures
@@ -126,7 +129,8 @@ errorFile = ''		# error file descriptor
 
 inPrepFile = ''           # file descriptor
 inAssayFile = ''          # file descriptor
-inSpecimenFile = ''        # file descriptor
+inAssayNoteFile = ''      # file descriptor
+inSpecimenFile = ''       # file descriptor
 inResultsFile = ''        # file descriptor
 
 inPrepFileName = datadir + '/In_Situ_probeprep.txt'
@@ -138,6 +142,7 @@ inResultsFileName = datadir + '/In_Situ_results.txt'
 
 outPrepFile = ''	# file descriptor
 outAssayFile = ''	# file descriptor
+outAssayNoteFile = ''	# file descriptor
 outSpecimenFile = ''	# file descriptor
 outResultStFile = ''	# file descriptor
 outResultFile = ''	# file descriptor
@@ -145,6 +150,7 @@ outAccFile = ''         # file descriptor
 
 probeprepTable = 'GXD_ProbePrep'
 assayTable = 'GXD_Assay'
+assaynoteTable = 'GXD_AssayNote'
 specimenTable = 'GXD_Specimen'
 resultTable = 'GXD_InSituResult'
 resultStTable = 'GXD_ISResultStructure'
@@ -152,6 +158,7 @@ accTable = 'ACC_Accession'
 
 outPrepFileName = datadir + '/' + probeprepTable + '.bcp'
 outAssayFileName = datadir + '/' + assayTable + '.bcp'
+outAssayNoteFileName = datadir + '/' + assaynoteTable + '.bcp'
 outSpecimenFileName = datadir + '/' + specimenTable + '.bcp'
 outResultFileName = datadir + '/' + resultTable + '.bcp'
 outResultStFileName = datadir + '/' + resultStTable + '.bcp'
@@ -237,7 +244,7 @@ def exit(
 def init():
     global diagFile, errorFile, errorFileName, diagFileName, passwordFileName
     global mode
-    global outAccFile, outPrepFile, outAssayFile
+    global outAccFile, outPrepFile, outAssayFile, outAssayNoteFile
     global outSpecimenFile, outResultStFile, outResultFile
     global inPrepFile, inAssayFile, inSpecimenFile, inResultsFile
  
@@ -326,6 +333,11 @@ def init():
         outAssayFile = open(outAssayFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % outAssayFileName)
+
+    try:
+        outAssayNoteFile = open(outAssayNoteFileName, 'w')
+    except:
+        exit(1, 'Could not open file %s\n' % outAssayNoteFileName)
 
     try:
         outSpecimenFile = open(outSpecimenFileName, 'w')
@@ -424,6 +436,7 @@ def bcpFiles(
 
     outPrepFile.close()
     outAssayFile.close()
+    outAssayNoteFile.close()
     outSpecimenFile.close()
     outResultStFile.close()
     outResultFile.close()
@@ -431,19 +444,18 @@ def bcpFiles(
 
     bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
     bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
-    truncateDB = 'dump transaction %s with truncate_only' % (db.get_sqlDatabase())
 
     bcp1 = '%s%s in %s %s' % (bcpI, probeprepTable, outPrepFileName, bcpII)
     bcp2 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
-    bcp3 = '%s%s in %s %s' % (bcpI, specimenTable, outSpecimenFileName, bcpII)
-    bcp4 = '%s%s in %s %s' % (bcpI, resultStTable, outResultStFileName, bcpII)
-    bcp5 = '%s%s in %s %s' % (bcpI, resultTable, outResultFileName, bcpII)
-    bcp6 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
+    bcp3 = '%s%s in %s %s' % (bcpI, assaynoteTable, outAssayNoteFileName, bcpII)
+    bcp4 = '%s%s in %s %s' % (bcpI, specimenTable, outSpecimenFileName, bcpII)
+    bcp5 = '%s%s in %s %s' % (bcpI, resultStTable, outResultStFileName, bcpII)
+    bcp6 = '%s%s in %s %s' % (bcpI, resultTable, outResultFileName, bcpII)
+    bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
 
-    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6]:
+    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
-	db.sql(truncateDB, None)
 
     # load the cache tables for the records processed (by assay Key)
 
@@ -456,10 +468,10 @@ def bcpFiles(
     # update statistics
     db.sql('update statistics %s' % (probeprepTable), None)
     db.sql('update statistics %s' % (assayTable), None)
+    db.sql('update statistics %s' % (assaynoteTable), None)
     db.sql('update statistics %s' % (specimenTable), None)
     db.sql('update statistics %s' % (resultStTable), None)
     db.sql('update statistics %s' % (resultTable), None)
-    db.sql('update statistics %s' % (accTable), None)
 
     return
 
@@ -557,13 +569,15 @@ def processAssayFile():
 	    jnum = tokens[2]
 	    assayType = tokens[3]
 	    reporterGene = tokens[4]
-	    createdBy = tokens[5]
+	    note = tokens[5]
+	    createdBy = tokens[6]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
 	markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
         referenceKey = loadlib.verifyReference(jnum, lineNum, errorFile)
 	assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
+	createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
 
         if markerKey == 0 or referenceKey == 0 or assayTypeKey == 0:
             # set error flag to true
@@ -595,9 +609,15 @@ def processAssayFile():
 	    TAB + \
 	    TAB + \
             str(reporterGeneKey) + TAB + \
-            createdBy + TAB + \
-            createdBy + TAB + \
+            str(createdByKey) + TAB + \
+            str(createdByKey) + TAB + \
 	    loaddate + TAB + loaddate + CRT)
+
+	if len(note) > 0:
+	    outAssayNoteFile.write(str(assayKey) + TAB + \
+		'1' + TAB + \
+		note + TAB + \
+		loaddate + TAB + loaddate + CRT)
 
         # MGI Accession ID for the assay
 
@@ -610,7 +630,9 @@ def processAssayFile():
 	    assayMgiTypeKey + TAB + \
 	    accPrivate + TAB + \
 	    accPreferred + TAB + \
-	    loaddate + TAB + loaddate + TAB + loaddate + CRT)
+            str(createdByKey) + TAB + \
+            str(createdByKey) + TAB + \
+	    loaddate + TAB + loaddate + CRT)
 
 	assayAssay[assayID] = assayKey
 	accKey = accKey + 1
@@ -804,6 +826,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.13  2003/10/01 17:53:09  lec
+# removed unnecessary imports
+#
 # Revision 1.12  2003/10/01 17:48:27  lec
 # removed unnecessary imports
 #

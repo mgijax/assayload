@@ -8,7 +8,7 @@
 #
 
 # install directory
-setenv ASSAYLOADINSTALLDIR	/usr/local/mgi/dataload/assayload
+setenv ASSAYLOADINSTALLDIR	/home/lec/loads/assayload
 
 # system doc directory
 setenv ASSAYLOADSYSTEMDOCDIR	$ASSAYLOADINSTALLDIR/system_docs
@@ -32,11 +32,11 @@ setenv DBUTILITIESPATH	/usr/local/mgi/dbutils/mgidbutilities
 set path = ($DBUTILITIESPATH/bin $path $SYBASE/ASE-12_5/bin $SYBASE/OCS-12_5/bin)
 
 # Database Server; for backwards compatibility, also define DSQUERY
-setenv DBSERVER	PROD_MGI
+setenv DBSERVER	DEV_MGI
 setenv DSQUERY $DBSERVER
 
 # Database; for backwards compatibility, also define MGD
-setenv DBNAME	mgd
+setenv DBNAME	mgd_release
 setenv MGD $DBNAME
 
 # Super User
@@ -46,10 +46,16 @@ setenv DBUSER	mgd_dbo
 setenv DBPASSWORDFILE	$DBUTILITIESPATH/.mgd_dbo_password
 
 # RT-PCR data
-setenv RTPCRDATADIR     $ASSAYLOADDATADIR/rtpcr
+setenv RTPCRDATADIR	$ASSAYLOADDATADIR/rtpcr
 
 # In Situ data
-setenv INSITUDATADIR  $ASSAYLOADDATADIR/insitu
+setenv INSITUDATADIR	$ASSAYLOADDATADIR/insitu
+
+# Probe load
+setenv PROBELOAD	/home/lec/loads/probeload/probeload.py
+
+# Primer load
+setenv PRIMERLOAD	/home/lec/loads/probeload/primerload.py
 
 # Load Mode
 setenv LOADMODE		load
@@ -58,5 +64,5 @@ setenv LOADMODE		load
 setenv IDXPRIORITY	Low
 
 # Created By
-setenv CREATEDBY	dph
+setenv CREATEDBY	jfinger
 
