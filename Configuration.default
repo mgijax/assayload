@@ -61,7 +61,7 @@ setenv PRIMERLOAD	/home/lec/loads/probeload/primerload.py
 setenv LOADMODE		load
 
 # Index: Priority, Comments
-setenv IDXPRIORITY	Low
+setenv IDXPRIORITY	High
 setenv IDXCOMMENTS      ""
 
 # Created By
