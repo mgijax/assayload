@@ -228,6 +228,8 @@ def process():
 	    tissueLabels = tokens[5:24]
 	    continue
 
+	print tissueLabels
+
 	# else process an actual data line
 
         try:
@@ -347,6 +349,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.5  2003/09/24 14:32:35  lec
+# TR 5154
+#
 # Revision 1.4  2003/09/22 13:00:30  lec
 # TR 5154
 #
