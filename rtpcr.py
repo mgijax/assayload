@@ -102,6 +102,7 @@ visualizedWith = 'Not Specified'
 # constants for assay
 reference = 'J:80502'
 assayType = 'RT-PCR'
+createdBy = os.environ['CREATEDBY']
 
 # constants for gel lanes
 control = 'No'
@@ -276,7 +277,8 @@ def process():
 	assayFile.write(str(assay) + TAB + \
 	    accID + TAB + \
 	    reference + TAB + \
-	    assayType + CRT)
+	    assayType + TAB + \
+	    createdBy + CRT)
 
 	# write the gel lane and gel band information
 
@@ -333,6 +335,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.4  2003/06/18 19:24:54  lec
+# TR 4800
+#
 # Revision 1.3  2003/06/18 13:19:33  lec
 # TR 4800
 #

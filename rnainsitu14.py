@@ -105,6 +105,7 @@ visualizedWith = 'Alkaline phosphatase'
 # constants for assay
 reference = 'J:80502'
 assayType = 'RNA In Situ'
+createdBy = os.environ['CREATEDBY']
 
 # constants for specimen
 specimenLabel = '%s 14.5dpc'
@@ -302,7 +303,9 @@ def process():
 	    assayFile.write(str(assay) + TAB + \
 	        accID + TAB + \
 	        reference + TAB + \
-	        assayType + CRT)
+	        assayType + TAB + \
+		TAB + \
+		createdBy + CRT)
 
 	    # write the specimen (one for each Assay)
 
@@ -403,6 +406,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.11  2003/06/20 17:35:33  lec
+# TR 4800
+#
 # Revision 1.10  2003/06/20 16:46:51  lec
 # TR 4800
 #

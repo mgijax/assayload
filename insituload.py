@@ -47,6 +47,8 @@
 #		field 2: MGI Marker Accession ID
 #		field 3: Reference (J:#####)
 #		field 4: Assay Type
+#		field 5: Reporter Gene
+#		field 6: Created By
 #
 #	Specimen file, a tab-delimited file in the format:
 #		field 1: Assay #
@@ -193,6 +195,7 @@ genotypeDict = {}	# genotype
 strengthDict = {}	# strength
 patternDict = {}	# pattern
 structureDict = {}      # anatomical structures
+reporterGeneDict = {}	# reporter gene
 prepTypeList = ['DNA', 'RNA', 'Not Specified'] 	# lookup of probe prep types
 hybridizationList = ['section', 'whole mount', 'section from whole mount']
 
@@ -851,6 +854,37 @@ def verifyHybridization(
         errorFile.write('Invalid Prep Type (%d): %s\n' % (lineNum, hybridization))
         return 0
 
+# Purpose:  verify Reporter Gene
+# Returns:  Reporter Gene key if valid, else 0
+# Assumes:  nothing
+# Effects:  verifies that the Reporter Gene exists in the Reporter Gene dictionary
+#	writes to the error file if the Reporter Gene is invalid
+# Throws:  nothing
+
+def verifyReporterGene(
+    reporterGene, # Reporter Gene value (string)
+    lineNum	# line number (integer)
+    ):
+
+    global reporterGeneDict
+
+    reporterGeneKey = 0
+
+    if len(reporterGeneDict) == 0:
+	results = db.sql('select t._Term_key, t.term ' + \
+	    'from VOC_Vocab v, VOC_Term t ' + \
+	    'where v.name = "GXD Reporter Gene" ' + \
+	    'and v._Vocab_key = t._Vocab_key', 'auto')
+	for r in results:
+	    reporterGeneDict[r['term']] = r['_Term_key']
+
+    if reporterGeneDict.has_key(reporterGene):
+        reporterGeneKey = reporterGeneDict[reporterGene]
+    else:
+        errorFile.write('Invalid Reporter Gene (%d): %s\n' % (lineNum, reporterGene))
+
+    return reporterGeneKey
+
 # Purpose:  sets global primary key variables
 # Returns:  nothing
 # Assumes:  nothing
@@ -1028,6 +1062,8 @@ def processAssayFile():
 	    markerID = tokens[1]
 	    jnum = tokens[2]
 	    assayType = tokens[3]
+	    reporterGene = tokens[4]
+	    createdBy = tokens[5]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
@@ -1038,6 +1074,13 @@ def processAssayFile():
         if markerKey == 0 or referenceKey == 0 or assayTypeKey == 0:
             # set error flag to true
             error = 1
+
+        if len(reporterGene) > 0:
+            reporterGeneKey = verifyReporterGene(reporterGene, lineNum)
+	    if reporterGeneKey == 0:
+                error = 1
+        else:
+            reporterGeneKey = ''
 
         # if errors, continue to next record
         if error:
@@ -1052,6 +1095,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
+#            str(reporterGeneKey) + TAB + \
+#            createdBy + TAB + \
+#            createdBy + TAB + \
 	    cdate + TAB + cdate + CRT)
 
         # MGI Accession ID for the assay
@@ -1254,6 +1300,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.5  2003/06/20 15:16:11  lec
+# TR 4800
+#
 # Revision 1.4  2003/06/18 18:21:50  lec
 # TR 4800
 #

@@ -105,6 +105,7 @@ visualizedWith = 'Alkaline phosphatase'
 # constants for assay
 reference = 'J:80502'
 assayType = 'RNA In Situ'
+createdBy = os.environ['CREATEDBY']
 
 # constants for specimen
 specimenLabel = '%s 10.5dpc'
@@ -253,8 +254,6 @@ def process():
 	    accID = tokens[2]
 	    humanGene = tokens[3]
 	    results = tokens[4:]
-	    probeID = 'MGI:35046'
-#	    probeID = tokens[]
 
         except:
             print 'Invalid Line (%d): %s\n' % (assay, line)
@@ -281,7 +280,9 @@ def process():
 	    assayFile.write(str(assay) + TAB + \
 	        accID + TAB + \
 	        reference + TAB + \
-	        assayType + CRT)
+	        assayType + TAB + \
+		TAB + \
+		createdBy + CRT)
 
 	    # write the specimen (one for each Assay)
 
@@ -340,6 +341,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.5  2003/06/20 16:46:51  lec
+# TR 4800
+#
 # Revision 1.4  2003/06/18 19:24:53  lec
 # TR 4800
 #
