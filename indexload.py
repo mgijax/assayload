@@ -98,7 +98,6 @@ referenceKey = ''	# reference key
 priorityKey = ''	# priority key
 createdByKey = ''	# created by key
 indexComments = ''
-#indexComments = 'Age of embryo at noon of plug day not specified in reference.'
 
 # primary keys
 
@@ -161,7 +160,7 @@ def init():
     global diagFile, errorFile, errorFileName, diagFileName, passwordFileName
     global mode, reference
     global outIndexFile, outStagesFile
-    global referenceKey, priorityKey, createdByKey
+    global referenceKey, priorityKey, createdByKey, indexComments
  
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'S:D:U:P:M:R:C:')
@@ -245,6 +244,7 @@ def init():
     referenceKey = loadlib.verifyReference(reference, 0, errorFile)
     priorityKey = gxdloadlib.verifyIdxPriority(os.environ['IDXPRIORITY'], 0, errorFile)
     createdByKey = loadlib.verifyUser(createdBy, 0, errorFile)
+    indexComments = os.environ['IDXCOMMENTS']
 
     return
 
@@ -415,6 +415,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.11  2004/09/08 17:25:08  lec
+# TR 6118
+#
 # Revision 1.10  2004/09/08 17:20:38  lec
 # TR 6118
 #
