@@ -161,7 +161,6 @@ def init():
 	'where a._MGIType_key = 2 ' + \
 	'and a._LogicalDB_key = 1 ' + \
 	'and a.prefixPart= "MGI:" ' + \
-	'and a.preferred = 1 ' + \
 	'and a._Object_key = m._Marker_key', 'auto')
     for r in results:
 	mgiMarkers[r['symbol']] = r['accID']
@@ -301,6 +300,9 @@ process(inProbeFile2, vectorType2, strain2, tissue2, age2)
 exit(0)
 
 # $Log$
+# Revision 1.10  2004/11/23 13:19:50  lec
+# TR 6118
+#
 # Revision 1.9  2004/11/19 19:28:17  lec
 # TR 6118
 #
