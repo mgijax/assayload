@@ -97,7 +97,8 @@ reference = ''		# reference (J:)
 referenceKey = ''	# reference key
 priorityKey = ''	# priority key
 createdByKey = ''	# created by key
-indexComments = 'Age of embryo at noon of plug day not specified in reference.'
+indexComments = ''
+#indexComments = 'Age of embryo at noon of plug day not specified in reference.'
 
 # primary keys
 
@@ -414,6 +415,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.10  2004/09/08 17:20:38  lec
+# TR 6118
+#
 # Revision 1.9  2003/10/01 17:47:39  lec
 # removed unnecessary imports
 #
