@@ -225,25 +225,25 @@ accPreferred = '1'	# Preferred status MGI accession ID (true)
 
 # dictionaries to cache data for quicker lookup
 
-referenceDict = {}      # dictionary of references
-markerDict = {}      	# dictionary of markers
-senseDict = {}		# dictionary of probe sense
-labelDict = {}		# dictionary of probe label
-coverageDict = {}	# dictionary of probe coverage
-visualDict = {}		# dictionary of probe visualization
-assayTypeDict = {}	# dictionary of assay type
-gelRNATypeDict = {}	# dictionary of gel rna types
-gelControlDict = {}	# dictionary of gel control
-genotypeDict = {}       # dictionary of genotypes
-structureDict = {}	# dictionary of anatomical structures
-gelUnitsDict = {}	# dictionary of gel units
-gelStrengthDict = {}	# dictionary of gel strength
+referenceDict = {}      # references
+markerDict = {}      	# markers
+senseDict = {}		# probe sense
+labelDict = {}		# probe label
+coverageDict = {}	# probe coverage
+visualDict = {}		# probe visualization
+assayTypeDict = {}	# assay type
+gelRNATypeDict = {}	# gel rna types
+gelControlDict = {}	# gel control
+genotypeDict = {}       # genotypes
+structureDict = {}	# anatomical structures
+gelUnitsDict = {}	# gel units
+gelStrengthDict = {}	# gel strength
 prepTypeList = ['DNA', 'RNA', 'Not Specified'] 	# lookup of probe prep types
 
-assayPrimer = {}	# dictionary of Assay ID/Primer keys
-assayProbePrep = {}	# dictionary of Assay ID/Probe Prep keys
-assayAssay= {}		# dictionary of Assay ID/Assay keys
-assayGelLane = {}	# dictionary of Assay ID/Lane ID and Lane keys
+assayPrimer = {}	# Assay ID/Primer keys
+assayProbePrep = {}	# Assay ID/Probe Prep keys
+assayAssay= {}		# Assay ID/Assay keys
+assayGelLane = {}	# Assay ID/Lane ID and Lane keys
 
 cdate = mgi_utils.date('%m/%d/%Y')	# current date
 
@@ -1399,6 +1399,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.6  2003/07/01 16:48:08  lec
+# TR 4800
+#
 # Revision 1.5  2003/06/23 17:20:44  lec
 # TR4800
 #

@@ -121,7 +121,7 @@ resultNote = NULL
 epiTissue = 'epithalamus'
 epiNote = 'Expression was restricted to the pineal gland primordium.'
 ubiExpression = 'ubiquitous'
-ubiPattern = 'R'
+ubiPattern = 'U'
 
 # translation of patterns
 
@@ -406,6 +406,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.12  2003/06/23 17:20:46  lec
+# TR4800
+#
 # Revision 1.11  2003/06/20 17:35:33  lec
 # TR 4800
 #

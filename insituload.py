@@ -199,9 +199,9 @@ reporterGeneDict = {}	# reporter gene
 prepTypeList = ['DNA', 'RNA', 'Not Specified'] 	# lookup of probe prep types
 hybridizationList = ['section', 'whole mount', 'section from whole mount']
 
-assayProbePrep = {}	# dictionary of Assay ID/Probe Prep keys
-assayAssay= {}		# dictionary of Assay ID/Assay keys
-assaySpecimen = {}	# dictionary of Assay ID/Specimen ID and Specimen keys
+assayProbePrep = {}	# Assay ID/Probe Prep keys
+assayAssay= {}		# Assay ID/Assay keys
+assaySpecimen = {}	# Assay ID/Specimen ID and Specimen keys
 
 cdate = mgi_utils.date('%m/%d/%Y')	# current date
 
@@ -1095,9 +1095,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
-#            str(reporterGeneKey) + TAB + \
-#            createdBy + TAB + \
-#            createdBy + TAB + \
+            str(reporterGeneKey) + TAB + \
+            createdBy + TAB + \
+            createdBy + TAB + \
 	    cdate + TAB + cdate + CRT)
 
         # MGI Accession ID for the assay
@@ -1300,6 +1300,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.6  2003/06/23 17:20:45  lec
+# TR4800
+#
 # Revision 1.5  2003/06/20 15:16:11  lec
 # TR 4800
 #
