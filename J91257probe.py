@@ -195,6 +195,13 @@ def process(inFile, vectorType, strain, tissue, age):
 
 	# else process an actual data line
 
+#	    authorGenBank = tokens[7]
+#	    author5 = tokens[9]
+#	    author3 = tokens[11]
+#	    adnote = tokens[13]
+#	    note = tokens[14]
+#	    note = tokens[15]
+
         try:
 	    markerSymbol = tokens[0]
 	    mtf = tokens[1]
@@ -203,19 +210,24 @@ def process(inFile, vectorType, strain, tissue, age):
 	    site1 = tokens[4]
 	    site2 = tokens[5]
 	    iSize = tokens[6]
-#	    authorGenBank = tokens[7]
 	    sequenceID = string.strip(tokens[8])
-#	    author5 = tokens[9]
 	    primer5 = tokens[10]
-#	    author3 = tokens[11]
 	    primer3 = tokens[12]
-#	    adnote = tokens[13]
-#	    note = tokens[14]
-#	    note = tokens[15]
 
         except:
-            print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
-	    continue
+            try:
+	        markerSymbol = tokens[0]
+	        mtf = tokens[1]
+	        rcn5 = tokens[2]
+	        rcn3 = tokens[3]
+	        site1 = tokens[4]
+	        site2 = tokens[5]
+	        iSize = tokens[6]
+	        sequenceID = string.strip(tokens[8])
+
+            except:
+               print 'Invalid Line (%d), Length (%d): %s\n' % (lineNum, len(tokens), line)
+	       continue
 
 	try:
 	    adnote = tokens[13]
@@ -248,7 +260,7 @@ def process(inFile, vectorType, strain, tissue, age):
 
         if len(site1) > 0 and len(site2) > 0:
 	    probeFile.write(insertSite % (site1, site2))
-        elif if len(site1) > 0:
+        elif len(site1) > 0:
 	    probeFile.write(site1)
         probeFile.write(TAB)
 
@@ -288,6 +300,9 @@ process(inProbeFile2, vectorType2, strain2, tissue2, age2)
 exit(0)
 
 # $Log$
+# Revision 1.7  2004/11/19 17:01:13  lec
+# TR 6118
+#
 # Revision 1.6  2004/11/19 16:40:17  lec
 # TR 6118
 #
