@@ -405,17 +405,17 @@ def process():
 
 	        if tissueLabels[i] == 'Telencephalon - d':
 		    if eResults[i - 1] == 'x' and eResults[i] != 'x':
-			resultNote = 'Expression was detected in ventral telencephalon.'
+			resultNote = 'Expression was detected in ventral telencephalon but was absent in the dorsal telencephalon.'
 		    elif eResults[i] == 'x' and eResults[i - 1] != 'x':
-			resultNote = 'Expression was detected in dorsal telencephalon.'
+			resultNote = 'Expression was detected in dorsal telencephalon but was absent in the ventral telencephalon.'
 		    elif eResults[i] == 'x' and eResults[i - 1] == 'x':
 			resultNote = 'Expression was detected in dorsal and ventral telencephalon.'
 
 	        if tissueLabels[i] == 'Diencephalon - d':
 		    if eResults[i - 1] == 'x' and eResults[i] != 'x':
-			resultNote = 'Expression was detected in ventral diencephalon.'
+			resultNote = 'Expression was detected in ventral diencephalon but was absent in the dorsal diencephalon.'
 		    elif eResults[i] == 'x' and eResults[i - 1] != 'x':
-			resultNote = 'Expression was detected in dorsal diencephalon.'
+			resultNote = 'Expression was detected in dorsal diencephalon but was absent in the ventral diencephalon.'
 		    elif eResults[i] == 'x' and eResults[i - 1] == 'x':
 			resultNote = 'Expression was detected in dorsal and ventral diencephalon.'
 
@@ -431,16 +431,16 @@ def process():
 
 		    if tissue == 'midbrain':
 		        if eResults[i - 2] == 'x' and eResults[i - 1] != 'x':
-			    note2 = 'Expression was detected in ventral mesencephalon.'
+			    note2 = 'Expression was detected in ventral mesencephalon but was absent in the dorsal mesencephalon.'
 		        elif eResults[i - 2] != 'x' and eResults[i - 1] == 'x':
-			    note2 = 'Expression was detected in dorsal mesencephalon.'
+			    note2 = 'Expression was detected in dorsal mesencephalon but was absent in the ventral mesencephalon.'
 		        elif eResults[i - 2] == 'x' and eResults[i - 1] == 'x':
 			    note2 = 'Expression was detected in dorsal and ventral mesencephalon.'
 		    elif tissue == 'hindbrain':
 		        if eResults[i + 1] == 'x' and eResults[i + 2] != 'x':
-			    note2 = 'Expression was detected in ventral rhombencephalon.'
+			    note2 = 'Expression was detected in ventral rhombencephalon but was absent in the dorsal rhombencephalon.'
 		        elif eResults[i + 1] != 'x' and eResults[i + 2] == 'x':
-			    note2 = 'Expression was detected in dorsal rhombencephalon.'
+			    note2 = 'Expression was detected in dorsal rhombencephalon but was absent in the ventral rhombencephalon.'
 		        elif eResults[i + 1] == 'x' and eResults[i + 2] == 'x':
 			    note2 = 'Expression was detected in dorsal and ventral rhombencephalon.'
 
@@ -448,9 +448,9 @@ def process():
 
 	        if tissueLabels[i] == 'Spinal cord - d':
 		    if eResults[i - 1] == 'x' and eResults[i] != 'x':
-			resultNote = 'Expression was detected in ventral spinal cord.'
+			resultNote = 'Expression was detected in ventral spinal cord but was absent in the dorsal spinal cord.'
 		    elif eResults[i] == 'x' and eResults[i - 1] != 'x':
-			resultNote = 'Expression was detected in dorsal spinal cord.'
+			resultNote = 'Expression was detected in dorsal spinal cord but was absent in the ventral spinal cord.'
 		    elif eResults[i] == 'x' and eResults[i - 1] == 'x':
 			resultNote = 'Expression was detected in dorsal and ventral spinal cord.'
 
@@ -479,6 +479,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.4  2004/11/19 18:38:26  lec
+# TR 6118
+#
 # Revision 1.3  2004/11/15 13:21:13  lec
 # assayload-2-0-0
 #
