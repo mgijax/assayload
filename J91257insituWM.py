@@ -325,6 +325,25 @@ def process():
     
 	    for t in tissueTrans[tissueLabels[i]]:
 
+		#
+		# -v = ventral
+		# -d = dorsal
+		#
+		# we only want to store 1 result for each -v, -d pair.
+		# so, we ignore the -v for Telencephalon, Diencephalon, Spinal cord
+		#
+		# Mesencephalon = midbrain
+		# Rhombencephalon = hindbrain
+		# Mid-hindbrain boundary incorporates both tissues, midbrain and hindbrain
+		#
+		# we only want to store 1 result for midbrain and 1 result for hindbrain
+		# but the data to determine this is encompassed by 5 columns of data.
+		# so, we ignore the Mesencephalon and Rhombencephalon columns and only
+		# "process" the Mid-hindbrain boundary column.  the logic when we hit
+		# Mid-hindbrain boundary takes into account the Mesencephalon and
+		# Rhombencephalon columns.
+		#
+
 	        if tissueLabels[i] in ['Telencephalon - v', 'Diencephalon - v', 'Spinal cord - v',
 		    'Mesencephalon - v', 'Mesencephalon - d', 'Rhombencephalon - v', 'Rhombencephalon - d']:
                     continue
@@ -337,22 +356,22 @@ def process():
 		strength = strengthTrans[eResults[i]]
 
 	        if tissueLabels[i] in ['Telencephalon - d', 'Diencephalon - d', 'Spinal cord - d']:
-		    if eResults[i] == ' ' and eResults[i - 1] == ' ':
-			strength = 'Absent'
-		    else:
+		    if eResults[i] == 'x' or eResults[i - 1] == 'x':
 			strength = 'Present'
+		    else:
+			strength = 'Absent'
 
 	        if tissueLabels[i] == 'Mid-hindbrain boundary' and tissue == 'midbrain':
-		    if eResults[i] == ' ' and eResults[i - 1] == ' ' and eResults[i - 2] == '':
-			strength = 'Absent'
-		    else:
+		    if eResults[i] == 'x' or eResults[i - 1] == 'x' or eResults[i - 2] == 'x':
 			strength = 'Present'
+		    else:
+			strength = 'Absent'
 
 	        if tissueLabels[i] == 'Mid-hindbrain boundary' and tissue == 'hindbrain':
-		    if eResults[i] == ' ' and eResults[i + 1] == ' ' and eResults[i + 2] == '':
-			strength = 'Absent'
-		    else:
+		    if eResults[i] == 'x' or eResults[i + 1] == 'x' or eResults[i + 2] == 'x':
 			strength = 'Present'
+		    else:
+			strength = 'Absent'
 
 		## Pattern
 
@@ -363,6 +382,8 @@ def process():
 
 	        if tissueLabels[i] in ['Telencephalon - d', 'Diencephalon - d', 'Spinal cord - d']:
 		    if eResults[i] == 'x' and eResults[i - 1] == ' ':
+			pattern = 'Regionally restricted'
+		    elif eResults[i - 1] == 'x' and eResults[i] == ' ':
 			pattern = 'Regionally restricted'
 
 	        if tissueLabels[i] == 'Mid-hindbrain boundary':
@@ -380,6 +401,9 @@ def process():
 		## Note
 
 	        resultNote = ''
+
+	        if tissueLabels[i] in ['Optic vesicle', 'Lens']:
+		    resultNote = tissueNote[tissueLabels[i]]
 
 	        if tissueLabels[i] == 'Telencephalon - d':
 		    if eResults[i - 1] == 'x' and eResults[i] == ' ':
@@ -441,7 +465,7 @@ def process():
 		    theilerStage + TAB + \
 		    resultNote + CRT)
 
-	    resultKey = resultKey + 1
+	        resultKey = resultKey + 1
 
 	assays[probeName] = assayKey
 	assayKey = assayKey + 1
@@ -457,3 +481,6 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2004/11/12 17:39:24  lec
+# TR 6118
+#
