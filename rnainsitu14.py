@@ -24,11 +24,16 @@
 # Inputs:
 #
 #       In_Situ.txt, a tab-delimited file in the format:
-#		field 1: Vial #
+#		field 1: Human Gene
 #		field 2: Mouse Gene Symbol
 #               field 3: MGI Marker Accession ID
-#		field 4: Human Gene
-#               field 5-16: Tissues
+#		field 4: ISH_number
+#		field 5: Specimen
+#		field 6: Tissue Quality
+#		field 7: Overall Expression
+#		field 8-50: Results
+#		field 51: Image 1
+#		field 52: Image 2
 #
 #	In_Situ_Tissues.txt, a tab-delimited file in the format:
 #		field 1: Reported Tissue
@@ -137,9 +142,6 @@ strengthTrans = {'*':'Weak', '**':'Moderate', '***':'Strong', '':'Absent', \
     'U,R':'Present', 'R,U':'Present', '-':'Absent', '+':'Weak'}
 presentStrength = ['U,R', 'R,U']
 
-mgiTypeKey = 8		# Assay
-mgiPrefix = "MGI:"
-
 # Purpose: prints error message and exits
 # Returns: nothing
 # Assumes: nothing
@@ -236,9 +238,6 @@ def process():
 	if len(mgiID) == 0:
 	    continue
 
-	if len(probeID) == 1:
-	    probeID = 'MGI:35046'
-
 	key = mgiID
 	value = probeID
 	if not probeTrans.has_key(key):
@@ -258,7 +257,7 @@ def process():
 	# grab the Tissue headings
 
 	if assay == 0:
-	    tissueLabels = tokens[7:-1]
+	    tissueLabels = tokens[7:50]
 	    assay = assay + 1
 	    continue
 
@@ -272,7 +271,9 @@ def process():
 	    specimen = tokens[4]
 	    tissueQuality = tokens[5]
 	    overallExpression = tokens[6]
-	    results = tokens[7:]
+	    results = tokens[7:50]
+	    imageFileName1 = tokens[50]
+	    imageFileName2= tokens[51]
 
         except:
             print 'Invalid Line (%d): %s\n' % (assay, line)
@@ -406,6 +407,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.13  2003/07/11 16:24:15  lec
+# TR 4800
+#
 # Revision 1.12  2003/06/23 17:20:46  lec
 # TR4800
 #

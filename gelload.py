@@ -793,12 +793,11 @@ def verifyStructure(
     if structureDict.has_key(key):
         structureKey = structureDict[key]
     else:
-	results = db.sql('select s._Structure_key ' + \
-		'from GXD_Structure s, GXD_StructureName n, GXD_TheilerStage t ' + \
-		'where s._Structure_key = n._Structure_key ' + \
-		'and s._Stage_key = t._Stage_key ' + \
-		'and t.stage = %s ' % (str(theilerStage)) + \
-		'and n.structure = "%s" ' % (structureName), 'auto')
+        results = db.sql('select s._Structure_key ' + \
+                'from GXD_Structure s, GXD_TheilerStage t ' + \
+                'where s._Stage_key = t._Stage_key ' + \
+                'and t.stage = %s ' % (str(theilerStage)) + \
+                'and s.printName = "%s" ' % (structureName), 'auto')
         if len(results) == 0:
             errorFile.write('Invalid Structure (%d): %s:%d\n' % (lineNum, structureName, theilerStage))
             structureKey = 0
@@ -1184,9 +1183,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
-	    TAB + \
-	    createdBy + TAB + \
-	    createdBy + TAB + \
+#	    TAB + \
+#	    createdBy + TAB + \
+#	    createdBy + TAB + \
 	    cdate + TAB + cdate + CRT)
 
         # MGI Accession ID for the assay
@@ -1399,6 +1398,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.7  2003/07/11 16:24:14  lec
+# TR 4800
+#
 # Revision 1.6  2003/07/01 16:48:08  lec
 # TR 4800
 #

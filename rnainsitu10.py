@@ -121,9 +121,6 @@ resultNote = NULL
 pattern1 = 'Not Specified'
 pattern2 = 'Regionally restricted'
 
-mgiTypeKey = 8		# Assay
-mgiPrefix = "MGI:"
-
 # translation of input file strengths and MGI strengths
 
 strengthTrans = {'+':'Present', '++':'Strong', '+/-':'Ambiguous', '':'Absent'}
@@ -220,9 +217,6 @@ def process():
 	if len(mgiID) == 0:
 	    continue
 
-	if len(probeID) == 1:
-	    probeID = 'MGI:35046'
-
 	key = mgiID
 	value = probeID
 	if not probeTrans.has_key(key):
@@ -253,7 +247,8 @@ def process():
 	    mouseGene = tokens[1]
 	    accID = tokens[2]
 	    humanGene = tokens[3]
-	    results = tokens[4:]
+	    results = tokens[4:14]
+	    imageFileName = tokens[15]
 
         except:
             print 'Invalid Line (%d): %s\n' % (assay, line)
@@ -341,6 +336,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.6  2003/06/23 17:20:46  lec
+# TR4800
+#
 # Revision 1.5  2003/06/20 16:46:51  lec
 # TR 4800
 #

@@ -759,13 +759,6 @@ def verifyStructure(
         structureKey = structureDict[key]
     else:
 	results = db.sql('select s._Structure_key ' + \
-		'from GXD_Structure s, GXD_StructureName n, GXD_TheilerStage t ' + \
-		'where s._Structure_key = n._Structure_key ' + \
-		'and s._Stage_key = t._Stage_key ' + \
-		'and t.stage = %s ' % (str(theilerStage)) + \
-		'and n.structure = "%s" ' % (structureName) + \
-		'union ' + \
-		'select s._Structure_key ' + \
 		'from GXD_Structure s, GXD_TheilerStage t ' + \
 		'where s._Stage_key = t._Stage_key ' + \
 		'and t.stage = %s ' % (str(theilerStage)) + \
@@ -1075,12 +1068,13 @@ def processAssayFile():
             # set error flag to true
             error = 1
 
-        if len(reporterGene) > 0:
-            reporterGeneKey = verifyReporterGene(reporterGene, lineNum)
-	    if reporterGeneKey == 0:
-                error = 1
-        else:
-            reporterGeneKey = ''
+#        if len(reporterGene) > 0:
+#            reporterGeneKey = verifyReporterGene(reporterGene, lineNum)
+#	    if reporterGeneKey == 0:
+#                error = 1
+#        else:
+#            reporterGeneKey = ''
+        reporterGeneKey = ''
 
         # if errors, continue to next record
         if error:
@@ -1095,9 +1089,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
-            str(reporterGeneKey) + TAB + \
-            createdBy + TAB + \
-            createdBy + TAB + \
+#            str(reporterGeneKey) + TAB + \
+#            createdBy + TAB + \
+#            createdBy + TAB + \
 	    cdate + TAB + cdate + CRT)
 
         # MGI Accession ID for the assay
@@ -1300,6 +1294,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.7  2003/07/11 16:24:15  lec
+# TR 4800
+#
 # Revision 1.6  2003/06/23 17:20:45  lec
 # TR4800
 #
