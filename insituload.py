@@ -871,7 +871,7 @@ def setPrimaryKeys():
     results = db.sql('select maxKey = max(_Specimen_key) + 1 from GXD_Specimen', 'auto')
     specimenKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Result_key + 1) from GXD_InSituResult', 'auto')
+    results = db.sql('select maxKey = max(_Result_key) from GXD_InSituResult', 'auto')
     resultKey = results[0]['maxKey']
 
     results = db.sql('select maxKey = max(_Accession_key) + 1 from ACC_Accession', 'auto')
@@ -1206,22 +1206,23 @@ def processResultsFile():
 	key = '%s:%s' % (assayID, specimenID)
 	specimenKey = assaySpecimen[key]
 
-        outResultFile.write(
-	    str(resultKey) + TAB + \
-	    str(specimenKey) + TAB + \
-	    str(strengthKey) + TAB + \
-	    str(patternKey) + TAB + \
-	    resultID + TAB + \
-	    mgi_utils.prvalue(resultNote) + TAB + \
-	    cdate + TAB + cdate + CRT)
+	if prevResult != resultID:
+
+          resultKey = resultKey + 1
+
+          outResultFile.write(
+	      str(resultKey) + TAB + \
+	      str(specimenKey) + TAB + \
+	      str(strengthKey) + TAB + \
+	      str(patternKey) + TAB + \
+	      resultID + TAB + \
+	      mgi_utils.prvalue(resultNote) + TAB + \
+	      cdate + TAB + cdate + CRT)
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
 	    str(structureKey) + TAB + \
 	    cdate + TAB + cdate + CRT)
-
-	if prevResult != resultID:
-            resultKey = resultKey + 1
 
 	prevResult = resultID
 
@@ -1248,6 +1249,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/06/18 17:57:14  lec
+# TR 4800
+#
 # Revision 1.2  2003/06/18 15:56:16  lec
 # TR 4800
 #
