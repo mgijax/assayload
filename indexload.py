@@ -406,6 +406,7 @@ def processAssay():
 	 indexAssay[r['_Marker_key']] = indexKey
 	 indexKey = indexKey + 1
 
+    prevMarker = ''
     prevStage = ''
     insitu_protein_section = 0
     insitu_rna_section = 0
@@ -421,7 +422,7 @@ def processAssay():
 
     for r in results[2]:
 
-	if prevStage != r['age']:
+	if prevMarker != r['_Marker_key'] or prevStage != r['age']:
 
 	   if prevStage != '':
                outStagesFile.write(str(indexKey) + TAB + \
@@ -468,6 +469,7 @@ def processAssay():
 
 	stageKey = stageDict[stage]
 	prevStage = r['age']
+	prevMarker = r['_Marker_key']
 
     outStagesFile.write(str(indexKey) + TAB + \
         str(stageKey) + TAB + \
@@ -499,6 +501,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/09/22 11:56:56  lec
+# TR 5154
+#
 # Revision 1.1  2003/09/09 15:29:48  lec
 # TR 5125
 #
