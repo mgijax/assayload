@@ -21,32 +21,32 @@ touch $LOG
  
 date > $LOG
  
-#cat - <<EOSQL | doisql.csh $0 >> $LOG
+cat - <<EOSQL | doisql.csh $0 >> $LOG
 
-#use $DBNAME
-#go
+use $DBNAME
+go
 
-#update BIB_Refs set journal = 'Science' where _Refs_key = 92242
-#go
+update BIB_Refs set journal = 'MGI Direct Data Submission' where _Refs_key = 92242
+go
 
-#declare @key integer
-#select @key = max(_Source_key) + 1 from PRB_Source
-#insert into PRB_Source 
-#values(@key,63468,316367,1,433,450,315167,316335,null,null,null,'embryonic day 13.5',13.5,13.5,0,1000,1000,getdate(),getdate())
-#go
+declare @key integer
+select @key = max(_Source_key) + 1 from PRB_Source
+insert into PRB_Source 
+values(@key,63468,316367,1,433,450,315167,316335,null,null,null,'embryonic day 13.5',13.5,13.5,0,1000,1000,getdate(),getdate())
+go
 
-#declare @key integer
-#select @key = max(_Source_key) + 1 from PRB_Source
-#insert into PRB_Source 
-#values(@key,63468,316370,1,-1,-1,315167,316335,null,null,null,'Not Specified',-1.0,-1.0,0,1000,1000,getdate(),getdate())
-#go
+declare @key integer
+select @key = max(_Source_key) + 1 from PRB_Source
+insert into PRB_Source 
+values(@key,63468,316370,1,-1,-1,315167,316335,null,null,null,'Not Specified',-1.0,-1.0,0,1000,1000,getdate(),getdate())
+go
 
-#checkpoint
-#go
+checkpoint
+go
 
-#quit
+quit
 
-#EOSQL
+EOSQL
 
 cd ${INSITUDATADIR}
 
