@@ -947,7 +947,7 @@ def bcpFiles(
 
     # load the cache tables for the records processed (by assay Key)
 
-    for i in range(assayKey - recordsProcessed + 1, assayKey + 1):
+    for i in range(assayKey - recordsProcessed, assayKey + 1):
 	db.sql('exec GXD_loadCacheByAssay %d' % (i), None)
 
     # update the max Accession ID value
@@ -1392,6 +1392,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/06/18 13:19:32  lec
+# TR 4800
+#
 # Revision 1.2  2003/06/17 12:17:49  lec
 # TR 4800
 #

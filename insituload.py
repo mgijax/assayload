@@ -744,7 +744,7 @@ def verifyGenotype(
 
 def verifyStructure(
     structureName,       # structure name (string)
-    theilerStage,	 # theiler stage (integer)
+    theilerStage,	 # theiler stage (string)
     lineNum		 # line number (integer)
     ):
 
@@ -760,9 +760,15 @@ def verifyStructure(
 		'where s._Structure_key = n._Structure_key ' + \
 		'and s._Stage_key = t._Stage_key ' + \
 		'and t.stage = %s ' % (str(theilerStage)) + \
-		'and n.structure = "%s" ' % (structureName), 'auto')
+		'and n.structure = "%s" ' % (structureName) + \
+		'union ' + \
+		'select s._Structure_key ' + \
+		'from GXD_Structure s, GXD_TheilerStage t ' + \
+		'where s._Stage_key = t._Stage_key ' + \
+		'and t.stage = %s ' % (str(theilerStage)) + \
+		'and s.printName = "%s" ' % (structureName), 'auto')
         if len(results) == 0:
-            errorFile.write('Invalid Structure (%d): %s:%d\n' % (lineNum, structureName, theilerStage))
+            errorFile.write('Invalid Structure (%d): %s:%s\n' % (lineNum, structureName, theilerStage))
             structureKey = 0
         else:
 	    for r in results:
@@ -913,7 +919,7 @@ def bcpFiles(
 
     # load the cache tables for the records processed (by assay Key)
 
-    for i in range(assayKey - recordsProcessed + 1, assayKey + 1):
+    for i in range(assayKey - recordsProcessed, assayKey + 1):
 	db.sql('exec GXD_loadCacheByAssay %d' % (i), None)
 
     # update the max Accession ID value
@@ -1238,4 +1244,7 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/06/18 13:19:23  lec
+# new
+#
 #

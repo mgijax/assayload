@@ -71,10 +71,10 @@ assayFile = ''          # file descriptor
 specimenFile = ''       # file descriptor
 resultsFile = ''        # file descriptor
 
-datadir = os.environ['INSITUDATADIR']
+datadir = os.environ['INSITU10DATADIR']
 
-inInSituFileName = datadir + '/tr4800/In_Situ.txt'
-inTissueFileName = datadir + '/tr4800/In_Situ_Tissues.txt'
+inInSituFileName = datadir + '/tr4800/E10.5_In_situ.txt'
+inTissueFileName = datadir + '/tr4800/E10.5_In_situ_tissues.txt'
 prepFileName = datadir + '/In_Situ_probeprep.txt'
 assayFileName = datadir + '/In_Situ_assay.txt'
 specimenFileName = datadir + '/In_Situ_specimen.txt'
@@ -107,14 +107,6 @@ pattern2 = 'Regionally restricted'
 
 mgiTypeKey = 8		# Assay
 mgiPrefix = "MGI:"
-
-# translation of ages to theiler stages
-
-ageTrans = {'28':'postnatal adult', \
-    '13':'embryonic day 8.5', \
-    '15':'embryonic day 9.5', \
-    '20':'embryonic day 12.5', \
-    '26':'embryonic day 19.0'}
 
 # translation of input file strengths and MGI strengths
 
@@ -279,9 +271,6 @@ def process():
 	    elif len(results[i]) > 3:
 		strength = strengthTrans['+']
 		pattern = pattern2
-	    else:
-		print results[i]
-		strength = 'Invalid'
 
 	    resultsFile.write(str(assay) + TAB + \
 	        str(specimen) + TAB + \
@@ -308,6 +297,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/06/18 13:33:29  lec
+# new
+#
 # Revision 1.2  2003/06/18 13:19:33  lec
 # TR 4800
 #
