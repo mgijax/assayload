@@ -4,7 +4,7 @@
 # $Name$
 
 #
-# Program: rtpcr.py
+# Program: J80502rtpcr.py
 #
 # Original Author: Lori Corbani
 #
@@ -17,7 +17,7 @@
 #
 # Usage:
 #
-#	rtpcr.py
+#	J80502rtpcr.py
 #
 # Envvars:
 #
@@ -335,6 +335,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/07/18 15:44:27  lec
+# TR 4800
+#
 # Revision 1.5  2003/06/23 17:20:47  lec
 # TR4800
 #
