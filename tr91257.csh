@@ -26,7 +26,7 @@ date > $LOG
 #use $DBNAME
 #go
 
-#update BIB_Refs set journal = 'Development' where _Refs_key = 92242
+#update BIB_Refs set journal = 'Science' where _Refs_key = 92242
 #go
 
 #declare @key integer
