@@ -610,7 +610,7 @@ def process2():
 		    pattern = patternTrans3[pResults[i]]
 		    resultNote = resultNoteTrans3[pattern]
 
-                if tissueLabels[i] in ['P-ear', 'p_OLF']:
+                if tissueLabels[i] in ['P-ear', 'P-OLF']:
 	            tNote = tissueNote[tissueLabels[i]]
 		    if len(resultNote) > 0:
 	                resultNote = resultNote + '  ' + tNote
@@ -640,6 +640,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.6  2004/11/15 13:21:13  lec
+# assayload-2-0-0
+#
 # Revision 1.5  2004/11/11 20:37:45  lec
 # TR 6118
 #
