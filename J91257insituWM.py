@@ -23,7 +23,7 @@
 #
 # Inputs:
 #
-#       E10.5_WM_Coding_Table.txt, a tab-delimited file in the format:
+#       WM_Coding_Table.txt, a tab-delimited file in the format:
 #               field 1: Gene Symbol
 #		field 2: MTF# (ignore)
 #		field 3: Image file name
@@ -71,7 +71,7 @@ resultsFile = ''        # file descriptor
 
 datadir = os.environ['WMDATADIR']
 
-inInSituFileName = datadir + '/tr6118/E10.5_WM_Coding_Table.txt'
+inInSituFileName = datadir + '/tr6118/WM_Coding_Table.txt'
 inTissueFileName = datadir + '/tr6118/WM_Tissue_Translation.txt'
 
 prepFileName = datadir + '/In_Situ_probeprep.txt'
@@ -105,11 +105,6 @@ fixation = '4% Paraformaldehyde'
 embedding = 'Not Applicable'
 specimenHybridization = 'whole mount'
 specimenNote = NULL
-
-# translation of input file strengths and MGI strengths
-strengthTrans = {'x':'Present', 
-		 '':'Absent'
-		 }
 
 mgiProbe = {}	 # dictionary of Probe Name/MGI Acc ID
 mgiMarker = {}	 # dictionary of Marker Symbol/MGI Acc ID
@@ -353,7 +348,10 @@ def process():
 
 		## Strength
 
-		strength = strengthTrans[eResults[i]]
+		if eResults[i] == 'x':
+		    strength = 'Present'
+		else:
+		    strength = 'Absent'
 
 	        if tissueLabels[i] in ['Telencephalon - d', 'Diencephalon - d', 'Spinal cord - d']:
 		    if eResults[i] == 'x' or eResults[i - 1] == 'x':
@@ -481,6 +479,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2004/11/15 13:21:13  lec
+# assayload-2-0-0
+#
 # Revision 1.2  2004/11/12 20:20:54  lec
 # TR 6118
 #
