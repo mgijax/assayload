@@ -356,6 +356,7 @@ def processAssay():
 	 indexAssay[r['_Marker_key']] = indexKey
 	 indexKey = indexKey + 1
 
+    indexedAlready = []
     for r in results[2]:
 
 	indexKey = indexAssay[r['_Marker_key']]
@@ -393,11 +394,17 @@ def processAssay():
 
 	idxStageKey = gxdloadlib.verifyIdxStage(stage, 0, errorFile)
 
+	indexedTuple = (indexKey, idxAssayKey, idxStageKey)
+	if indexedTuple in indexedAlready:
+	    continue
+
         outStagesFile.write(str(indexKey) + TAB + \
             str(idxAssayKey) + TAB + \
             str(idxStageKey) + TAB + \
 	    str(createdByKey) + TAB + str(createdByKey) + TAB + \
             loaddate + TAB + loaddate + CRT)
+
+	indexedAlready.append(indexedTuple)
 
     return
 
@@ -413,6 +420,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.13  2004/09/08 17:32:16  lec
+# TR 6118
+#
 # Revision 1.12  2004/09/08 17:30:12  lec
 # TR 6118
 #
