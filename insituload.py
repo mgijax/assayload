@@ -581,13 +581,18 @@ def processAssayFile():
         if error:
             continue
 
+	if assayProbePrep.has_key(assayID):
+	    probePrepKey = assayProbePrep[assayID]
+	else:
+	    probePrepKey = ''
+
         # if no errors, process
 
         outAssayFile.write(str(assayKey) + TAB + \
 	    str(assayTypeKey) + TAB + \
 	    str(referenceKey) + TAB + \
 	    str(markerKey) + TAB + \
-	    str(assayProbePrep[assayID]) + TAB + \
+	    str(probePrepKey) + TAB + \
 	    TAB + \
 	    TAB + \
             str(reporterGeneKey) + TAB + \
@@ -707,6 +712,7 @@ def processResultsFile():
     global resultKey
 
     prevAssay = 0
+    prevSpecimen = 0
     prevResult = 0
     lineNum = 0
     # For each line in the input file
@@ -749,6 +755,9 @@ def processResultsFile():
 	specimenKey = assaySpecimen[key]
 
 	if prevAssay != assayID:
+	    prevSpecimen = 0
+
+        if prevSpecimen != specimenKey:
 	    prevResult = 0
 
 	if prevResult != resultID:
@@ -770,6 +779,7 @@ def processResultsFile():
 	    loaddate + TAB + loaddate + CRT)
 
 	prevAssay = assayID
+	prevSpecimen = specimenKey
 	prevResult = resultID
 
     #	end of "for line in inResultsFile.readlines():"
@@ -795,6 +805,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.10  2003/09/26 16:23:56  lec
+# MGI 2.97
+#
 # Revision 1.9  2003/09/24 12:29:59  lec
 # TR 5154
 #
