@@ -4,20 +4,20 @@
 # $Name$
 
 #
-# Program: rnainsitu.py
+# Program: rnainsitu10.py
 #
 # Original Author: Lori Corbani
 #
 # Purpose:
 #
-#	To translate RNA InSitu input files into input files
+#	To translate RNA InSitu 10.5 input files into input files
 #	for the insituload.py program.
 #
 # Requirements Satisfied by This Program:
 #
 # Usage:
 #
-#	rnainsitu.py
+#	rnainsitu10.py
 #
 # Envvars:
 #
@@ -63,6 +63,7 @@ import string
 
 TAB = '\t'		# tab
 CRT = '\n'		# carriage return/newline
+NULL = ''
 
 inInSituFile = ''	# file descriptor
 inTissueFile = ''	# file descriptor
@@ -100,8 +101,8 @@ sex = 'Not Specified'
 fixation = '4% Paraformaldehyde'
 embedding = 'Not Applicable'
 specimenHybridization = 'whole mount'
-specimenNote = ''
-resultNote = ''
+specimenNote = NULL
+resultNote = NULL
 pattern1 = 'Not Specified'
 pattern2 = 'Regionally restricted'
 
@@ -297,6 +298,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/06/18 18:26:55  lec
+# TR 4800
+#
 # Revision 1.2  2003/06/18 15:56:17  lec
 # TR 4800
 #

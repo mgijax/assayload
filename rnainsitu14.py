@@ -4,20 +4,20 @@
 # $Name$
 
 #
-# Program: rnainsitu.py
+# Program: rnainsitu14.py
 #
 # Original Author: Lori Corbani
 #
 # Purpose:
 #
-#	To translate RNA InSitu input files into input files
+#	To translate RNA InSitu 14.5 input files into input files
 #	for the insituload.py program.
 #
 # Requirements Satisfied by This Program:
 #
 # Usage:
 #
-#	rnainsitu.py
+#	rnainsitu14.py
 #
 # Envvars:
 #
@@ -336,6 +336,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.6  2003/06/18 18:47:45  lec
+# TR 4800
+#
 # Revision 1.5  2003/06/18 18:26:56  lec
 # TR 4800
 #

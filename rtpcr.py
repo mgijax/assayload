@@ -66,6 +66,7 @@ import string
 
 TAB = '\t'		# tab
 CRT = '\n'		# carriage return/newline
+NULL = ''
 
 inRTPCRFile = ''	# file descriptor
 inTissueFile = ''	# file descriptor
@@ -86,10 +87,10 @@ gellaneFileName = datadir + '/RT_PCR_gellane.txt'
 gelbandFileName = datadir + '/RT_PCR_gelband.txt'
 
 # constants for primers
-regionCovered = ''
-repeatUnit = ''
+regionCovered = NULL
+repeatUnit = NULL
 moreProduct = '0'
-productSize = ''
+productSize = NULL
 
 # constants for probe prep
 prepType = 'DNA'
@@ -105,16 +106,16 @@ assayType = 'RT-PCR'
 # constants for gel lanes
 control = 'No'
 genotype = 'MGI:2166310'	# Not Specified
-sampleAmount = ''
+sampleAmount = NULL
 rnaType = 'total'
 embryonicAgeNote = 'Age of embryo at noon of plug day not specified in reference.'
 sex = 'Not Specified'
-laneNote = ''
-rowNote = ''
-bandNote = ''
+laneNote = NULL
+rowNote = NULL
+bandNote = NULL
 
 # constants for gel rows
-gelsize = ''
+gelsize = NULL
 gelunits = 'Not Specified'
 
 mgiTypeKey = 8		# Assay
@@ -290,7 +291,7 @@ def process():
 	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
 
 	    if theilerStage == 28:
-		ageNote = ''
+		ageNote = NULL
             else:
 		ageNote = embryonicAgeNote
 
@@ -332,6 +333,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2003/06/18 13:19:33  lec
+# TR 4800
+#
 # Revision 1.2  2003/06/17 15:57:02  lec
 # ok
 #
