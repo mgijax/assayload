@@ -158,12 +158,12 @@ def init():
         exit(1, 'Could not open file %s\n' % probeFileName)
 
     results = db.sql('select a.accID, m.symbol ' + \
-	'from MRK_Marker m, MRK_Current c, ACC_Accession a ' + \
+	'from MRK_Marker m, ACC_Accession a ' + \
 	'where m._Organism_key = 1 ' + \
-	'and m._Marker_key = c._Marker_key ' + \
-	'and c._Current_key = a._Object_key ' + \
+	'and m._Marker_key = a._Object_key ' + \
 	'and a._MGIType_key = 2 ' + \
 	'and a._LogicalDB_key = 1 ' + \
+	'and a.preferred = 1 ' + \
 	'and a.prefixPart= "MGI:" ', 'auto')
     for r in results:
 	mgiMarkers[r['symbol']] = r['accID']
@@ -303,6 +303,9 @@ process(inProbeFile2, vectorType2, strain2, tissue2, age2)
 exit(0)
 
 # $Log$
+# Revision 1.12  2004/11/29 18:58:58  lec
+# TR 6118
+#
 # Revision 1.11  2004/11/29 18:56:23  lec
 # TR 6118
 #
