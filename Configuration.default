@@ -34,6 +34,9 @@ setenv PROBELOAD	/usr/local/mgi/live/dataload/probeload/probeload.py
 # Primer load
 setenv PRIMERLOAD	/usr/local/mgi/live/dataload/probeload/primerload.py
 
+# Reference load
+setenv MRKREFLOAD	/usr/local/mgi/live/dbutils/mrkrefload/mrkref.sh
+
 # Load Mode
 setenv LOADMODE		load
 
