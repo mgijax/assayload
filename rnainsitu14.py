@@ -217,7 +217,7 @@ def process():
 	# grab the Tissue headings
 
 	if assay == 0:
-	    tissueLabels = tokens[7:-1]
+	    tissueLabels = tokens[7:]
 	    assay = assay + 1
 	    continue
 
@@ -336,6 +336,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.4  2003/06/18 17:57:14  lec
+# TR 4800
+#
 # Revision 1.3  2003/06/18 15:39:24  lec
 # new
 #

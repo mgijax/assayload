@@ -203,7 +203,7 @@ def process():
 	# grab the Tissue headings
 
 	if assay == 0:
-	    tissueLabels = tokens[4:-1]
+	    tissueLabels = tokens[4:]
 	    assay = assay + 1
 	    continue
 
@@ -214,7 +214,7 @@ def process():
 	    mouseGene = tokens[1]
 	    accID = tokens[2]
 	    humanGene = tokens[3]
-	    results = tokens[4:-1]
+	    results = tokens[4:]
 	    probeID = 'MGI:35046'
 #	    probeID = tokens[]
 
@@ -297,6 +297,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/06/18 15:56:17  lec
+# TR 4800
+#
 # Revision 1.1  2003/06/18 13:33:29  lec
 # new
 #
