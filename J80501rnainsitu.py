@@ -288,6 +288,7 @@ def process():
     
 	    # Translate the Tissue into a Tissue and Age
 	    [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
+	    resultNote = NULL
 
 	    # if Wh_emb = (+) and other tissues have no results, then ignore other tissues
 	    # if Wh_emb = (+) and other tissues have results, then process other tissues
@@ -295,23 +296,24 @@ def process():
 	    # if Wh_emb = null, then process other tissues
 
 	    if tissueLabels[i] == 'Wh_emb':
+
 		if results[i] == '':
 		    continue	# skip processing of Wh_emb
 
-	        strength = strengthTrans[results[i]]
-	        pattern = patternTrans[results[i]]
-	        resultNote = resultNoteTrans[tissueLabels[i]]
+		# deterimne if remaining tissues have results
 
-		# if any other tissues have results, then process them
 		ignoreRemainingTissues = 1
+
 	        if results[i] == '(+)':
+	            resultNote = resultNoteTrans[tissueLabels[i]]
 		    for j in range(2, len(tissueLabels)):
 	                if results[j] != '':
 		            ignoreRemainingTissues = 0
-            else:
-	        strength = strengthTrans[results[i]]
-	        pattern = patternTrans[results[i]]
-		resultNote = NULL
+
+	    # process tissue
+
+	    strength = strengthTrans[results[i]]
+	    pattern = patternTrans[results[i]]
 
 	    resultsFile.write(str(assayKey) + TAB + \
 	        str(specimenKey) + TAB + \
@@ -341,6 +343,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.2  2003/09/19 18:42:55  lec
+# TR 5154
+#
 # Revision 1.1  2003/09/19 18:09:01  lec
 # TR 5154
 #
