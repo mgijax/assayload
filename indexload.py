@@ -62,6 +62,7 @@ import mgi_utils
 import accessionlib
 import agelib
 import loadlib
+import gxdloadlib
 
 #globals
 
@@ -73,6 +74,7 @@ bcpdelim = TAB		# bcp file delimiter
 bcpon = 1		# can the bcp files be bcp-ed into the database?  default is yes.
 
 datadir = os.environ['ASSAYLOADDATADIR']	# file which contains the data files
+createdBy = os.environ['CREATEDBY']
 
 diagFile = ''		# diagnostic file descriptor
 errorFile = ''		# error file descriptor
@@ -95,6 +97,7 @@ passwordFileName = ''	# password file name
 mode = ''		# processing mode (load, preview)
 reference = ''		# reference (J:)
 referenceKey = ''	# reference key
+priorityKey = ''	# priority key
 
 # primary keys
 
@@ -102,49 +105,6 @@ indexKey = 0		# GXD_ProbePrep._ProbePrep_key
 
 # constants
 indexComments = 'Age of embryo at noon of plug day not specified in reference.'
-
-stageDict = {'0.5' : 0, \
-    '1.0' : 1, \
-    '1.5' : 2, \
-    '2.0' : 3, \
-    '2.5' : 4, \
-    '3.0' : 5, \
-    '3.5' : 6, \
-    '4.0' : 7, \
-    '4.5' : 8, \
-    '5.0' : 9, \
-    '5.5' : 10, \
-    '6.0' : 11, \
-    '6.5' : 12, \
-    '7.0' : 13, \
-    '7.5' : 14, \
-    '8.0' : 15, \
-    '8.5' : 16, \
-    '9.0' : 17, \
-    '9.5' : 18, \
-    '10.0' : 19, \
-    '10.5' : 20, \
-    '11.0' : 21, \
-    '11.5' : 22, \
-    '12.0' : 23, \
-    '12.5' : 24, \
-    '13.0' : 25, \
-    '13.5' : 26, \
-    '14.0' : 27, \
-    '14.5' : 28, \
-    '15.0' : 29, \
-    '15.5' : 30, \
-    '16.0' : 31, \
-    '16.5' : 32, \
-    '17.0' : 33, \
-    '17.5' : 34, \
-    '18.0' : 35, \
-    '18.5' : 36, \
-    '19.0' : 37, \
-    '19.5' : 38, \
-    '20' : 39, \
-    'E' : 40, \
-    'A' : 41}
 
 loaddate = loadlib.loaddate
 
@@ -201,7 +161,7 @@ def init():
     global diagFile, errorFile, inputFile, errorFileName, diagFileName, passwordFileName
     global mode, reference
     global outIndexFile, outStagesFile
-    global referenceKey
+    global referenceKey, priorityKey
  
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'S:D:U:P:M:R:')
@@ -283,6 +243,7 @@ def init():
     errorFile.write('Start Date/Time: %s\n\n' % (mgi_utils.date()))
 
     referenceKey = loadlib.verifyReference(reference, 0, errorFile)
+    priorityKey = gxdloadlib.verifyIdxPriority(os.environ['IDXPRIORITY'], 0, errorFile)
 
     return
 
@@ -389,65 +350,22 @@ def processAssay():
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
 	     indexComments + TAB + \
+	     createdBy + TAB + createdBy + TAB + \
 	     loaddate + TAB + loaddate + CRT)
 
 	 indexAssay[r['_Marker_key']] = indexKey
 	 indexKey = indexKey + 1
 
-    prevMarker = ''
-    prevStage = ''
-    insitu_protein_section = 0
-    insitu_rna_section = 0
-    insitu_protein_mount = 0
-    insitu_rna_mount = 0
-    northern = 0
-    western = 0
-    rt_pcr = 0
-    clones = 0
-    rnase = 0
-    nuclease = 0
-    primer_extension = 0
-
     for r in results[2]:
 
-	if prevMarker != r['_Marker_key'] or prevStage != r['age']:
-
-	   if prevStage != '':
-               outStagesFile.write(str(indexKey) + TAB + \
-	           str(stageKey) + TAB + \
-	           str(insitu_protein_section) + TAB + \
-	           str(insitu_rna_section) + TAB + \
-	           str(insitu_protein_mount) + TAB + \
-	           str(insitu_rna_mount) + TAB + \
-	           str(northern) + TAB + \
-	           str(western) + TAB + \
-	           str(rt_pcr) + TAB + \
-	           str(clones) + TAB + \
-	           str(rnase) + TAB + \
-	           str(nuclease) + TAB + \
-	           str(primer_extension) + TAB + \
-	           loaddate + TAB + loaddate + CRT)
-
-	   insitu_protein_section = 0
-	   insitu_rna_section = 0
-	   insitu_protein_mount = 0
-	   insitu_rna_mount = 0
-	   northern = 0
-	   western = 0
-	   rt_pcr = 0
-	   clones = 0
-	   rnase = 0
-	   nuclease = 0
-	   primer_extension = 0
+	indexKey = indexAssay[r['_Marker_key']]
 
 	if r['_AssayType_key'] == 1 and r['hybridization'] == 'whole mount':
-	    insitu_rna_mount = 1
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('RNA-WM', 0, errorFile)
 	elif r['_AssayType_key'] == 1 and r['hybridization'] == 'section':
-	    insitu_rna_section = 1
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('RNA-sxn', 0, errorFile)
 	elif r['_AssayType_key'] == 5:
-	    rt_pcr = 1
-
-	indexKey = indexAssay[r['_Marker_key']]
+	    idxAssayKey = gxdloadlib.verifyIdxAssay('RT-PCR', 0, errorFile)
 
 	if string.find(r['age'], 'embryonic day') >= 0:
 	    i = string.find(r['age'], 'embryonic day')
@@ -455,24 +373,13 @@ def processAssay():
 	elif string.find(r['age'], 'postnatal') >= 0:
 	   stage = 'A'
 
-	stageKey = stageDict[stage]
-	prevStage = r['age']
-	prevMarker = r['_Marker_key']
+	idxStageKey = gxdloadlib.verifyIdxStage(stage, 0, errorFile)
 
-    outStagesFile.write(str(indexKey) + TAB + \
-        str(stageKey) + TAB + \
-        str(insitu_protein_section) + TAB + \
-        str(insitu_rna_section) + TAB + \
-        str(insitu_protein_mount) + TAB + \
-        str(insitu_rna_mount) + TAB + \
-        str(northern) + TAB + \
-        str(western) + TAB + \
-        str(rt_pcr) + TAB + \
-        str(clones) + TAB + \
-        str(rnase) + TAB + \
-        str(nuclease) + TAB + \
-        str(primer_extension) + TAB + \
-        loaddate + TAB + loaddate + CRT)
+        outStagesFile.write(str(indexKey) + TAB + \
+            str(idxAssayKey) + TAB + \
+            str(idxStageKey) + TAB + \
+	    createdBy + TAB + createdBy + TAB + \
+            loaddate + TAB + loaddate + CRT)
 
     return
 
@@ -488,6 +395,9 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.4  2003/09/24 12:29:58  lec
+# TR 5154
+#
 # Revision 1.3  2003/09/22 13:24:00  lec
 # TR 5154
 #

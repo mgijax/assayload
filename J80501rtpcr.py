@@ -92,7 +92,7 @@ moreProduct = '0'
 productSize = NULL
 
 # constants for probe prep
-prepType = 'DNA'
+prepType = 'Not Specified'
 hybridization = 'Not Applicable'
 labelledWith = 'Not Applicable'
 labelCoverage = 'Not Applicable'
@@ -106,7 +106,7 @@ createdBy = os.environ['CREATEDBY']
 # constants for gel lanes
 control = 'No'
 genotype = 'MGI:2166310'	# Not Specified
-sampleAmount = NULL
+sampleAmount = '2'
 rnaType = 'total'
 embryonicAgeNote = 'Age of embryo at noon of plug day not specified in reference.'
 sex = 'Not Specified'
@@ -335,4 +335,7 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.1  2003/09/19 18:09:02  lec
+# TR 5154
+#
 #

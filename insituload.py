@@ -570,13 +570,12 @@ def processAssayFile():
             # set error flag to true
             error = 1
 
-#        if len(reporterGene) > 0:
-#            reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
-#	    if reporterGeneKey == 0:
-#                error = 1
-#        else:
-#            reporterGeneKey = ''
-        reporterGeneKey = ''
+        if len(reporterGene) > 0:
+            reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
+	    if reporterGeneKey == 0:
+                error = 1
+        else:
+            reporterGeneKey = ''
 
         # if errors, continue to next record
         if error:
@@ -591,9 +590,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
-#            str(reporterGeneKey) + TAB + \
-#            createdBy + TAB + \
-#            createdBy + TAB + \
+            str(reporterGeneKey) + TAB + \
+            createdBy + TAB + \
+            createdBy + TAB + \
 	    loaddate + TAB + loaddate + CRT)
 
         # MGI Accession ID for the assay
@@ -796,6 +795,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.9  2003/09/24 12:29:59  lec
+# TR 5154
+#
 # Revision 1.8  2003/07/18 15:44:09  lec
 # rtpcr.py
 #

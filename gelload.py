@@ -769,9 +769,9 @@ def processAssayFile():
 	    str(assayProbePrep[assayID]) + TAB + \
 	    TAB + \
 	    TAB + \
-#	    TAB + \
-#	    createdBy + TAB + \
-#	    createdBy + TAB + \
+	    TAB + \
+	    createdBy + TAB + \
+	    createdBy + TAB + \
 	    loaddate + TAB + loaddate + CRT)
 
         # MGI Accession ID for the assay
@@ -984,6 +984,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.9  2003/09/24 12:29:58  lec
+# TR 5154
+#
 # Revision 1.8  2003/07/18 15:44:09  lec
 # rtpcr.py
 #
