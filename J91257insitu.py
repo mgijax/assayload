@@ -129,6 +129,7 @@ specimenNote = NULL
 strengthTrans1 = {'1':'Present', 
 		 '2':'Weak', 
 		 '3':'Absent',
+		 ' ':'Absent',
 		 NULL:'Absent'
 		 }
 
@@ -137,6 +138,7 @@ patternTrans1 = {'1':'Regionally restricted',
                 '2':'Regionally restricted', 
 		'3':'Not Specified', 
 		'4':'Not Specified',
+		' ':'Not Specified',
 		 NULL:'Not Specified',
 		 'Absent':'Not Applicable'
 		} 
@@ -144,6 +146,7 @@ patternTrans1 = {'1':'Regionally restricted',
 resultNoteTrans1 = {'1':'Expression was neural specific.', 
 		   '2':'Expression was non-neural specific.', 
 		   '3':'Expression was detected in neural and non-neural tissue.',
+		   '4':NULL,
 		   'Not Specified':NULL,
 		   'Not Applicable':NULL,
 		   NULL:NULL,
@@ -172,13 +175,15 @@ resultNoteTrans2 = {'Single cells':'Expression was detected in some cells.',
 strengthTrans3 = {'1':'Present', 
 		 '2':'Present', 
 		 NULL:'Absent',
-		 ' ':'Absent'
+		 ' ':'Absent',
+		 '  ':'Absent'
 		 }
 
 patternTrans3 = {'1':'Single cells', 
 		 '2':'Homogeneous', 
 		 NULL:'Not Applicable',
-		 ' ':'Not Applicable'
+		 ' ':'Not Applicable',
+		 '  ':'Not Applicable'
 		}
 
 resultNoteTrans3 = {'Single cells':'Expression was detected in some cells.', 
@@ -621,6 +626,9 @@ process2()
 exit(0)
 
 # $Log$
+# Revision 1.4  2004/10/14 16:58:10  lec
+# TR 6118
+#
 # Revision 1.3  2004/09/16 13:25:03  lec
 # TR 6118
 #

@@ -21,6 +21,24 @@ touch $LOG
  
 date > $LOG
  
+cat - <<EOSQL | doisql.csh $0 >> $LOG
+
+use $DBNAME
+go
+
+declare @key integer
+select @key = max(_Source_key) + 1 from PRB_Source
+insert into PRB_Source 
+values(@key,63468,316367,1,433,450,315167,316335,null,null,null,'embryonic day 13.5',13.5,13.5,0,1000,1000,getdate(),getdate())
+go
+
+checkpoint
+go
+
+quit
+
+EOSQL
+
 cd ${INSITUDATADIR}
 
 ${ASSAYLOADINSTALLDIR}/J91257probe.py

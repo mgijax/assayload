@@ -23,7 +23,7 @@
 #
 # Inputs:
 #
-#       tr6118/Probes_table.txt, a tab-delimited file in the format:
+#       tr6118/Probes_Table.txt, a tab-delimited file in the format:
 #               field 1: Marker Symbol
 #               field 2: Probe Name
 #               field 3: RCN5
@@ -77,7 +77,7 @@ probeFile = ''		# file descriptor
 
 datadir = os.environ['INSITUDATADIR']
 
-inProbeFileName = datadir + '/tr6118/Probes_table.txt'
+inProbeFileName = datadir + '/tr6118/Probes_Table.txt'
 
 probeFileName = datadir + '/probe.txt'
 
@@ -184,7 +184,7 @@ def process():
 	    site2 = tokens[5]
 	    iSize = tokens[6]
 #	    authorGenBank = tokens[7]
-	    sequenceID = tokens[8]
+	    sequenceID = string.strip(tokens[8])
 #	    author5 = tokens[9]
 	    primer5 = tokens[10]
 #	    author3 = tokens[11]
@@ -262,6 +262,9 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.3  2004/11/05 16:00:31  lec
+# TR 6118
+#
 # Revision 1.2  2004/10/14 16:58:10  lec
 # TR 6118
 #
