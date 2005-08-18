@@ -13,20 +13,23 @@ setenv ASSAYLOADINSTALLDIR	/usr/local/mgi/live/dataload/assayload
 # system doc directory
 setenv ASSAYLOADSYSTEMDOCDIR	${ASSAYLOADINSTALLDIR}/system_docs
 
-# data directory
-setenv ASSAYLOADDATADIR		${ASSAYLOADINSTALLDIR}/data
+# data, log and report directories
+setenv FILEDIR		/data/loads/mgi/assayload
+setenv DATADIR		${FILEDIR}/data
+setenv LOGDIR		${FILEDIR}/logs
+setenv RPTDIR		${FILEDIR}/reports
 
 # schema directory
 setenv SCHEMADIR		/usr/local/mgi/live/dbutils/mgd/mgddbschema
 
 # RT-PCR data
-setenv RTPCRDATADIR	${ASSAYLOADDATADIR}/rtpcr
+setenv RTPCRDATADIR	${DATADIR}/rtpcr
 
 # In Situ data
-setenv INSITUDATADIR	${ASSAYLOADDATADIR}/insitu
+setenv INSITUDATADIR	${DATADIR}/insitu
 
 # Whole Mount In Situ data
-setenv WMDATADIR	${ASSAYLOADDATADIR}/insituWM
+setenv WMDATADIR	${DATADIR}/insituWM
 
 # Probe load
 setenv PROBELOAD	/usr/local/mgi/live/dataload/probeload/probeload.py
@@ -35,14 +38,14 @@ setenv PROBELOAD	/usr/local/mgi/live/dataload/probeload/probeload.py
 setenv PRIMERLOAD	/usr/local/mgi/live/dataload/probeload/primerload.py
 
 # Reference load
-setenv MRKREFLOAD	/usr/local/mgi/live/dbutils/mrkrefload/mrkref.sh
+setenv MRKREFLOAD	/usr/local/mgi/live/dbutils/mrkcacheload/mrkref.csh
 
 # Load Mode
 setenv LOADMODE		load
 
 # Index: Priority, Comments
 setenv IDXPRIORITY	High
-setenv IDXCOMMENTS      ""
+setenv IDXCOMMENTS	""
 
 # Created By
 setenv CREATEDBY	jfinger
