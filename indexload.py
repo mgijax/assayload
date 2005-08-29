@@ -71,7 +71,7 @@ bcpdelim = TAB		# bcp file delimiter
 
 bcpon = 1		# can the bcp files be bcp-ed into the database?  default is yes.
 
-datadir = os.environ['ASSAYLOADDATADIR']	# file which contains the data files
+datadir = os.environ['DATADIR']	# file which contains the data files
 createdBy = os.environ['CREATEDBY']
 
 diagFile = ''		# diagnostic file descriptor
@@ -203,8 +203,8 @@ def init():
     db.useOneConnection(1)
  
     fdate = mgi_utils.date('%m%d%Y')	# current date
-    diagFileName = sys.argv[0] + '.' + fdate + '.diagnostics'
-    errorFileName = sys.argv[0] + '.' + fdate + '.error'
+    diagFileName = datadir + '/indexload.' + fdate + '.diagnostics'
+    errorFileName = datadir + '/indexload.' + fdate + '.error'
 
     try:
         diagFile = open(diagFileName, 'w')
@@ -420,6 +420,12 @@ bcpFiles()
 exit(0)
 
 # $Log$
+# Revision 1.14.2.1  2005/08/18 14:24:54  dbm
+# Changes for TR 6739
+#
+# Revision 1.14  2005/02/03 14:28:51  lec
+# fix duplicate Index_Stage records
+#
 # Revision 1.13  2004/09/08 17:32:16  lec
 # TR 6118
 #

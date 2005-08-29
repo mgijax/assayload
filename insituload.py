@@ -74,6 +74,7 @@
 #		field 6: MGI Structure Name
 #		field 7: MGI Structure Theiler Stage
 #		field 8: Result Note
+#		field 9: Comma-Separated Image Names (if any)
 #
 # Outputs:
 #
@@ -147,6 +148,7 @@ outSpecimenFile = ''	# file descriptor
 outResultStFile = ''	# file descriptor
 outResultFile = ''	# file descriptor
 outAccFile = ''         # file descriptor
+outResultImageFile = '' # file descriptor
 
 probeprepTable = 'GXD_ProbePrep'
 assayTable = 'GXD_Assay'
@@ -163,6 +165,7 @@ outSpecimenFileName = datadir + '/' + specimenTable + '.bcp'
 outResultFileName = datadir + '/' + resultTable + '.bcp'
 outResultStFileName = datadir + '/' + resultStTable + '.bcp'
 outAccFileName = datadir + '/' + accTable + '.bcp'
+outResultImageFileName = datadir + '/Result_Image.txt'
 
 diagFileName = ''	# diagnostic file name
 errorFileName = ''	# error file name
@@ -190,6 +193,8 @@ accPreferred = '1'      # Preferred status MGI accession ID (true)
 assayProbePrep = {}	# Assay ID/Probe Prep keys
 assayAssay= {}		# Assay ID/Assay keys
 assaySpecimen = {}	# Assay ID/Specimen ID and Specimen keys
+
+ASSAY_NOTE_LENGTH = 255
 
 loaddate = loadlib.loaddate
 
@@ -219,6 +224,8 @@ def exit(
     message = None   # exit message (string)
     ):
 
+    outResultImageFile.close()
+
     if message is not None:
         sys.stderr.write('\n' + str(message) + '\n')
  
@@ -246,6 +253,7 @@ def init():
     global mode
     global outAccFile, outPrepFile, outAssayFile, outAssayNoteFile
     global outSpecimenFile, outResultStFile, outResultFile
+    global outResultImageFile
     global inPrepFile, inAssayFile, inSpecimenFile, inResultsFile
  
     try:
@@ -287,8 +295,8 @@ def init():
     db.useOneConnection(1)
  
     fdate = mgi_utils.date('%m%d%Y')	# current date
-    diagFileName = sys.argv[0] + '.' + fdate + '.diagnostics'
-    errorFileName = sys.argv[0] + '.' + fdate + '.error'
+    diagFileName = datadir + '/insituload.' + fdate + '.diagnostics'
+    errorFileName = datadir + '/insituload.' + fdate + '.error'
 
     try:
         diagFile = open(diagFileName, 'w')
@@ -358,6 +366,11 @@ def init():
         outAccFile = open(outAccFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % outAccFileName)
+
+    try:
+        outResultImageFile = open(outResultImageFileName, 'w')
+    except:
+        exit(1, 'Could not open file %s\n' % outResultImageFileName)
 
     # Log all SQL
     db.set_sqlLogFunction(db.sqlLogAll)
@@ -614,10 +627,15 @@ def processAssayFile():
 	    loaddate + TAB + loaddate + CRT)
 
 	if len(note) > 0:
-	    outAssayNoteFile.write(str(assayKey) + TAB + \
-		'1' + TAB + \
-		note + TAB + \
-		loaddate + TAB + loaddate + CRT)
+	    i = 0
+	    sequenceNum = 1
+	    while i < len(note):
+		outAssayNoteFile.write(str(assayKey) + TAB + \
+		    str(sequenceNum) + TAB + \
+		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+		    loaddate + TAB + loaddate + CRT)
+		i = i + ASSAY_NOTE_LENGTH
+		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
@@ -755,6 +773,7 @@ def processResultsFile():
 	    structureName = tokens[5]
 	    structureTS = tokens[6]
 	    resultNote = tokens[7]
+	    images = tokens[8]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
@@ -783,16 +802,23 @@ def processResultsFile():
 
 	if prevResult != resultID:
 
-          resultKey = resultKey + 1
+            resultKey = resultKey + 1
 
-          outResultFile.write(
-	      str(resultKey) + TAB + \
-	      str(specimenKey) + TAB + \
-	      str(strengthKey) + TAB + \
-	      str(patternKey) + TAB + \
-	      resultID + TAB + \
-	      mgi_utils.prvalue(resultNote) + TAB + \
-	      loaddate + TAB + loaddate + CRT)
+            outResultFile.write(
+	        str(resultKey) + TAB + \
+	        str(specimenKey) + TAB + \
+	        str(strengthKey) + TAB + \
+	        str(patternKey) + TAB + \
+	        resultID + TAB + \
+	        mgi_utils.prvalue(resultNote) + TAB + \
+	        loaddate + TAB + loaddate + CRT)
+
+            for image in string.split(images,','):
+                if image != '':
+                    imageParts = string.split(image,' ',1)
+                    outResultImageFile.write(str(resultKey) + TAB + \
+                                             imageParts[0] + TAB + \
+                                             imageParts[1] + CRT)
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
@@ -826,6 +852,12 @@ process()
 exit(0)
 
 # $Log$
+# Revision 1.14.2.1  2005/08/18 14:24:55  dbm
+# Changes for TR 6739
+#
+# Revision 1.14  2004/09/08 12:41:15  lec
+# TR 6118
+#
 # Revision 1.13  2003/10/01 17:53:09  lec
 # removed unnecessary imports
 #
