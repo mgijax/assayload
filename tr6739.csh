@@ -14,7 +14,7 @@
 
 cd `dirname $0` && source ./Configuration
 
-setenv LOG ${LOGDIR}/$0.log
+setenv LOG ${LOGDIR}/`basename $0`.log
 rm -rf $LOG
  
 date > $LOG
