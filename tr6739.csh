@@ -26,7 +26,7 @@ cd ${DATADIR}
 #
 echo "" >>& $LOG
 echo "Create the temp tables" >>& $LOG
-cat - <<EOSQL | doisql.csh $0 >> $LOG
+cat - <<EOSQL | doisql.csh ${MGD_DBSERVER} ${MGD_DBNAME} $0 >> $LOG
 
 use tempdb
 go
@@ -88,7 +88,7 @@ ${ASSAYLOADINSTALLDIR}/tr6739probe.py >>& $LOG
 #
 echo "" >>& $LOG
 echo "Call probeload.py" >>& $LOG
-${PROBELOAD} -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} -Iprobe.txt >>& $LOG
+${PROBELOAD} -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -Iprobe.txt >>& $LOG
 
 
 #
@@ -104,7 +104,7 @@ ${ASSAYLOADINSTALLDIR}/tr6739insitu.py >>& $LOG
 #
 echo "" >>& $LOG
 echo "Call insituload.py" >>& $LOG
-${ASSAYLOADINSTALLDIR}/insituload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOADINSTALLDIR}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
 
 
 #
@@ -135,7 +135,7 @@ EOSQL
 #
 echo "" >>& $LOG
 echo "Call indexload.py" >>& $LOG
-${ASSAYLOADINSTALLDIR}/indexload.py -S${DBSERVER} -D${DBNAME} -U${DBUSER} -P${DBPASSWORDFILE} -M${LOADMODE} -RJ:93300 >>& $LOG
+${ASSAYLOADINSTALLDIR}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:93300 >>& $LOG
 
 
 #

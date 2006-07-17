@@ -7,20 +7,20 @@
 # env variables
 #
 
-# install directory
-setenv ASSAYLOADINSTALLDIR	/usr/local/mgi/live/dataload/assayload
+if ( ${?MGICONFIG} == 0 ) then
+	setenv MGICONFIG /usr/local/mgi/live/mgiconfig
+endif
 
-# system doc directory
-setenv ASSAYLOADSYSTEMDOCDIR	${ASSAYLOADINSTALLDIR}/system_docs
+source ${MGICONFIG}/master.config.csh
+
+# install directory
+setenv ASSAYLOADINSTALLDIR	${DATALOAD}/assayload
 
 # data, log and report directories
 setenv FILEDIR		/data/loads/mgi/assayload
 setenv DATADIR		${FILEDIR}/data
 setenv LOGDIR		${FILEDIR}/logs
 setenv RPTDIR		${FILEDIR}/reports
-
-# schema directory
-setenv SCHEMADIR		/usr/local/mgi/live/dbutils/mgd/mgddbschema
 
 # RT-PCR data
 setenv RTPCRDATADIR	${DATADIR}/rtpcr
@@ -32,13 +32,13 @@ setenv INSITUDATADIR	${DATADIR}/insitu
 setenv WMDATADIR	${DATADIR}/insituWM
 
 # Probe load
-setenv PROBELOAD	/usr/local/mgi/live/dataload/probeload/probeload.py
+setenv PROBELOAD	${DATALOAD}/probeload/probeload.py
 
 # Primer load
-setenv PRIMERLOAD	/usr/local/mgi/live/dataload/probeload/primerload.py
+setenv PRIMERLOAD	${DATALOAD}/probeload/primerload.py
 
 # Reference load
-setenv MRKREFLOAD	/usr/local/mgi/live/dbutils/mrkcacheload/mrkref.csh
+setenv MRKREFLOAD	${DBUTILS}/mrkcacheload/mrkref.csh
 
 # Load Mode
 setenv LOADMODE		load
@@ -49,6 +49,4 @@ setenv IDXCOMMENTS	""
 
 # Created By
 setenv CREATEDBY	jfinger
-
-source ${SCHEMADIR}/Configuration
 
