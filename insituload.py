@@ -789,6 +789,11 @@ def processResultsFile():
         # if no errors, process
 
 	key = '%s:%s' % (assayID, specimenID)
+
+	if not assaySpecimen.has_key(key):
+	    errorFile.write('Cannot find Assay:Speciman key "%s"\n' % (key))
+	    continue
+
 	specimenKey = assaySpecimen[key]
 
 	if prevAssay != assayID:
