@@ -16,37 +16,11 @@ source ${MGICONFIG}/master.config.csh
 # install directory
 setenv ASSAYLOADINSTALLDIR	${DATALOAD}/assayload
 
-# data, log and report directories
-setenv FILEDIR		/data/loads/mgi/assayload
-setenv DATADIR		${FILEDIR}/data
-setenv LOGDIR		${FILEDIR}/logs
-setenv RPTDIR		${FILEDIR}/reports
-
-# RT-PCR data
-setenv RTPCRDATADIR	${DATADIR}/rtpcr
-
-# In Situ data
-setenv INSITUDATADIR	${DATADIR}/insitu
-
-# Whole Mount In Situ data
-setenv WMDATADIR	${DATADIR}/insituWM
+# Reference load
+setenv MRKREFLOAD	${DBUTILS}/mrkcacheload/mrkref.csh
 
 # Probe load
 setenv PROBELOAD	${DATALOAD}/probeload/probeload.py
 
 # Primer load
 setenv PRIMERLOAD	${DATALOAD}/probeload/primerload.py
-
-# Reference load
-setenv MRKREFLOAD	${DBUTILS}/mrkcacheload/mrkref.csh
-
-# Load Mode
-setenv LOADMODE		load
-
-# Index: Priority, Comments
-setenv IDXPRIORITY	High
-setenv IDXCOMMENTS	""
-
-# Created By
-setenv CREATEDBY	jfinger
-
