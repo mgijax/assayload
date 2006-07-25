@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: indexload.py
 #
@@ -419,50 +416,3 @@ processAssay()
 bcpFiles()
 exit(0)
 
-# $Log$
-# Revision 1.14.2.1  2005/08/18 14:24:54  dbm
-# Changes for TR 6739
-#
-# Revision 1.14  2005/02/03 14:28:51  lec
-# fix duplicate Index_Stage records
-#
-# Revision 1.13  2004/09/08 17:32:16  lec
-# TR 6118
-#
-# Revision 1.12  2004/09/08 17:30:12  lec
-# TR 6118
-#
-# Revision 1.11  2004/09/08 17:25:08  lec
-# TR 6118
-#
-# Revision 1.10  2004/09/08 17:20:38  lec
-# TR 6118
-#
-# Revision 1.9  2003/10/01 17:47:39  lec
-# removed unnecessary imports
-#
-# Revision 1.8  2003/10/01 17:44:45  lec
-# removed unnecessary imports
-#
-# Revision 1.7  2003/10/01 17:43:34  lec
-# removed unnecessary imports
-#
-# Revision 1.6  2003/09/26 17:30:15  lec
-# MGI 2.97
-#
-# Revision 1.5  2003/09/26 16:23:56  lec
-# MGI 2.97
-#
-# Revision 1.4  2003/09/24 12:29:58  lec
-# TR 5154
-#
-# Revision 1.3  2003/09/22 13:24:00  lec
-# TR 5154
-#
-# Revision 1.2  2003/09/22 11:56:56  lec
-# TR 5154
-#
-# Revision 1.1  2003/09/09 15:29:48  lec
-# TR 5125
-#
-#

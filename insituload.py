@@ -812,10 +812,14 @@ def processResultsFile():
 
             for image in string.split(images,','):
                 if image != '':
-                    imageParts = string.split(image,' ',1)
-                    outResultImageFile.write(str(resultKey) + TAB + \
+                    imageParts = string.split(image, ' ', 1)
+		    if len(imageParts) > 1:
+                        outResultImageFile.write(str(resultKey) + TAB + \
                                              imageParts[0] + TAB + \
                                              imageParts[1] + CRT)
+                    else:
+                        outResultImageFile.write(str(resultKey) + TAB + \
+                                             imageParts[0] + CRT)
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \

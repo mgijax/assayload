@@ -338,7 +338,8 @@ def process():
 		result['pattern'] + TAB + \
 		result['structure1'] + TAB + \
 		str(theilerStage) + TAB + \
-		result['resultsNotes'] + CRT)
+		result['resultsNotes'] + TAB + \
+		imageJPG + CRT)
 
 	    if len(result['structure2']) > 0:
 
@@ -351,7 +352,8 @@ def process():
 		    result['pattern'] + TAB + \
 		    result['structure2'] + TAB + \
 		    str(theilerStage) + TAB + \
-		    result['resultsNotes'] + CRT)
+		    result['resultsNotes'] + TAB + \
+		    imageJPG + CRT)
 
     # end of "for line in inTable.readlines():"
 
