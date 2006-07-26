@@ -14,9 +14,10 @@
 
 cd `dirname $0` && source ./tr7819.config
 
+${DBUTILS}/bin/load_db.csh ${MGD_DBSERVER} ${MGD_DBNAME} /shire/sybase/mgd.backup
+
 ./tr7819.py
 ./insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE}
-#./indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:101679
 
-#${MRKREFLOAD}
+${MRKREFLOAD}
 
