@@ -230,6 +230,7 @@ def init():
 	value['pattern'] = pattern
 	value['strength'] = strength
 	value['resultsNotes'] = resultsNotes
+
 	resultsDict[key] = value
 
     inResultsFile.close()
@@ -243,8 +244,10 @@ def init():
 def process():
 
     assayKey = 0
+    specimenKey = 0
     assayList = []
     specimenList = []
+    specimenKeyList = {}
 
     # For each line in the input file
 
@@ -325,37 +328,54 @@ def process():
 
 	    specimenList.append(specimenLabel)
 
-	    # write results for specimen
+	resultKey = organSystem + organ + organStructure + cellType + intensity + distribution
+	key = '%s:%s:%s' % (assayKey, specimenKey, imageJPG)
 
-	    key = organSystem + organ + organStructure + cellType + intensity + distribution
-	    result = resultsDict[key]
-	    resultKey = 1
-
-	    resultsFile.write(str(assayKey) + TAB + \
-	        str(specimenKey) + TAB + \
-	        str(resultKey) + TAB + \
-		result['strength'] + TAB + \
-		result['pattern'] + TAB + \
-		result['structure1'] + TAB + \
-		str(theilerStage) + TAB + \
-		result['resultsNotes'] + TAB + \
-		imageJPG + CRT)
-
-	    if len(result['structure2']) > 0:
-
-	        resultKey = 2
-
-	        resultsFile.write(str(assayKey) + TAB + \
-	            str(specimenKey) + TAB + \
-	            str(resultKey) + TAB + \
-		    result['strength'] + TAB + \
-		    result['pattern'] + TAB + \
-		    result['structure2'] + TAB + \
-		    str(theilerStage) + TAB + \
-		    result['resultsNotes'] + TAB + \
-		    imageJPG + CRT)
+	if not specimenKeyList.has_key(key):
+	    specimenKeyList[key] = []
+	specimenKeyList[key].append(resultKey)
 
     # end of "for line in inTable.readlines():"
+
+    # results
+
+    specimenKeyList.keys().sort
+
+    for k in specimenKeyList.keys():
+
+        resultKey = 0
+
+	for rKey in specimenKeyList[k]:
+
+	    (aKey, sKey, imageJPG) = string.split(k, ':')
+
+	    r = resultsDict[rKey]
+
+            resultKey = resultKey + 1
+    
+            resultsFile.write(str(aKey) + TAB + \
+	            str(sKey) + TAB + \
+	            str(resultKey) + TAB + \
+		    r['strength'] + TAB + \
+		    r['pattern'] + TAB + \
+		    r['structure1'] + TAB + \
+		    str(theilerStage) + TAB + \
+		    r['resultsNotes'] + TAB + \
+		    imageJPG + CRT)
+
+	    if len(r['structure2']) > 0:
+
+	        resultKey = resultKey + 1
+
+	        resultsFile.write(str(aKey) + TAB + \
+	                str(sKey) + TAB + \
+	                str(resultKey) + TAB + \
+		        r['strength'] + TAB + \
+		        r['pattern'] + TAB + \
+		        r['structure2'] + TAB + \
+		        str(theilerStage) + TAB + \
+		        r['resultsNotes'] + TAB + \
+		        imageJPG + CRT)
 
 #
 # Main
