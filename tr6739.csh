@@ -80,7 +80,7 @@ EOSQL
 #
 echo "" >>& $LOG
 echo "Call tr6739probe.py" >>& $LOG
-${ASSAYLOADINSTALLDIR}/tr6739probe.py >>& $LOG
+${ASSAYLOAD}/tr6739probe.py >>& $LOG
 
 
 #
@@ -88,7 +88,7 @@ ${ASSAYLOADINSTALLDIR}/tr6739probe.py >>& $LOG
 #
 echo "" >>& $LOG
 echo "Call probeload.py" >>& $LOG
-${PROBELOAD} -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -Iprobe.txt >>& $LOG
+${PROBELOAD}/probeload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -Iprobe.txt >>& $LOG
 
 
 #
@@ -96,7 +96,7 @@ ${PROBELOAD} -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWOR
 #
 echo "" >>& $LOG
 echo "Call tr6739insitu.py" >>& $LOG
-${ASSAYLOADINSTALLDIR}/tr6739insitu.py >>& $LOG
+${ASSAYLOAD}/tr6739insitu.py >>& $LOG
 
 
 #
@@ -104,7 +104,7 @@ ${ASSAYLOADINSTALLDIR}/tr6739insitu.py >>& $LOG
 #
 echo "" >>& $LOG
 echo "Call insituload.py" >>& $LOG
-${ASSAYLOADINSTALLDIR}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOAD}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
 
 
 #
@@ -135,7 +135,7 @@ EOSQL
 #
 echo "" >>& $LOG
 echo "Call indexload.py" >>& $LOG
-${ASSAYLOADINSTALLDIR}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:93300 >>& $LOG
+${ASSAYLOAD}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:93300 >>& $LOG
 
 
 #
@@ -143,6 +143,6 @@ ${ASSAYLOADINSTALLDIR}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DB
 #
 echo "" >>& $LOG
 echo "Reload the MRK_Reference table" >>& $LOG
-${MRKREFLOAD} >>& ${LOG}
+${MRKCACHELOAD}/mrkref.csh >>& ${LOG}
 
 date >> $LOG

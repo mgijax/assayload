@@ -13,14 +13,3 @@ endif
 
 source ${MGICONFIG}/master.config.csh
 
-# install directory
-setenv ASSAYLOADINSTALLDIR	${DATALOAD}/assayload
-
-# Reference load
-setenv MRKREFLOAD	${DBUTILS}/mrkcacheload/mrkref.csh
-
-# Probe load
-setenv PROBELOAD	${DATALOAD}/probeload/probeload.py
-
-# Primer load
-setenv PRIMERLOAD	${DATALOAD}/probeload/primerload.py
