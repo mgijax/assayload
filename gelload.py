@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: gelload.py
 #
@@ -24,12 +21,7 @@
 # Requirements Satisfied by This Program:
 #
 # Usage:
-#	program.py
-#	-S = database server
-#	-D = database
-#	-U = user
-#	-P = password file
-#	-M = mode
+#	gelload.py
 #
 # Envvars:
 #
@@ -119,7 +111,6 @@
 import sys
 import os
 import string
-import getopt
 import db
 import mgi_utils
 import agelib
@@ -128,14 +119,20 @@ import gxdloadlib
 
 #globals
 
+#
+# from configuration file
+#
+passwordFileName = os.environ['MGI_DBPASSWORDFILE']
+mode = os.environ['LOADMODE']
+createdBy = os.environ['CREATEDBY']
+datadir = os.environ['RTPCRDATADIR']	# file which contains the data files
+
 DEBUG = 0		# if 0, not in debug mode
 TAB = '\t'		# tab
 CRT = '\n'		# carriage return/newline
 bcpdelim = TAB		# bcp file delimiter
 
 bcpon = 1		# can the bcp files be bcp-ed into the database?  default is yes.
-
-datadir = os.environ['RTPCRDATADIR']	# file which contains the data files
 
 diagFile = ''		# diagnostic file descriptor
 errorFile = ''		# error file descriptor
@@ -191,11 +188,6 @@ outAccFileName = datadir + '/' + accTable + '.bcp'
 
 diagFileName = ''	# diagnostic file name
 errorFileName = ''	# error file name
-passwordFileName = ''	# password file name
-
-mode = ''		# processing mode (load, preview)
-
-createdBy = os.environ['CREATEDBY']
 
 # primary keys
 
@@ -231,21 +223,6 @@ assayGelLane = {}	# Assay ID/Lane ID and Lane keys
 
 loaddate = loadlib.loaddate
 
-# Purpose: displays correct usage of this program
-# Returns: nothing
-# Assumes: nothing
-# Effects: exits with status of 1
-# Throws: nothing
- 
-def showUsage():
-    usage = 'usage: %s -S server\n' % sys.argv[0] + \
-        '-D database\n' + \
-        '-U user\n' + \
-        '-P password file\n' + \
-        '-M mode\n'
-
-    exit(1, usage)
- 
 # Purpose: prints error message and exits
 # Returns: nothing
 # Assumes: nothing
@@ -275,53 +252,15 @@ def exit(
 # Returns: nothing
 # Assumes: nothing
 # Effects: initializes global variables
-#          calls showUsage() if usage error
 #          exits if files cannot be opened
 # Throws: nothing
 
 def init():
-    global diagFile, errorFile, errorFileName, diagFileName, passwordFileName
-    global mode
+    global diagFile, errorFile, errorFileName, diagFileName
     global outPrimerFile, outMarkerFile, outRefFile, outAccFile, outPrepFile, outAssayFile
     global outGelLaneFile, outGelLaneStFile, outGelRowFile, outGelBandFile
     global inPrimerFile, inPrepFile, inAssayFile, inGelLaneFile, inGelBandFile
  
-    try:
-        optlist, args = getopt.getopt(sys.argv[1:], 'S:D:U:P:M:')
-    except:
-        showUsage()
- 
-    #
-    # Set server, database, user, passwords depending on options specified
-    #
- 
-    server = ''
-    database = ''
-    user = ''
-    password = ''
- 
-    for opt in optlist:
-        if opt[0] == '-S':
-            server = opt[1]
-        elif opt[0] == '-D':
-            database = opt[1]
-        elif opt[0] == '-U':
-            user = opt[1]
-        elif opt[0] == '-P':
-            passwordFileName = opt[1]
-        elif opt[0] == '-M':
-            mode = opt[1]
-        else:
-            showUsage()
-
-    # User must specify Server, Database, User and Password
-    password = string.strip(open(passwordFileName, 'r').readline())
-    if server == '' or database == '' or user == '' or password == '' \
-	or mode == '':
-        showUsage()
-
-    # Initialize db.py DBMS parameters
-    db.set_sqlLogin(user, password, server, database)
     db.useOneConnection(1)
  
     fdate = mgi_utils.date('%m%d%Y')	# current date
@@ -980,37 +919,3 @@ setPrimaryKeys()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.12  2003/10/01 17:53:08  lec
-# removed unnecessary imports
-#
-# Revision 1.11  2003/10/01 17:48:27  lec
-# removed unnecessary imports
-#
-# Revision 1.10  2003/09/26 16:23:55  lec
-# MGI 2.97
-#
-# Revision 1.9  2003/09/24 12:29:58  lec
-# TR 5154
-#
-# Revision 1.8  2003/07/18 15:44:09  lec
-# rtpcr.py
-#
-# Revision 1.7  2003/07/11 16:24:14  lec
-# TR 4800
-#
-# Revision 1.6  2003/07/01 16:48:08  lec
-# TR 4800
-#
-# Revision 1.5  2003/06/23 17:20:44  lec
-# TR4800
-#
-# Revision 1.4  2003/06/18 15:56:16  lec
-# TR 4800
-#
-# Revision 1.3  2003/06/18 13:19:32  lec
-# TR 4800
-#
-# Revision 1.2  2003/06/17 12:17:49  lec
-# TR 4800
-#

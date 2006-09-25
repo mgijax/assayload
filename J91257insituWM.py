@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J91257insituWM.py
 #
@@ -478,16 +475,3 @@ init()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.4  2004/11/19 18:38:26  lec
-# TR 6118
-#
-# Revision 1.3  2004/11/15 13:21:13  lec
-# assayload-2-0-0
-#
-# Revision 1.2  2004/11/12 20:20:54  lec
-# TR 6118
-#
-# Revision 1.1  2004/11/12 17:39:24  lec
-# TR 6118
-#

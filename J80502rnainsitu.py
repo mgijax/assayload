@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J80502rnainsitu.py
 #
@@ -620,14 +617,3 @@ process10()
 process14()
 exit(0)
 
-# $Log$
-# Revision 1.3  2003/07/18 18:02:10  lec
-# TR 4800
-#
-# Revision 1.2  2003/07/18 16:15:53  lec
-# TR 4800
-#
-# Revision 1.1  2003/07/18 15:43:18  lec
-# new
-#
-#

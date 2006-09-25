@@ -16,6 +16,8 @@
 
 cd `dirname $0` && source ./Configuration
 
+setenv REFERENCE J:80501
+
 setenv LOG $0.log
 rm -rf $LOG
 touch $LOG
@@ -25,16 +27,16 @@ date > $LOG
 cd ${RTPCRDATADIR}
 
 ${ASSAYLOAD}/J80501rtpcr.py
-${ASSAYLOAD}/gelload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOAD}/gelload.py >>& $LOG
 
 cd ${INSITUDATADIR}
 
 ${ASSAYLOAD}/J80501rnainsitu.py
-${ASSAYLOAD}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOAD}/insituload.py >>& $LOG
 
 cd `dirname $0`
 
-${ASSAYLOAD}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:80501 >>& $LOG
+${ASSAYLOAD}/indexload.py >>& $LOG
 ${ASSAYLOAD}/createPrbReference.csh J:80501
 
 date >> $LOG

@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J91257probe.py
 #
@@ -302,40 +299,3 @@ process(inProbeFile1, vectorType1, strain1, tissue1, age1)
 process(inProbeFile2, vectorType2, strain2, tissue2, age2)
 exit(0)
 
-# $Log$
-# Revision 1.12  2004/11/29 18:58:58  lec
-# TR 6118
-#
-# Revision 1.11  2004/11/29 18:56:23  lec
-# TR 6118
-#
-# Revision 1.10  2004/11/23 13:19:50  lec
-# TR 6118
-#
-# Revision 1.9  2004/11/19 19:28:17  lec
-# TR 6118
-#
-# Revision 1.8  2004/11/19 17:29:30  lec
-# TR 6118
-#
-# Revision 1.7  2004/11/19 17:01:13  lec
-# TR 6118
-#
-# Revision 1.6  2004/11/19 16:40:17  lec
-# TR 6118
-#
-# Revision 1.5  2004/11/19 16:26:32  lec
-# TR 6118
-#
-# Revision 1.4  2004/11/11 20:37:45  lec
-# TR 6118
-#
-# Revision 1.3  2004/11/05 16:00:31  lec
-# TR 6118
-#
-# Revision 1.2  2004/10/14 16:58:10  lec
-# TR 6118
-#
-# Revision 1.1  2004/09/08 12:41:15  lec
-# TR 6118
-#

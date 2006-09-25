@@ -15,7 +15,7 @@
 cd `dirname $0` && source ./tr7819.config
 
 ./tr7819.py
-./insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE}
+./insituload.py
 
 ${MRKCACHELOAD}/mrkref.csh
 

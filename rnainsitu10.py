@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: rnainsitu10.py
 #
@@ -335,29 +332,3 @@ init()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.6  2003/06/23 17:20:46  lec
-# TR4800
-#
-# Revision 1.5  2003/06/20 16:46:51  lec
-# TR 4800
-#
-# Revision 1.4  2003/06/18 19:24:53  lec
-# TR 4800
-#
-# Revision 1.3  2003/06/18 18:26:55  lec
-# TR 4800
-#
-# Revision 1.2  2003/06/18 15:56:17  lec
-# TR 4800
-#
-# Revision 1.1  2003/06/18 13:33:29  lec
-# new
-#
-# Revision 1.2  2003/06/18 13:19:33  lec
-# TR 4800
-#
-# Revision 1.1  2003/06/17 19:24:10  lec
-# new
-#
-#

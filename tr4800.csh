@@ -22,10 +22,10 @@ touch $LOG
 date > $LOG
  
 J80502rtpcr.py
-gelload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+gelload.py >>& $LOG
 
 J80502rnainsitu.py
-insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+insituload.py >>& $LOG
 
 date >> $LOG
 

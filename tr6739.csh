@@ -14,6 +14,8 @@
 
 cd `dirname $0` && source ./Configuration
 
+setenv REFERENCE J:93300
+
 setenv LOG ${LOGDIR}/`basename $0`.log
 rm -rf $LOG
  
@@ -104,7 +106,7 @@ ${ASSAYLOAD}/tr6739insitu.py >>& $LOG
 #
 echo "" >>& $LOG
 echo "Call insituload.py" >>& $LOG
-${ASSAYLOAD}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOAD}/insituload.py >>& $LOG
 
 
 #
@@ -135,7 +137,7 @@ EOSQL
 #
 echo "" >>& $LOG
 echo "Call indexload.py" >>& $LOG
-${ASSAYLOAD}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:93300 >>& $LOG
+${ASSAYLOAD}/indexload.py >>& $LOG
 
 
 #

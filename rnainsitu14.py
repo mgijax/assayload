@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: rnainsitu14.py
 #
@@ -406,50 +403,3 @@ init()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.13  2003/07/11 16:24:15  lec
-# TR 4800
-#
-# Revision 1.12  2003/06/23 17:20:46  lec
-# TR4800
-#
-# Revision 1.11  2003/06/20 17:35:33  lec
-# TR 4800
-#
-# Revision 1.10  2003/06/20 16:46:51  lec
-# TR 4800
-#
-# Revision 1.9  2003/06/20 15:16:12  lec
-# TR 4800
-#
-# Revision 1.8  2003/06/20 12:36:54  lec
-# TR 4800
-#
-# Revision 1.7  2003/06/18 19:24:54  lec
-# TR 4800
-#
-# Revision 1.6  2003/06/18 18:47:45  lec
-# TR 4800
-#
-# Revision 1.5  2003/06/18 18:26:56  lec
-# TR 4800
-#
-# Revision 1.4  2003/06/18 17:57:14  lec
-# TR 4800
-#
-# Revision 1.3  2003/06/18 15:39:24  lec
-# new
-#
-# Revision 1.2  2003/06/18 15:38:25  lec
-# new
-#
-# Revision 1.1  2003/06/18 13:34:23  lec
-# new
-#
-# Revision 1.2  2003/06/18 13:19:33  lec
-# TR 4800
-#
-# Revision 1.1  2003/06/17 19:24:10  lec
-# new
-#
-#

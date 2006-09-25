@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J91257insitu.py
 #
@@ -668,34 +665,3 @@ process1()
 process2()
 exit(0)
 
-# $Log$
-# Revision 1.10  2004/11/19 18:28:00  lec
-# TR 6118
-#
-# Revision 1.9  2004/11/19 16:50:33  lec
-# TR 6118
-#
-# Revision 1.8  2004/11/19 16:26:32  lec
-# TR 6118
-#
-# Revision 1.7  2004/11/15 13:31:25  lec
-# assayload-2-0-0
-#
-# Revision 1.6  2004/11/15 13:21:13  lec
-# assayload-2-0-0
-#
-# Revision 1.5  2004/11/11 20:37:45  lec
-# TR 6118
-#
-# Revision 1.4  2004/10/14 16:58:10  lec
-# TR 6118
-#
-# Revision 1.3  2004/09/16 13:25:03  lec
-# TR 6118
-#
-# Revision 1.2  2004/09/08 17:09:30  lec
-# TR 6118
-#
-# Revision 1.1  2004/09/08 12:41:15  lec
-# TR 6118
-#

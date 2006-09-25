@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J80501rnainsitu.py
 #
@@ -345,23 +342,3 @@ init()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.6  2003/09/24 14:53:57  lec
-# TR 5154
-#
-# Revision 1.5  2003/09/24 14:32:35  lec
-# TR 5154
-#
-# Revision 1.4  2003/09/22 13:00:30  lec
-# TR 5154
-#
-# Revision 1.3  2003/09/19 19:32:58  lec
-# TR 5154
-#
-# Revision 1.2  2003/09/19 18:42:55  lec
-# TR 5154
-#
-# Revision 1.1  2003/09/19 18:09:01  lec
-# TR 5154
-#
-#

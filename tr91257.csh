@@ -15,6 +15,8 @@
 
 cd `dirname $0` && source ./Configuration
 
+setenv REFERENCE J:91257
+
 setenv LOG $0.log
 rm -rf $LOG
 touch $LOG
@@ -58,7 +60,7 @@ ${PROBELOAD}/probeload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${
 # 1st set (section)
 
 ${ASSAYLOAD}/J91257insitu.py
-${ASSAYLOAD}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOAD}/insituload.py >>& $LOG
 
 # 2nd set (whole mount)
 
@@ -66,10 +68,10 @@ cd ${WMDATADIR}
 setenv INSITUDATADIR ${WMDATADIR}
 
 ${ASSAYLOAD}/J91257insituWM.py
-${ASSAYLOAD}/insituload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} >>& $LOG
+${ASSAYLOAD}/insituload.py >>& $LOG
 
 cd `dirname $0`
-${ASSAYLOAD}/indexload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -RJ:91257 >>& $LOG
+${ASSAYLOAD}/indexload.py >>& $LOG
 
 ${MRKCACHELOAD}/mrkref.csh >>& ${LOG}
 

@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J80502rtpcr.py
 #
@@ -334,34 +331,3 @@ init()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.3  2003/07/18 18:02:11  lec
-# TR 4800
-#
-# Revision 1.2  2003/07/18 15:44:58  lec
-# TR 4800
-#
-# Revision 1.1  2003/07/18 15:44:27  lec
-# TR 4800
-#
-# Revision 1.5  2003/06/23 17:20:47  lec
-# TR4800
-#
-# Revision 1.4  2003/06/18 19:24:54  lec
-# TR 4800
-#
-# Revision 1.3  2003/06/18 13:19:33  lec
-# TR 4800
-#
-# Revision 1.2  2003/06/17 15:57:02  lec
-# ok
-#
-# Revision 1.1  2003/06/17 15:55:23  lec
-# new
-#
-# Revision 1.2  2003/06/17 12:17:50  lec
-# TR 4800
-#
-# Revision 1.1  2003/06/17 12:08:05  lec
-# new
-#

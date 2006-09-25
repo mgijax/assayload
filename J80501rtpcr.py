@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-# $Header$
-# $Name$
-
 #
 # Program: J80501rtpcr.py
 #
@@ -334,8 +331,3 @@ init()
 process()
 exit(0)
 
-# $Log$
-# Revision 1.1  2003/09/19 18:09:02  lec
-# TR 5154
-#
-#
