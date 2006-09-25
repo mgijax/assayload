@@ -15,6 +15,7 @@
 cd `dirname $0` && source ./Configuration
 
 setenv REFERENCE J:93300
+setenv PROBELOADINPUT probe.txt
 
 setenv LOG ${LOGDIR}/`basename $0`.log
 rm -rf $LOG
@@ -90,7 +91,7 @@ ${ASSAYLOAD}/tr6739probe.py >>& $LOG
 #
 echo "" >>& $LOG
 echo "Call probeload.py" >>& $LOG
-${PROBELOAD}/probeload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -Iprobe.txt >>& $LOG
+${PROBELOAD}/probeload.py >>& $LOG
 
 
 #

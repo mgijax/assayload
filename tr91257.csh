@@ -16,6 +16,7 @@
 cd `dirname $0` && source ./Configuration
 
 setenv REFERENCE J:91257
+setenv PROBELOADINPUT probe.txt
 
 setenv LOG $0.log
 rm -rf $LOG
@@ -55,7 +56,7 @@ cd ${INSITUDATADIR}
 # probes
 
 ${ASSAYLOAD}/J91257probe.py
-${PROBELOAD}/probeload.py -S${MGD_DBSERVER} -D${MGD_DBNAME} -U${MGD_DBUSER} -P${MGD_DBPASSWORDFILE} -M${LOADMODE} -Iprobe.txt >>& $LOG
+${PROBELOAD}/probeload.py >>& $LOG
 
 # 1st set (section)
 
