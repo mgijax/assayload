@@ -57,7 +57,8 @@ import gxdloadlib
 #
 # from configuration file
 #
-passwordFileName = os.environ['MGI_DBPASSWORDFILE']
+user = os.environ['MGD_DBUSER']
+passwordFileName = os.environ['MGD_DBPASSWORDFILE']
 datadir = os.environ['DATADIR']	# file which contains the data files
 mode = os.environ['LOADMODE']
 createdBy = os.environ['CREATEDBY']
@@ -139,6 +140,8 @@ def init():
     global referenceKey, priorityKey, createdByKey, indexComments
  
     db.useOneConnection(1)
+    db.set_sqlUser(user)
+    db.set_sqlPassword(passwordFileName)
  
     fdate = mgi_utils.date('%m%d%Y')	# current date
     diagFileName = datadir + '/indexload.' + fdate + '.diagnostics'

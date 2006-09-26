@@ -122,7 +122,8 @@ import gxdloadlib
 #
 # from configuration file
 #
-passwordFileName = os.environ['MGI_DBPASSWORDFILE']
+user = os.environ['MGD_DBUSER']
+passwordFileName = os.environ['MGD_DBPASSWORDFILE']
 mode = os.environ['LOADMODE']
 createdBy = os.environ['CREATEDBY']
 datadir = os.environ['RTPCRDATADIR']	# file which contains the data files
@@ -262,6 +263,8 @@ def init():
     global inPrimerFile, inPrepFile, inAssayFile, inGelLaneFile, inGelBandFile
  
     db.useOneConnection(1)
+    db.set_sqlUser(user)
+    db.set_sqlPasswordFromFile(passwordFileName)
  
     fdate = mgi_utils.date('%m%d%Y')	# current date
     diagFileName = sys.argv[0] + '.' + fdate + '.diagnostics'

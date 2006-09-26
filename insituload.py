@@ -108,7 +108,8 @@ import gxdloadlib
 #
 # from configuration file
 #
-passwordFileName = os.environ['MGI_DBPASSWORDFILE']
+user = os.environ['MGD_DBUSER']
+passwordFileName = os.environ['MGD_DBPASSWORDFILE']
 mode = os.environ['LOADMODE']
 datadir = os.environ['DATADIR']	# file which contains the data files
 
@@ -233,6 +234,8 @@ def init():
     global inPrepFile, inAssayFile, inSpecimenFile, inResultsFile
  
     db.useOneConnection(1)
+    db.set_sqlUser(user)
+    db.set_sqlPassword(passwordFileName)
  
     fdate = mgi_utils.date('%m%d%Y')	# current date
     diagFileName = datadir + '/insituload.' + fdate + '.diagnostics'
