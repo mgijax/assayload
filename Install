@@ -1,4 +1,4 @@
-#!/bin/csh -f -x
+#!/bin/csh
 
 cd `dirname $0` && source ./Configuration
 
