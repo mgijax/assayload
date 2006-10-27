@@ -90,7 +90,7 @@ datadir = os.environ['DATADIR']
 
 inResultsFileName = datadir + '/newDgenResults.txt'
 inTableFileName = datadir + '/newDgenTable.txt'
-inPixFileName = datadir + '/pix7819.txt'
+inPixFileName = datadir + '/pix7982.txt'
 
 assayFileName = datadir + '/In_Situ_assay.txt'
 specimenFileName = datadir + '/In_Situ_specimen.txt'
