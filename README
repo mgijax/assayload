@@ -1,0 +1,72 @@
+
+To load new GXD Assay data into MGI.
+
+0.  Prepare a development database.
+
+    You'll need a current copy of the production database,
+    a WI that is configured for this database,
+    and a PixelDB that is configured for this database.
+
+    In the WI, make sure you have an ActualDB.local file
+    with the URL for the development PixelDB that you've configured.
+
+1.  Load the Assay data (assayload)
+
+    Create a config file for the TR.
+    Create a run script for the TR.
+    Create a parser for the data files you are given.
+
+    The parser needs to put the data in the format expected by
+    the  insituload.py or gelload.py.  Note that sometimes
+    the parser needs to be aware of the Images, so you may
+    need to do step #2 first.
+
+    Once the MGI format files are created, you can run the
+    insituload.py or gelload.py.
+
+    If this data also needs to be added to the GXD index, then
+    you'll also need to run indexload.py.  This program keys off
+    of the Reference (J:) for the Assays that you just loaded
+    and loads the GXD index tables.  This step isn't always necessary;
+    check with the GXD curator.
+
+    The TR script should also run ${MRKCACHELOAD}/mrkref.csh to
+    update the MRK_Reference cache table.
+
+    At this point the GXD curator can begin reviewing the data load
+    (without the images).
+
+2.  Load the Images into Pixeldb (gxdimageload/pixload.csh)
+
+    Load the .jpg images into the production PixelDB.
+    The pixload.csh may need to be modified slightly (foreach loop).
+
+    pixload.csh JPEGDIR OUTPUTFILE
+
+    where JPEGDIR is the directory which contains the .jpg files.
+    where OUTPUTFILE is the name of the output file, a tab-delimited
+    file of: JPEG NAME (col 1), PixelDB DB ID (col 2).
+
+    Once the images are loaded into PixelDB, create a tar file
+    (using pixeldb/admin/archive_images) and then extract that
+    tar file (pixeldb/admin/extract_images) to a development
+    installation.
+
+    The OUTPUTFILE will be used by the gxdimageload scripts
+    to map the .jpg file names in the input files with the
+    PixelDB IDs assigned this load.
+
+3.  Create Image Stubs & Panes in MGI (gxdimageload/gxdimageload.py)
+
+    Create a parser for the data files you are given.
+
+    The parser needs to put the data into the format expected by
+    gxdimageload.py and ${MGINOTELOAD}/noteload.py (for image copyrights
+    and captions).
+
+    See tr7982.csh for an example of what to run and in what order.
+
+4.  Associate the Image Panes with the Assays (gxdimageload/*assoc.py)
+
+    Create an association loader for associating Image Panes w/ Assays.
+
