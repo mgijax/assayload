@@ -59,8 +59,8 @@ import gxdloadlib
 #
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
-datadir = os.environ['DATADIR']	# file which contains the data files
-mode = os.environ['LOADMODE']
+datadir = os.environ['ASSAYLOADDATADIR']
+mode = os.environ['INDEXLOADMODE']
 createdBy = os.environ['CREATEDBY']
 reference = os.environ['REFERENCE']
 indexpriority = os.environ['IDXPRIORITY']
@@ -143,9 +143,8 @@ def init():
     db.set_sqlUser(user)
     db.set_sqlPasswordFromFile(passwordFileName)
  
-    fdate = mgi_utils.date('%m%d%Y')	# current date
-    diagFileName = datadir + '/indexload.' + fdate + '.diagnostics'
-    errorFileName = datadir + '/indexload.' + fdate + '.error'
+    diagFileName = datadir + '/indexload.diagnostics'
+    errorFileName = datadir + '/indexload.error'
 
     try:
         diagFile = open(diagFileName, 'w')
