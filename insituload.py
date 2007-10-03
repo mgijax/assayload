@@ -110,8 +110,8 @@ import gxdloadlib
 #
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
-mode = os.environ['LOADMODE']
-datadir = os.environ['DATADIR']	# file which contains the data files
+mode = os.environ['ASSAYLOADMODE']
+datadir = os.environ['ASSAYLOADDATADIR']
 
 DEBUG = 0		# if 0, not in debug mode
 TAB = '\t'		# tab
@@ -237,9 +237,8 @@ def init():
     db.set_sqlUser(user)
     db.set_sqlPasswordFromFile(passwordFileName)
  
-    fdate = mgi_utils.date('%m%d%Y')	# current date
-    diagFileName = datadir + '/insituload.' + fdate + '.diagnostics'
-    errorFileName = datadir + '/insituload.' + fdate + '.error'
+    diagFileName = datadir + '/insituload.diagnostics'
+    errorFileName = datadir + '/insituload.error'
 
     try:
         diagFile = open(diagFileName, 'w')
@@ -762,14 +761,8 @@ def processResultsFile():
 
             for image in string.split(images,','):
                 if image != '':
-                    imageParts = string.split(image, ' ', 1)
-		    if len(imageParts) > 1:
-                        outResultImageFile.write(str(resultKey) + TAB + \
-                                             imageParts[0] + TAB + \
-                                             imageParts[1] + CRT)
-                    else:
-                        outResultImageFile.write(str(resultKey) + TAB + \
-                                             imageParts[0] + CRT)
+                    outResultImageFile.write(str(resultKey) + TAB + \
+                                             image + CRT)
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
