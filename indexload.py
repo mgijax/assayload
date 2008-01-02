@@ -59,8 +59,8 @@ import gxdloadlib
 #
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
-datadir = os.environ['ASSAYLOADDATADIR']
-mode = os.environ['INDEXLOADMODE']
+datadir = os.environ['DATADIR']
+mode = os.environ['LOADMODE']
 createdBy = os.environ['CREATEDBY']
 reference = os.environ['REFERENCE']
 indexpriority = os.environ['IDXPRIORITY']
@@ -324,25 +324,38 @@ def processAssay():
 	elif r['_AssayType_key'] == 9:
 	    idxAssayKey = gxdloadlib.verifyIdxAssay('Knock in', 0, errorFile)
 
+	#
+	# if "stages" == 'embryonic day 15-16', then
+	#	stages[0] = 'embryonic day 15'
+	#	stages[1] = 'embryonic day 16'
+	#
+
+        stages = []
+
 	if string.find(r['age'], 'embryonic day') >= 0:
 	    i = string.find(r['age'], 'embryonic day')
-	    stage = r['age'][i + 14:]
+	    # all embryonic day stages sorted by '-'
+	    allstages = string.split(r['age'][i + 14:], '-')
+	    for i in allstages:
+	        stages.append(i)
 	elif string.find(r['age'], 'postnatal') >= 0:
-	   stage = 'A'
+	    stages.append('A')
 
-	idxStageKey = gxdloadlib.verifyIdxStage(stage, 0, errorFile)
+	for s in stages:
 
-	indexedTuple = (indexKey, idxAssayKey, idxStageKey)
-	if indexedTuple in indexedAlready:
-	    continue
+	    idxStageKey = gxdloadlib.verifyIdxStage(s, 0, errorFile)
 
-        outStagesFile.write(str(indexKey) + TAB + \
-            str(idxAssayKey) + TAB + \
-            str(idxStageKey) + TAB + \
-	    str(createdByKey) + TAB + str(createdByKey) + TAB + \
-            loaddate + TAB + loaddate + CRT)
+	    indexedTuple = (indexKey, idxAssayKey, idxStageKey)
+	    if indexedTuple in indexedAlready:
+	        continue
 
-	indexedAlready.append(indexedTuple)
+            outStagesFile.write(str(indexKey) + TAB + \
+                str(idxAssayKey) + TAB + \
+                str(idxStageKey) + TAB + \
+	        str(createdByKey) + TAB + str(createdByKey) + TAB + \
+                loaddate + TAB + loaddate + CRT)
+
+	    indexedAlready.append(indexedTuple)
 
     return
 
