@@ -5,9 +5,6 @@
 #
 # Wrapper script for loading TR 8691 data into GXD Index
 #
-# Processing:
-#	1. Generate Index record
-#
 
 cd `dirname $0`
 
@@ -39,7 +36,7 @@ ${ASSAYLOAD}/indexload.py >>& ${LOG}
 
 # Marker Cache re-load
 
-#${MRKCACHELOAD}/mrkref.csh >>& ${LOG}
+${MRKCACHELOAD}/mrkref.csh >>& ${LOG}
 
 date >> ${LOG}
 
