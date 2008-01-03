@@ -1,3 +1,13 @@
+TAG: assayload-3-5-4-2
+DATE: 01/03/2008
+STAFF: lec
+CHANGES:
+loading index data for Freeman and Deltagen
+1) indexload.csh
+2) tr8691-deltagen.config
+3) tr8691-freeman.config
+4) tr8691.csh
+
 TAG: assayload-3-5-4-1
 DATE: 10/03/2007
 STAFF: dbm
