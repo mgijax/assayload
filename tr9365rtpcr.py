@@ -127,7 +127,6 @@ createdBy = os.environ['CREATEDBY']
 control = 'No'
 sampleAmount = NULL
 reporterGene = NULL
-assayNote = NULL
 ageNote = NULL
 laneNote = NULL
 rowNote = NULL
@@ -213,6 +212,7 @@ def init():
 def process():
 
     # store the primer name/id
+
     allPrimers = {}
     for p in inPrimersFile.readlines():
 	tokens = string.split(p[:-1], TAB)
@@ -236,6 +236,8 @@ def process():
 
 	accID = tokens[1]
 	primerName = tokens[2]
+
+	# save the band 1-8
 
 	allBands = {}
 	allBands[1] = tokens[3]
@@ -267,9 +269,10 @@ def process():
 	    assayNote + TAB + \
 	    createdBy + CRT)
 
-	lineCountB = 1
+	# select the lane information
 
         inLanesFile = open(inLanesFileName, 'r')
+	lineCountB = 1
         for lineB in inLanesFile.readlines():
 
 	    if lineCountB == 1:

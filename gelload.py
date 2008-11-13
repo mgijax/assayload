@@ -184,9 +184,8 @@ accLogicalDBKey = '1'	# Logical DB Key for MGI accession ID
 accPrivate = '0'	# Private status for MGI accession ID (false)
 accPreferred = '1'	# Preferred status MGI accession ID (true)
 
-assayPrimer = {}	# Assay ID/Primer keys
 assayProbePrep = {}	# Assay ID/Probe Prep keys
-assayAssay= {}		# Assay ID/Assay keys
+assayAssay = {}		# Assay ID/Assay keys
 assayGelLane = {}	# Assay ID/Lane ID and Lane keys
 
 loaddate = loadlib.loaddate
