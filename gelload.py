@@ -9,7 +9,6 @@
 #
 #	To load new Assays into Gel Structures
 #
-#	PRB_Probe (primers)
 #	GXD_ProbePrep
 #	GXD_Assay
 #	GXD_GelLane
@@ -27,32 +26,23 @@
 #
 # Inputs:
 #
-#       Primer file, a tab-delimited file in the format:
-#		field 1: Assay #
-#               field 2: MGI Marker Accession ID
-#               field 3: Primer Name
-#               field 4: Reference (J:#####)
-#               field 5: Region Covered
-#               field 6: Sequence 1
-#               field 7: Sequence 2
-#               field 8: Repeat Unit
-#               field 9: More Than One Product (y/n)
-#               field 10: Product Size
-#
 #	Probe Prep file, a tab-delimited file in the format:
 #		field 1: Assay #
-#		field 2: Probe Prep Type
-#		field 3: Hybridization
-#		field 4: Labelled With
-#		field 5: Label Coverage
-#		field 6: Visualized With
+#		field 2: Probe MGI ID
+#		field 3: Probe Prep Type
+#		field 4: Hybridization
+#		field 5: Labelled With
+#		field 6: Label Coverage
+#		field 7: Visualized With
 #
-#	Assay file, a tab-delimited file in the format:
-#		field 1: Assay #
-#		field 2: MGI Marker Accession ID
-#		field 3: Reference (J:#####)
-#		field 4: Assay Type
-#		field 5: Created By
+#       Assay file, a tab-delimited file in the format:
+#               field 1: Assay #
+#               field 2: MGI Marker Accession ID
+#               field 3: Reference (J:#####)
+#               field 4: Assay Type
+#               field 5: Reporter Gene
+#               field 6: Assay Note
+#               field 7: Created By
 #
 #	Gel Lane file, a tab-delimited file in the format:
 #		field 1: Assay #
@@ -83,9 +73,6 @@
 #
 #       BCP files:
 #
-#       PRB_Probe.bcp                   master Primer records
-#	PRB_Marker.bcp			Primer/Marker records
-#       PRB_Reference.bcp         	Primer Reference records
 #	GXD_ProbePrep.bcp		Probe Prep records
 #	GXD_Assay.bcp			Assay records
 #	GXD_GelLane.bcp			Gel Lanes
@@ -140,13 +127,11 @@ errorFile = ''		# error file descriptor
 
 # input files
 
-inPrimerFile = ''         # file descriptor
 inPrepFile = ''           # file descriptor
 inAssayFile = ''          # file descriptor
 inGelLaneFile = ''        # file descriptor
 inGelBandFile = ''        # file descriptor
 
-inPrimerFileName = datadir + '/RT_PCR_primer.txt'
 inPrepFileName = datadir + '/RT_PCR_probeprep.txt'
 inAssayFileName = datadir + '/RT_PCR_assay.txt'
 inGelLaneFileName = datadir + '/RT_PCR_gellane.txt'
@@ -154,9 +139,6 @@ inGelBandFileName = datadir + '/RT_PCR_gelband.txt'
 
 # output files
 
-outPrimerFile = ''      # file descriptor
-outMarkerFile = ''	# file descriptor
-outRefFile = ''         # file descriptor
 outPrepFile = ''	# file descriptor
 outAssayFile = ''	# file descriptor
 outGelLaneFile = ''	# file descriptor
@@ -165,9 +147,6 @@ outGelRowFile = ''	# file descriptor
 outGelBandFile = ''	# file descriptor
 outAccFile = ''         # file descriptor
 
-probeTable = 'PRB_Probe'
-markerTable = 'PRB_Marker'
-refTable = 'PRB_Reference'
 probeprepTable = 'GXD_ProbePrep'
 assayTable = 'GXD_Assay'
 gelLaneTable = 'GXD_GelLane'
@@ -176,9 +155,6 @@ gelRowTable = 'GXD_GelRow'
 gelBandTable = 'GXD_GelBand'
 accTable = 'ACC_Accession'
 
-outPrimerFileName = datadir + '/' + probeTable + '.bcp'
-outMarkerFileName = datadir + '/' + markerTable + '.bcp'
-outRefFileName = datadir + '/' + refTable + '.bcp'
 outPrepFileName = datadir + '/' + probeprepTable + '.bcp'
 outAssayFileName = datadir + '/' + assayTable + '.bcp'
 outGelLaneFileName = datadir + '/' + gelLaneTable + '.bcp'
@@ -192,8 +168,6 @@ errorFileName = ''	# error file name
 
 # primary keys
 
-probeKey = 0            # PRB_Probe._Probe_key
-refKey = 0		# PRB_Reference._Reference_key
 prepKey = 0		# GXD_ProbePrep._ProbePrep_key
 assayKey = 0		# GXD_Assay._Assay_key
 gelLaneKey = 0		# GXD_GelLane._GelLane_key
@@ -201,13 +175,6 @@ gelRowKey = 0		# GXD_GelRow._GelRow_key
 gelBandKey = 0		# GXD_GelBand._GelBand_key
 accKey = 0              # ACC_Accession._Accession_key
 mgiKey = 0              # ACC_AccessionMax.maxNumericPart
-
-# primer constants
-
-dnaType = 'primer'	# PRB_Probe.DNAtype
-relationship = 'A'	# PRB_Marker.relationship
-NA = '-2'		# for Not Applicable fields
-primerMgiTypeKey = '3'	# Molecular Segment
 
 # accession constants
 
@@ -258,7 +225,7 @@ def exit(
 
 def init():
     global diagFile, errorFile, errorFileName, diagFileName
-    global outPrimerFile, outMarkerFile, outRefFile, outAccFile, outPrepFile, outAssayFile
+    global outAccFile, outPrepFile, outAssayFile
     global outGelLaneFile, outGelLaneStFile, outGelRowFile, outGelBandFile
     global inPrimerFile, inPrepFile, inAssayFile, inGelLaneFile, inGelBandFile
  
@@ -283,11 +250,6 @@ def init():
     # Input Files
 
     try:
-        inPrimerFile = open(inPrimerFileName, 'r')
-    except:
-        exit(1, 'Could not open file %s\n' % inPrimerFileName)
-
-    try:
         inPrepFile = open(inPrepFileName, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inPrepFileName)
@@ -308,21 +270,6 @@ def init():
         exit(1, 'Could not open file %s\n' % inGelBandFileName)
 
     # Output Files
-
-    try:
-        outPrimerFile = open(outPrimerFileName, 'w')
-    except:
-        exit(1, 'Could not open file %s\n' % outPrimerFileName)
-
-    try:
-        outMarkerFile = open(outMarkerFileName, 'w')
-    except:
-        exit(1, 'Could not open file %s\n' % outMarkerFileName)
-
-    try:
-        outRefFile = open(outRefFileName, 'w')
-    except:
-        exit(1, 'Could not open file %s\n' % outRefFileName)
 
     try:
         outPrepFile = open(outPrepFileName, 'w')
@@ -398,14 +345,8 @@ def verifyMode():
 
 def setPrimaryKeys():
 
-    global probeKey, refKey, accKey, mgiKey, prepKey, assayKey
+    global accKey, mgiKey, prepKey, assayKey
     global gelLaneKey, gelRowKey, gelBandKey
-
-    results = db.sql('select maxKey = max(_Probe_key) + 1 from PRB_Probe', 'auto')
-    probeKey = results[0]['maxKey']
-
-    results = db.sql('select maxKey = max(_Reference_key) + 1 from PRB_Reference', 'auto')
-    refKey = results[0]['maxKey']
 
     results = db.sql('select maxKey = max(_ProbePrep_key) + 1 from GXD_ProbePrep', 'auto')
     prepKey = results[0]['maxKey']
@@ -442,9 +383,6 @@ def bcpFiles(
     if DEBUG or not bcpon:
         return
 
-    outPrimerFile.close()
-    outMarkerFile.close()
-    outRefFile.close()
     outPrepFile.close()
     outAssayFile.close()
     outGelLaneFile.close()
@@ -456,18 +394,15 @@ def bcpFiles(
     bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
     bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
 
-    bcp1 = '%s%s in %s %s' % (bcpI, probeTable, outPrimerFileName, bcpII)
-    bcp2 = '%s%s in %s %s' % (bcpI, markerTable, outMarkerFileName, bcpII)
-    bcp3 = '%s%s in %s %s' % (bcpI, refTable, outRefFileName, bcpII)
-    bcp4 = '%s%s in %s %s' % (bcpI, probeprepTable, outPrepFileName, bcpII)
-    bcp5 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
-    bcp6 = '%s%s in %s %s' % (bcpI, gelLaneTable, outGelLaneFileName, bcpII)
-    bcp7 = '%s%s in %s %s' % (bcpI, gelLaneStTable, outGelLaneStFileName, bcpII)
-    bcp8 = '%s%s in %s %s' % (bcpI, gelRowTable, outGelRowFileName, bcpII)
-    bcp9 = '%s%s in %s %s' % (bcpI, gelBandTable, outGelBandFileName, bcpII)
-    bcp10 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
+    bcp1 = '%s%s in %s %s' % (bcpI, probeprepTable, outPrepFileName, bcpII)
+    bcp2 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
+    bcp3 = '%s%s in %s %s' % (bcpI, gelLaneTable, outGelLaneFileName, bcpII)
+    bcp4 = '%s%s in %s %s' % (bcpI, gelLaneStTable, outGelLaneStFileName, bcpII)
+    bcp5 = '%s%s in %s %s' % (bcpI, gelRowTable, outGelRowFileName, bcpII)
+    bcp6 = '%s%s in %s %s' % (bcpI, gelBandTable, outGelBandFileName, bcpII)
+    bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
 
-    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8, bcp9, bcp10]:
+    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
 
@@ -480,9 +415,6 @@ def bcpFiles(
     db.sql('exec ACC_setMax %d' % (recordsProcessed), None)
 
     # update statistics
-    db.sql('update statistics %s' % (probeTable), None)
-    db.sql('update statistics %s' % (markerTable), None)
-    db.sql('update statistics %s' % (refTable), None)
     db.sql('update statistics %s' % (probeprepTable), None)
     db.sql('update statistics %s' % (assayTable), None)
     db.sql('update statistics %s' % (gelLaneTable), None)
@@ -492,104 +424,6 @@ def bcpFiles(
     db.sql('update statistics %s' % (accTable), None)
 
     return
-
-# Purpose:  processes primer data
-# Returns:  nothing
-# Assumes:  nothing
-# Effects:  verifies and processes each line in the input file
-# Throws:   nothing
-
-def processPrimerFile():
-
-    global assayPrimer
-    global probeKey, refKey, accKey, mgiKey
-
-    lineNum = 0
-    # For each line in the input file
-
-    for line in inPrimerFile.readlines():
-
-        error = 0
-        lineNum = lineNum + 1
-
-        # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
-
-        try:
-	    assayID = tokens[0]
-	    markerID = tokens[1]
-	    name = tokens[2]
-	    jnum = tokens[3]
-	    regionCovered = tokens[4]
-	    sequence1 = tokens[5]
-	    sequence2 = tokens[6]
-	    repeatUnit = tokens[7]
-	    moreProduct = tokens[8]
-	    productSize = tokens[9]
-        except:
-            exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
-
-	markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
-        referenceKey = loadlib.verifyReference(jnum, lineNum, errorFile)
-
-        if markerKey == 0 or referenceKey == 0:
-            # set error flag to true
-            error = 1
-
-        # if errors, continue to next record
-        if error:
-            continue
-
-        # if no errors, process
-
-        outPrimerFile.write(str(probeKey) + TAB + \
-	    name + TAB + \
-	    TAB + \
-	    NA + TAB + \
-	    NA + TAB + \
-	    sequence1 + TAB + \
-	    sequence2 + TAB + \
-	    mgi_utils.prvalue(regionCovered) + TAB + \
-	    TAB + \
-	    TAB + \
-	    TAB + \
-	    dnaType + TAB + \
-	    mgi_utils.prvalue(repeatUnit) + TAB + \
-	    mgi_utils.prvalue(productSize) + TAB + \
-	    moreProduct + TAB + \
-	    loaddate + TAB + loaddate + CRT)
-
-	outMarkerFile.write(str(probeKey) + TAB + \
-	    str(markerKey) + TAB + \
-	    relationship + TAB + \
-	    loaddate + TAB + loaddate + CRT)
-
-        outRefFile.write(str(refKey) + TAB + str(probeKey) + TAB + str(referenceKey) + TAB + \
-	    TAB + '0' + TAB + '0' + TAB + loaddate + TAB + loaddate + CRT)
-
-        # MGI Accession ID for the primer
-
-	outAccFile.write(str(accKey) + TAB + \
-	    mgiPrefix + str(mgiKey) + TAB + \
-	    mgiPrefix + TAB + \
-	    str(mgiKey) + TAB + \
-	    accLogicalDBKey + TAB + \
-	    str(probeKey) + TAB + \
-	    primerMgiTypeKey + TAB + \
-	    accPrivate + TAB + \
-	    accPreferred + TAB + \
-	    loaddate + TAB + loaddate + TAB + loaddate + CRT)
-
-	assayPrimer[assayID] = probeKey
-
-        accKey = accKey + 1
-        mgiKey = mgiKey + 1
-	refKey = refKey + 1
-        probeKey = probeKey + 1
-
-    #	end of "for line in inPrimerFile.readlines():"
-
-    return lineNum
 
 # Purpose:  processes probe prep data
 # Returns:  nothing
@@ -610,27 +444,29 @@ def processPrepFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
-	    prepType = tokens[1]
-	    hybridization = tokens[2]
-	    labelledWith = tokens[3]
-	    labelCoverage = tokens[4]
-	    visualization = tokens[5]
+	    probeID = tokens[1]
+	    prepType = tokens[2]
+	    hybridization = tokens[3]
+	    labelledWith = tokens[4]
+	    labelCoverage = tokens[5]
+	    visualization = tokens[6]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
 	if gxdloadlib.verifyPrepType(prepType, lineNum, errorFile) == 0:
 	    error = 1
 
+	probeKey = loadlib.verifyProbe(probeID, lineNum, errorFile)
 	senseKey = gxdloadlib.verifyPrepSense(hybridization, lineNum, errorFile)
 	labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
 	coverageKey = gxdloadlib.verifyPrepCoverage(labelCoverage, lineNum, errorFile)
 	visualizationKey = gxdloadlib.verifyPrepVisualization(visualization, lineNum, errorFile)
 
-        if senseKey == 0 or labelKey == 0 or coverageKey == 0:
+        if probeKey == 0 or senseKey == 0 or labelKey == 0 or coverageKey == 0:
             # set error flag to true
             error = 1
 
@@ -641,7 +477,7 @@ def processPrepFile():
         # if no errors, process
 
         outPrepFile.write(str(prepKey) + TAB + \
-	    str(assayPrimer[assayID]) + TAB + \
+	    str(probeKey) + TAB + \
 	    str(senseKey) + TAB + \
 	    str(labelKey) + TAB + \
 	    str(coverageKey) + TAB + \
@@ -675,28 +511,43 @@ def processAssayFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = string.split(line[:-1], TAB)
 
         try:
 	    assayID = tokens[0]
 	    markerID = tokens[1]
 	    jnum = tokens[2]
 	    assayType = tokens[3]
-	    createdBy = tokens[4]
+	    reporterGene = tokens[4]
+	    note = tokens[5]
+	    createdBy = tokens[6]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
 	markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
         referenceKey = loadlib.verifyReference(jnum, lineNum, errorFile)
 	assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
+	createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
 
         if markerKey == 0 or referenceKey == 0 or assayTypeKey == 0:
             # set error flag to true
             error = 1
 
+        if len(reporterGene) > 0:
+            reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
+	    if reporterGeneKey == 0:
+                error = 1
+        else:
+            reporterGeneKey = ''
+
         # if errors, continue to next record
         if error:
             continue
+
+	if assayProbePrep.has_key(assayID):
+	    probePrepKey = assayProbePrep[assayID]
+	else:
+	    probePrepKey = ''
 
         # if no errors, process
 
@@ -704,13 +555,24 @@ def processAssayFile():
 	    str(assayTypeKey) + TAB + \
 	    str(referenceKey) + TAB + \
 	    str(markerKey) + TAB + \
-	    str(assayProbePrep[assayID]) + TAB + \
+	    str(probePrepKey) + TAB + \
 	    TAB + \
 	    TAB + \
-	    TAB + \
-	    createdBy + TAB + \
-	    createdBy + TAB + \
+            str(reporterGeneKey) + TAB + \
+            str(createdByKey) + TAB + \
+            str(createdByKey) + TAB + \
 	    loaddate + TAB + loaddate + CRT)
+
+	if len(note) > 0:
+	    i = 0
+	    sequenceNum = 1
+	    while i < len(note):
+		outAssayNoteFile.write(str(assayKey) + TAB + \
+		    str(sequenceNum) + TAB + \
+		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+		    loaddate + TAB + loaddate + CRT)
+		i = i + ASSAY_NOTE_LENGTH
+		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
@@ -723,7 +585,9 @@ def processAssayFile():
 	    assayMgiTypeKey + TAB + \
 	    accPrivate + TAB + \
 	    accPreferred + TAB + \
-	    loaddate + TAB + loaddate + TAB + loaddate + CRT)
+            str(createdByKey) + TAB + \
+            str(createdByKey) + TAB + \
+	    loaddate + TAB + loaddate + CRT)
 
 	assayAssay[assayID] = assayKey
 	accKey = accKey + 1
@@ -904,9 +768,8 @@ def processGelBandFile():
 
 def process():
 
-    recordsProcessed = processPrimerFile()
     processPrepFile()
-    recordsProcessed = recordsProcessed + processAssayFile()
+    recordsProcessed = processAssayFile()
     processGelLaneFile()
     processGelBandFile()
     bcpFiles(recordsProcessed)
