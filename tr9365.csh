@@ -13,6 +13,8 @@
 
 cd `dirname $0` && source ./Configuration
 
+source ./tr9365.config
+
 setenv LOG $0.log
 rm -rf $LOG
 touch $LOG
@@ -34,22 +36,20 @@ quit
 
 EOSQL
 
-cd ${INSITUDATADIR}
-
 # load primers
 
-${PROBELOAD}/primerload.csh tr9365.config
+#${PROBELOAD}/primerload.csh tr9365.config
 
 # put this into gel load format
-${ASSAYLOAD}/tr9365rtpcr.py
+#${ASSAYLOAD}/tr9365rtpcr.py
 
 # run gelload
-${ASSAYLOAD}/gelload.py >>& $LOG
+${ASSAYLOAD}/gelload.py | tee -a $LOG
 
-cd `dirname $0`
-${ASSAYLOAD}/indexload.py >>& $LOG
+#cd `dirname $0`
+#${ASSAYLOAD}/indexload.py | tee -a $LOG
 
-${MRKCACHELOAD}/mrkref.csh >>& ${LOG}
+#${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
 
 date >> $LOG
 

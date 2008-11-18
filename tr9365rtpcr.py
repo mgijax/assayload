@@ -271,8 +271,13 @@ def process():
 
 	# select the lane information
 
+
         inLanesFile = open(inLanesFileName, 'r')
 	lineCountB = 1
+
+	lane = 1
+	row = 1
+
         for lineB in inLanesFile.readlines():
 
 	    if lineCountB == 1:
@@ -286,16 +291,18 @@ def process():
 	    genotype = tokens[2]
 	    structure = tokens[3]
 	    rnaType = tokens[4]
-	    age = tokens[5] + ' ' + tokens[6]
+
+	    if tokens[6] == '':
+	        age = tokens[5]
+	    else:
+		age = tokens[5] + ' ' + tokens[6]
+
 	    sex = tokens[7]
 
 	    allStructures = string.split(structure, ',')
 
 	    # write the gel lane and gel band information
     
-	    lane = 1
-	    row = 1
-
 	    for s in allStructures:
 
 	        structName, structTS = string.split(s, ':')
@@ -314,18 +321,16 @@ def process():
 		    structName + TAB + \
 		    structTS + CRT)
 
-	    for s in allBands:
-	        gelbandFile.write(str(assay) + TAB + \
+	    gelbandFile.write(str(assay) + TAB + \
 	            str(lane) + TAB + \
 	            str(row) + TAB + \
 	            gelsize + TAB + \
 	            gelunits + TAB + \
-	            allBands[s] + TAB + \
+	            allBands[lane] + TAB + \
 	            rowNote + TAB + \
 	            bandNote + CRT)
 
 	    lane = lane + 1
-	    row = row + 1
 	    lineCountB = lineCountB + 1
 
 	inLanesFile.close()

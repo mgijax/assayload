@@ -414,13 +414,13 @@ def bcpFiles(
     db.sql('exec ACC_setMax %d' % (recordsProcessed), None)
 
     # update statistics
-    db.sql('update statistics %s' % (probeprepTable), None)
-    db.sql('update statistics %s' % (assayTable), None)
-    db.sql('update statistics %s' % (gelLaneTable), None)
-    db.sql('update statistics %s' % (gelLaneStTable), None)
-    db.sql('update statistics %s' % (gelRowTable), None)
-    db.sql('update statistics %s' % (gelBandTable), None)
-    db.sql('update statistics %s' % (accTable), None)
+#    db.sql('update statistics %s' % (probeprepTable), None)
+#    db.sql('update statistics %s' % (assayTable), None)
+#    db.sql('update statistics %s' % (gelLaneTable), None)
+#    db.sql('update statistics %s' % (gelLaneStTable), None)
+#    db.sql('update statistics %s' % (gelRowTable), None)
+#    db.sql('update statistics %s' % (gelBandTable), None)
+#    db.sql('update statistics %s' % (accTable), None)
 
     return
 
@@ -562,16 +562,16 @@ def processAssayFile():
             str(createdByKey) + TAB + \
 	    loaddate + TAB + loaddate + CRT)
 
-	if len(note) > 0:
-	    i = 0
-	    sequenceNum = 1
-	    while i < len(note):
-		outAssayNoteFile.write(str(assayKey) + TAB + \
-		    str(sequenceNum) + TAB + \
-		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
-		    loaddate + TAB + loaddate + CRT)
-		i = i + ASSAY_NOTE_LENGTH
-		sequenceNum = sequenceNum + 1
+#	if len(note) > 0:
+#	    i = 0
+#	    sequenceNum = 1
+#	    while i < len(note):
+#		outAssayNoteFile.write(str(assayKey) + TAB + \
+#		    str(sequenceNum) + TAB + \
+#		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+#		    loaddate + TAB + loaddate + CRT)
+#		i = i + ASSAY_NOTE_LENGTH
+#		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
