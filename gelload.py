@@ -146,9 +146,11 @@ outGelLaneStFile = ''	# file descriptor
 outGelRowFile = ''	# file descriptor
 outGelBandFile = ''	# file descriptor
 outAccFile = ''         # file descriptor
+outAssayNoteFile = ''   # file descriptor
 
 probeprepTable = 'GXD_ProbePrep'
 assayTable = 'GXD_Assay'
+assaynoteTable = 'GXD_AssayNote'
 gelLaneTable = 'GXD_GelLane'
 gelLaneStTable = 'GXD_GelLaneStructure'
 gelRowTable = 'GXD_GelRow'
@@ -162,6 +164,7 @@ outGelLaneStFileName = datadir + '/' + gelLaneStTable + '.bcp'
 outGelRowFileName = datadir + '/' + gelRowTable + '.bcp'
 outGelBandFileName = datadir + '/' + gelBandTable + '.bcp'
 outAccFileName = datadir + '/' + accTable + '.bcp'
+outAssayNoteFileName = datadir + '/' + assaynoteTable + '.bcp'
 
 diagFileName = ''	# diagnostic file name
 errorFileName = ''	# error file name
@@ -187,6 +190,8 @@ accPreferred = '1'	# Preferred status MGI accession ID (true)
 assayProbePrep = {}	# Assay ID/Probe Prep keys
 assayAssay = {}		# Assay ID/Assay keys
 assayGelLane = {}	# Assay ID/Lane ID and Lane keys
+
+ASSAY_NOTE_LENGTH = 255
 
 loaddate = loadlib.loaddate
 
@@ -224,7 +229,7 @@ def exit(
 
 def init():
     global diagFile, errorFile, errorFileName, diagFileName
-    global outAccFile, outPrepFile, outAssayFile
+    global outAccFile, outPrepFile, outAssayFile, outAssayNoteFile
     global outGelLaneFile, outGelLaneStFile, outGelRowFile, outGelBandFile
     global inPrimerFile, inPrepFile, inAssayFile, inGelLaneFile, inGelBandFile
  
@@ -279,6 +284,11 @@ def init():
         outAssayFile = open(outAssayFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % outAssayFileName)
+
+    try:
+        outAssayNoteFile = open(outAssayNoteFileName, 'w')
+    except:
+        exit(1, 'Could not open file %s\n' % outAssayNoteFileName)
 
     try:
         outGelLaneFile = open(outGelLaneFileName, 'w')
@@ -384,6 +394,7 @@ def bcpFiles(
 
     outPrepFile.close()
     outAssayFile.close()
+    outAssayNoteFile.close()
     outGelLaneFile.close()
     outGelLaneStFile.close()
     outGelRowFile.close()
@@ -395,13 +406,14 @@ def bcpFiles(
 
     bcp1 = '%s%s in %s %s' % (bcpI, probeprepTable, outPrepFileName, bcpII)
     bcp2 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
-    bcp3 = '%s%s in %s %s' % (bcpI, gelLaneTable, outGelLaneFileName, bcpII)
-    bcp4 = '%s%s in %s %s' % (bcpI, gelLaneStTable, outGelLaneStFileName, bcpII)
-    bcp5 = '%s%s in %s %s' % (bcpI, gelRowTable, outGelRowFileName, bcpII)
-    bcp6 = '%s%s in %s %s' % (bcpI, gelBandTable, outGelBandFileName, bcpII)
-    bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
+    bcp3 = '%s%s in %s %s' % (bcpI, assaynoteTable, outAssayNoteFileName, bcpII)
+    bcp4 = '%s%s in %s %s' % (bcpI, gelLaneTable, outGelLaneFileName, bcpII)
+    bcp5 = '%s%s in %s %s' % (bcpI, gelLaneStTable, outGelLaneStFileName, bcpII)
+    bcp6 = '%s%s in %s %s' % (bcpI, gelRowTable, outGelRowFileName, bcpII)
+    bcp7 = '%s%s in %s %s' % (bcpI, gelBandTable, outGelBandFileName, bcpII)
+    bcp8 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
 
-    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7]:
+    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
 
@@ -562,16 +574,16 @@ def processAssayFile():
             str(createdByKey) + TAB + \
 	    loaddate + TAB + loaddate + CRT)
 
-#	if len(note) > 0:
-#	    i = 0
-#	    sequenceNum = 1
-#	    while i < len(note):
-#		outAssayNoteFile.write(str(assayKey) + TAB + \
-#		    str(sequenceNum) + TAB + \
-#		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
-#		    loaddate + TAB + loaddate + CRT)
-#		i = i + ASSAY_NOTE_LENGTH
-#		sequenceNum = sequenceNum + 1
+	if len(note) > 0:
+	    i = 0
+	    sequenceNum = 1
+	    while i < len(note):
+		outAssayNoteFile.write(str(assayKey) + TAB + \
+		    str(sequenceNum) + TAB + \
+		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+		    loaddate + TAB + loaddate + CRT)
+		i = i + ASSAY_NOTE_LENGTH
+		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
@@ -608,6 +620,7 @@ def processGelLaneFile():
     global assayGelLane, gelLaneKey
 
     lineNum = 0
+
     # For each line in the input file
 
     for line in inGelLaneFile.readlines():
@@ -652,31 +665,44 @@ def processGelLaneFile():
 
         # if no errors, process
 
-        outGelLaneFile.write(
-	    str(gelLaneKey) + TAB + \
-	    str(assayAssay[assayID]) + TAB + \
-	    str(genotypeKey) + TAB + \
-	    str(rnaTypeKey) + TAB + \
-	    str(controlKey) + TAB + \
-	    str(laneID) + TAB + \
-	    laneLabel + TAB + \
-	    mgi_utils.prvalue(sampleAmount) + TAB + \
-	    gender + TAB + \
-	    age + TAB + \
-	    str(ageMin) + TAB + \
-	    str(ageMax) + TAB + \
-	    mgi_utils.prvalue(ageNote) + TAB + \
-	    mgi_utils.prvalue(laneNote) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
-
-	outGelLaneStFile.write(
-	    str(gelLaneKey) + TAB + \
-	    str(structureKey) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
-
 	key = '%s:%s' % (assayID, laneID)
-	assayGelLane[key] = gelLaneKey
-        gelLaneKey = gelLaneKey + 1
+
+	# if this is a lane that has not been added to the gel lane yet...
+
+	if not assayGelLane.has_key(key):
+
+            outGelLaneFile.write(
+	        str(gelLaneKey) + TAB + \
+	        str(assayAssay[assayID]) + TAB + \
+	        str(genotypeKey) + TAB + \
+	        str(rnaTypeKey) + TAB + \
+	        str(controlKey) + TAB + \
+	        str(laneID) + TAB + \
+	        laneLabel + TAB + \
+	        mgi_utils.prvalue(sampleAmount) + TAB + \
+	        gender + TAB + \
+	        age + TAB + \
+	        str(ageMin) + TAB + \
+	        str(ageMax) + TAB + \
+	        mgi_utils.prvalue(ageNote) + TAB + \
+	        mgi_utils.prvalue(laneNote) + TAB + \
+	        loaddate + TAB + loaddate + CRT)
+
+	    outGelLaneStFile.write(
+	        str(gelLaneKey) + TAB + \
+	        str(structureKey) + TAB + \
+	        loaddate + TAB + loaddate + CRT)
+
+	    assayGelLane[key] = gelLaneKey
+            gelLaneKey = gelLaneKey + 1
+
+	# else if gel lanes has more than one structure...
+
+	else:
+	    outGelLaneStFile.write(
+	        str(assayGelLane[key]) + TAB + \
+	        str(structureKey) + TAB + \
+	        loaddate + TAB + loaddate + CRT)
 
     #	end of "for line in inGelLaneFile.readlines():"
 
@@ -771,7 +797,7 @@ def process():
     recordsProcessed = processAssayFile()
     processGelLaneFile()
     processGelBandFile()
-    bcpFiles(recordsProcessed)
+#    bcpFiles(recordsProcessed)
 
 #
 # Main

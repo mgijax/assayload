@@ -21,6 +21,8 @@ touch $LOG
  
 date > $LOG
  
+cd ${RTPCRDATADIR}
+
 cat - <<EOSQL | doisql.csh $MGD_DBSERVER $MGD_DBNAME $0 | tee -a $LOG
 
 use ${MGD_DBNAME}
