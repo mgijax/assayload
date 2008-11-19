@@ -37,20 +37,21 @@ quit
 EOSQL
 
 # load primers
-
-${PROBELOAD}/primerload.csh tr9365.config
+${PROBELOAD}/primerload.csh tr9365.config | tee -a $LOG
 
 # put this into gel load format
-${ASSAYLOAD}/tr9365rtpcr.py
+${ASSAYLOAD}/tr9365rtpcr.py | tee -a $LOG
 
 # run gelload
 cd ${RTPCRDATADIR}
 ${ASSAYLOAD}/gelload.py | tee -a $LOG
 
+# load index
 cd `dirname $0`
 ${ASSAYLOAD}/indexload.py | tee -a $LOG
 
-${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
+# update marker cache
+#${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
 
 date >> $LOG
 
