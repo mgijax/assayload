@@ -51,7 +51,7 @@ cd `dirname $0`
 ${ASSAYLOAD}/indexload.py | tee -a $LOG
 
 # update marker cache
-#${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
+${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
 
 date >> $LOG
 
