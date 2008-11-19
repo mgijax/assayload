@@ -21,8 +21,6 @@ touch $LOG
  
 date > $LOG
  
-cd ${RTPCRDATADIR}
-
 cat - <<EOSQL | doisql.csh $MGD_DBSERVER $MGD_DBNAME $0 | tee -a $LOG
 
 use ${MGD_DBNAME}
@@ -40,18 +38,19 @@ EOSQL
 
 # load primers
 
-#${PROBELOAD}/primerload.csh tr9365.config
+${PROBELOAD}/primerload.csh tr9365.config
 
 # put this into gel load format
-#${ASSAYLOAD}/tr9365rtpcr.py
+${ASSAYLOAD}/tr9365rtpcr.py
 
 # run gelload
+cd ${RTPCRDATADIR}
 ${ASSAYLOAD}/gelload.py | tee -a $LOG
 
-#cd `dirname $0`
-#${ASSAYLOAD}/indexload.py | tee -a $LOG
+cd `dirname $0`
+${ASSAYLOAD}/indexload.py | tee -a $LOG
 
-#${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
+${MRKCACHELOAD}/mrkref.csh | tee -a $LOG
 
 date >> $LOG
 

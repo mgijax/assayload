@@ -129,7 +129,7 @@ sampleAmount = NULL
 reporterGene = NULL
 ageNote = NULL
 laneNote = NULL
-rowNote = NULL
+rowNote = 'Ct values of 35 or higher were interpreted as absent; 33-34=trace; 31-32=weak; 29-30=moderate; 27-28=strong; and 26 or lower=very strong.'
 bandNote = NULL
 
 # constants for gel rows

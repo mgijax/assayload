@@ -797,7 +797,7 @@ def process():
     recordsProcessed = processAssayFile()
     processGelLaneFile()
     processGelBandFile()
-#    bcpFiles(recordsProcessed)
+    bcpFiles(recordsProcessed)
 
 #
 # Main
