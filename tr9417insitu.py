@@ -227,12 +227,14 @@ def process():
 	# field 4: Specimen Label
 	# field 5: Genotype ID
 	# field 6: Tissue Strength
+	# field 7: Figure Label	(see gxdimageload/tr9417fullsize.py/tr9417thumbnail.py)
 
 	probeID = tokens[0]
 	markerID = tokens[2]
 	specimenLabel = tokens[3]
 	genotypeID = tokens[4]
 	tissueStrength = tokens[5]
+	figureLabel = tokens[6]
 
 	# create one assay per record
 
@@ -299,7 +301,7 @@ def process():
 		    	tissue + TAB + \
 		    	theilerStage + TAB + \
 		    	resultNote + TAB + \
-			CRT)
+			figureLabel + CRT)
 		resultKey = resultKey + 1
 
 	assayKey = assayKey + 1
