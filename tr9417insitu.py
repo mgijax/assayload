@@ -98,7 +98,7 @@ visualizedWith = 'Alkaline phosphatase'
 reference = 'J:139177'
 assayType = 'RNA in situ'
 createdBy = os.environ['CREATEDBY']
-assayNote = 'Analysis was done using images obtained from the GenePaint website.  Specimen and probe information for this assay was downloaded from GenePaint.  Cryosections of fresh frozen material were fixed in 4% paraformaldehyde for 20 min. before further processing. A tyramidebiotin/streptavidin amplification step was included in the in situ hybridization procedure.'
+assayNote = 'Specimen and probe information for this assay was downloaded from GenePaint.  Cryosections of fresh frozen material were fixed in 4% paraformaldehyde for 20 min. before further processing. A tyramidebiotin/streptavidin amplification step was included in the in situ hybridization procedure.'
 
 # constants for specimen
 specimenLabel1 = '1'
