@@ -57,9 +57,6 @@ import gxdloadlib
 #
 # from configuration file
 #
-#
-# from configuration file
-#
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
 mode = os.environ['ASSAYLOADMODE']
@@ -96,10 +93,6 @@ errorFileName = ''	# error file name
 referenceKey = ''	# reference key
 priorityKey = ''	# priority key
 createdByKey = ''	# created by key
-
-# primary keys
-
-indexKey = 0		# GXD_Index._Index_key
 
 # constants
 
@@ -206,19 +199,6 @@ def verifyMode():
     elif mode != 'load':
         exit(1, 'Invalid Processing Mode:  %s\n' % (mode))
 
-# Purpose:  sets global primary key variables
-# Returns:  nothing
-# Assumes:  nothing
-# Effects:  sets global primary key variables
-# Throws:   nothing
-
-def setPrimaryKeys():
-
-    global indexKey
-
-    results = db.sql('select maxKey = max(_Index_key) + 1 from GXD_Index', 'auto')
-    indexKey = results[0]['maxKey']
-
 # Purpose:  BCPs the data into the database
 # Returns:  nothing
 # Assumes:  nothing
@@ -257,36 +237,62 @@ def bcpFiles():
 
 def processAssay():
 
-    global indexKey
+    # currently existing indexes
+
+    db.sql('''select distinct a._Refs_key, a._Marker_key, i._Index_key, s._IndexAssay_key, s._StageID_key
+	into #indexExist
+	from GXD_Assay a, GXD_Index i, GXD_Index_Stages s
+	where a._Refs_key = %s 
+	and a._Refs_key = i._Refs_key
+	and a._Marker_key = i._Marker_key
+	and i._Index_key = s._Index_key''' % (referenceKey), None)
+
+    results = db.sql('select * from #indexExist', 'auto')
+
+    # new indexes
+
+    db.sql('''select distinct a._Refs_key, a._Marker_key
+	into #indexToAdd
+	from GXD_Assay a
+	where a._Refs_key = %s
+	''' % (referenceKey), None)
+
+    # store new assyas
+    results = db.sql('select maxKey = max(_Index_key) + 1 from GXD_Index', 'auto')
+    indexKey = results[0]['maxKey']
+
     indexAssay = {}
+    results = db.sql('select distinct _Marker_key from #indexToAdd', 'auto')
+    for r in results:
+	indexAssay[r['_Marker_key']] = indexKey
+	indexKey = indexKey + 1
 
-    cmds = []
+    # store current assyas
+    results = db.sql('select _Marker_key, _Index_key from #indexExist', 'auto')
+    for r in results:
+	indexAssay[r['_Marker_key']] = r['_Index_key']
 
-    cmds.append('select distinct _Refs_key, _Marker_key ' + \
-	'into #indexToAdd ' + \
-	'from GXD_Assay ' + \
-	'where _Refs_key = %s ' % (referenceKey))
+    # store current stages
+    indexedAlready = []
+    results = db.sql('select _Index_key, _IndexAssay_key, _StageID_key from #indexExist', 'auto')
+    for r in results:
+	indexedTuple = (r['_Index_key'], r['_IndexAssay_key'], r['_StageID_key'])
+	indexedAlready.append(indexedTuple)
 
-    cmds.append('select * from #indexToAdd')
+    # select new indexes (those that do NOT exist)
 
-    cmds.append('select distinct i._Marker_key, a._AssayType_key, s.age, s.hybridization ' + \
-	'from #indexToAdd i, GXD_Assay a, GXD_Specimen s ' + \
-	'where i._Refs_key = a._Refs_key ' + \
-	'and i._Marker_key = a._Marker_key ' + \
-	'and a._Assay_key = s._Assay_key ' + \
-	'union ' + \
-	'select distinct i._Marker_key, a._AssayType_key, s.age, "NA" ' + \
-	'from #indexToAdd i, GXD_Assay a, GXD_GelLane s ' + \
-	'where i._Refs_key = a._Refs_key ' + \
-	'and i._Marker_key = a._Marker_key ' + \
-	'and a._Assay_key = s._Assay_key ' + \
-	'order by i._Marker_key, a._AssayType_key, s.age')
+    results = db.sql('''select a.* from #indexToAdd a
+	where not exists 
+	(select 1 from #indexExist e 
+	  where a._Refs_key = e._Refs_key
+	  and a._Marker_key = e._Marker_key)
+	''', 'auto')
 
-    results = db.sql(cmds, 'auto')
+    for r in results:
 
-    for r in results[1]:
+	indexKey = indexAssay[r['_Marker_key']]
 
-	 outIndexFile.write(str(indexKey) + TAB + \
+	outIndexFile.write(str(indexKey) + TAB + \
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
 	     str(priorityKey) + TAB + \
@@ -294,11 +300,24 @@ def processAssay():
 	     str(createdByKey) + TAB + str(createdByKey) + TAB + \
 	     loaddate + TAB + loaddate + CRT)
 
-	 indexAssay[r['_Marker_key']] = indexKey
-	 indexKey = indexKey + 1
+    #
+    # select stages
+    #
 
-    indexedAlready = []
-    for r in results[2]:
+    results = db.sql('''select distinct i._Marker_key, a._AssayType_key, s.age, s.hybridization 
+	from #indexToAdd i, GXD_Assay a, GXD_Specimen s 
+	where i._Refs_key = a._Refs_key 
+	and i._Marker_key = a._Marker_key 
+	and a._Assay_key = s._Assay_key 
+	union 
+	select distinct i._Marker_key, a._AssayType_key, s.age, "NA" 
+	from #indexToAdd i, GXD_Assay a, GXD_GelLane s 
+	where i._Refs_key = a._Refs_key 
+	and i._Marker_key = a._Marker_key 
+	and a._Assay_key = s._Assay_key 
+	order by i._Marker_key, a._AssayType_key, s.age''', 'auto')
+
+    for r in results:
 
 	indexKey = indexAssay[r['_Marker_key']]
 
@@ -368,7 +387,6 @@ def processAssay():
 
 init()
 verifyMode()
-setPrimaryKeys()
 processAssay()
 bcpFiles()
 exit(0)
