@@ -57,10 +57,13 @@ import gxdloadlib
 #
 # from configuration file
 #
+#
+# from configuration file
+#
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
-datadir = os.environ['DATADIR']
-mode = os.environ['LOADMODE']
+mode = os.environ['ASSAYLOADMODE']
+datadir = os.environ['ASSAYLOADDATADIR']
 createdBy = os.environ['CREATEDBY']
 reference = os.environ['REFERENCE']
 indexpriority = os.environ['IDXPRIORITY']
