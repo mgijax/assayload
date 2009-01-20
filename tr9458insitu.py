@@ -293,6 +293,7 @@ def process():
 	for k in dictEkey:
 
 	    specimenLabel = k[0]
+	    figureLabel = specimenLabel
 	    fpEkey = k[1]
 	    specimenEkey = tokens[k[2]]
 	    imageJPG = tokens[k[3]]
@@ -361,7 +362,7 @@ def process():
 		    	structureName + TAB + \
 		    	theilerStage + TAB + \
 		    	resultNote + TAB + \
-			CRT)
+			figureLabel + CRT)
 		resultKey = resultKey + 1
             inResultFile.close()
 

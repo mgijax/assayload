@@ -79,7 +79,10 @@
 #	GXD_InSituResult.bcp		InSitu Results
 #	GXD_ISResultStructure.bcp	InSitu Result Structures
 #       ACC_Accession.bcp               Accession records
-#
+#	Result_Image.txt		Results/Image text file (see gxdimageload/assocResultImage)
+#		field 1: Result key
+#		field 2: Figure Label
+#	
 #       Diagnostics file of all input parameters and SQL commands
 #       Error file
 #
