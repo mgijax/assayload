@@ -296,10 +296,11 @@ def process():
 	for k in dictEkey:
 
 	    specimenLabel = k[0]
-	    figureLabel = specimenLabel
 	    fpEkey = k[1]
 	    specimenEkey = tokens[k[2]]
 	    imageJPG = tokens[k[3]]
+	    figureLabel = string.replace(imageJPG, '.jpg', '')
+	    figureLabel = string.replace(figureLabel, '|', ',')
 	    specimenNote = tokens[k[4]]
 	    age = 'embryonic day ' + k[5]
 
