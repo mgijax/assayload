@@ -200,7 +200,6 @@ def process():
     # For each line in the input file
 
     dictEkey = []
-    specimenKey = 1
     lineNum = 0
     for line in inInSituFile.readlines():
 
@@ -209,6 +208,7 @@ def process():
         # Split the line into tokens
         tokens = string.split(line[:-1], TAB)
 
+	#
 	# processing first line (header)
 	# generate a directory of Ekeys
 	#
@@ -259,6 +259,7 @@ def process():
 	#  field 1: MGI Gene Symbol
 	#  field 2: MGI Gene ID
 	#  field 3: MGI Probe ID
+	#
 
 	markerID = tokens[1]
 	probeID = tokens[2]
@@ -289,6 +290,8 @@ def process():
 	# for each Ekey:
 	#    generate the specimen row
 	#
+
+        specimenKey = 1
 
 	for k in dictEkey:
 
@@ -322,9 +325,10 @@ def process():
 
 	    # write one result per tissue
 
-	    resultKey = 1
             inResultFile = open(trdir + '/' + fpEkey, 'r')
 	    lineNumResult = 0
+	    resultKey = 1
+
 	    for rline in inResultFile.readlines():
 
 	        lineNumResult = lineNumResult + 1
@@ -336,34 +340,63 @@ def process():
                 rtokens = string.split(rline[:-1], TAB)
 
 		# field 1: Ekey (first field of each E*.txt file)
+		#
 		# field 2: Strength
 		# field 3: Pattern
 		# field 4: Structure Print Name
 		# field 5: Stage
 		# field 6: Result Note
-
-		resultEkey = rtokens[0]
-		strength = rtokens[1]
-		pattern = rtokens[2]
-		structureName = rtokens[3]
-		theilerStage = rtokens[4]
-		resultNote = rtokens[5]
+		#
+		# field 7: Strength
+		# field 8: Pattern
+		# field 9: Structure Print Name
+		# field 10: Stage
+		# field 11: Result Note
+		#
+		# ...
+		#
+		# add 5
+		#
 
 		# insert a result for each match between the specimen and the result text file
+
+		resultEkey = rtokens[0]
 
 		if resultEkey != specimenEkey:
 		    continue
 
-		resultsFile.write(str(assayKey) + TAB + \
-	            	str(specimenKey) + TAB + \
-	            	str(resultKey) + TAB + \
-		    	strength + TAB + \
-		    	pattern + TAB + \
-		    	structureName + TAB + \
-		    	theilerStage + TAB + \
-		    	resultNote + TAB + \
-			figureLabel + CRT)
-		resultKey = resultKey + 1
+		numResults = 5
+		startResult = 1
+		endResult = 5
+
+		for n in range(numResults):
+
+		    try:
+		        strength = rtokens[startResult]
+		        pattern = rtokens[startResult + 1]
+		        structureName = rtokens[startResult + 2]
+		        theilerStage = rtokens[startResult + 3]
+		        resultNote = rtokens[startResult + 4]
+		    except:
+			break
+
+		    if strength == '':
+			break
+
+		    resultsFile.write(str(assayKey) + TAB + \
+	            	   str(specimenKey) + TAB + \
+	            	   str(resultKey) + TAB + \
+		    	   strength + TAB + \
+		    	   pattern + TAB + \
+		    	   structureName + TAB + \
+		    	   theilerStage + TAB + \
+		    	   resultNote + TAB + \
+			   figureLabel + CRT)
+		    resultKey = resultKey + 1
+
+		    startResult = startResult + numResults
+		    endResult = endResult + numResults
+
             inResultFile.close()
 
 	    specimenKey = specimenKey + 1
