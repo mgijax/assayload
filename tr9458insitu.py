@@ -37,13 +37,13 @@
 #		field 11: E7.75 image
 #		field 12: E7.75 specnote
 #
-#		field 13: E7.85
-#		field 14: E7.85 image
-#		field 15: E7.85 specnote
+#		field 13: E8.5
+#		field 14: E8.5 image
+#		field 15: E8.5 specnote
 #
-#		field 16: E7.95
-#		field 17: E7.95 image
-#		field 18: E7.95 specnote
+#		field 16: E9.5
+#		field 17: E9.5 image
+#		field 18: E9.5 specnote
 #
 #	E7.25key.txt
 #	E7.5key.txt
@@ -220,13 +220,13 @@ def process():
         # field 11: E7.75 image
         # field 12: E7.75 specnote
         #
-        # field 13: E7.85
-        # field 14: E7.85 image
-        # field 15: E7.85 specnote
+        # field 13: E8.5
+        # field 14: E8.5 image
+        # field 15: E8.5 specnote
         #
-        # field 16: E7.95
-        # field 17: E7.95 image
-        # field 18: E7.95 specnote
+        # field 16: E9.5
+        # field 17: E9.5 image
+        # field 18: E9.5 specnote
 	#
 
 	if lineNum == 1:
@@ -380,7 +380,9 @@ def process():
 		        theilerStage = rtokens[startResult + 3]
 		        resultNote = rtokens[startResult + 4]
 		    except:
-			print 'Missing Results: ', markerSymbol, ',', resultEkey, ',', n
+			print 'Missing Results: ', markerSymbol, ',', resultEkey, ',', n+1
+			print rtokens
+			print ""
 			break
 
 		    if strength == '':
