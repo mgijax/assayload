@@ -261,6 +261,7 @@ def process():
 	#  field 3: MGI Probe ID
 	#
 
+	markerSymbol = tokens[0]
 	markerID = tokens[1]
 	probeID = tokens[2]
 
@@ -297,7 +298,7 @@ def process():
 
 	    specimenLabel = k[0]
 	    fpEkey = k[1]
-	    specimenEkey = tokens[k[2]]
+	    specimenEkey = string.replace(tokens[k[2]], ' ', '')
 	    imageJPG = tokens[k[3]]
 	    figureLabel = string.replace(imageJPG, '.jpg', '')
 	    figureLabel = string.replace(figureLabel, '|', ',')
@@ -361,7 +362,7 @@ def process():
 
 		# insert a result for each match between the specimen and the result text file
 
-		resultEkey = rtokens[0]
+		resultEkey = string.replace(rtokens[0], ' ', '')
 
 		if resultEkey != specimenEkey:
 		    continue
@@ -379,6 +380,7 @@ def process():
 		        theilerStage = rtokens[startResult + 3]
 		        resultNote = rtokens[startResult + 4]
 		    except:
+			print 'Missing Results: ', markerSymbol, ',', resultEkey, ',', n
 			break
 
 		    if strength == '':
