@@ -32,8 +32,7 @@
 #		field 3: Probe Prep Type
 #		field 4: Hybridization
 #		field 5: Labelled With
-#		field 6: Label Coverage
-#		field 7: Visualized With
+#		field 6: Visualized With
 #
 #       Assay file, a tab-delimited file in the format:
 #               field 1: Assay #
@@ -93,6 +92,11 @@
 # Bugs:
 #
 # Implementation:
+#
+# History
+#
+# 01/20/2010 lec
+#	- TR9560/TR9782; remove verifyPrepCoverage
 #
 
 import sys
@@ -463,8 +467,7 @@ def processPrepFile():
 	    prepType = tokens[2]
 	    hybridization = tokens[3]
 	    labelledWith = tokens[4]
-	    labelCoverage = tokens[5]
-	    visualization = tokens[6]
+	    visualization = tokens[5]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
@@ -474,10 +477,9 @@ def processPrepFile():
 	probeKey = loadlib.verifyProbe(probeID, lineNum, errorFile)
 	senseKey = gxdloadlib.verifyPrepSense(hybridization, lineNum, errorFile)
 	labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
-	coverageKey = gxdloadlib.verifyPrepCoverage(labelCoverage, lineNum, errorFile)
 	visualizationKey = gxdloadlib.verifyPrepVisualization(visualization, lineNum, errorFile)
 
-        if probeKey == 0 or senseKey == 0 or labelKey == 0 or coverageKey == 0:
+        if probeKey == 0 or senseKey == 0 or labelKey == 0:
             # set error flag to true
             error = 1
 
@@ -491,7 +493,6 @@ def processPrepFile():
 	    str(probeKey) + TAB + \
 	    str(senseKey) + TAB + \
 	    str(labelKey) + TAB + \
-	    str(coverageKey) + TAB + \
 	    str(visualizationKey) + TAB + \
 	    prepType + TAB + \
 	    loaddate + TAB + loaddate + CRT)
