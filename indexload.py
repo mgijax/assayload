@@ -92,6 +92,7 @@ errorFileName = ''	# error file name
 
 referenceKey = ''	# reference key
 priorityKey = ''	# priority key
+conditionalKey = 4834242 # conditional key defaults to "not applicable"
 createdByKey = ''	# created by key
 
 # constants
@@ -296,6 +297,7 @@ def processAssay():
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
 	     str(priorityKey) + TAB + \
+	     str(conditionalKey) + TAB + \
 	     indexComments + TAB + \
 	     str(createdByKey) + TAB + str(createdByKey) + TAB + \
 	     loaddate + TAB + loaddate + CRT)
