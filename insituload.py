@@ -463,8 +463,7 @@ def processPrepFile():
 	    prepType = tokens[2]
 	    hybridization = tokens[3]
 	    labelledWith = tokens[4]
-	    labelCoverage = tokens[5]
-	    visualization = tokens[6]
+	    visualization = tokens[5]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
