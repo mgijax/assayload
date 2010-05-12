@@ -52,6 +52,10 @@
 #               field 8: Result Note
 #               field 9: Comma-Separated Image Names (if any)
 #
+#	Specimen/Image file, a tab-delimited file in the format:
+#		field 1: Specimen Label
+#		field 2: Image name (without .jpg)
+#
 # Outputs:
 #
 #       4 tab-delimited files:
@@ -98,6 +102,7 @@ datadir = os.environ['ASSAYLOADDATADIR']
 inAssayFileName = os.environ['PROJECTDIR'] + '/Assays/Assays.txt'
 inSpecimenFileName = os.environ['PROJECTDIR'] + '/Assays/Specimens.txt'
 inResultFileName = os.environ['PROJECTDIR'] + '/Assays/Results.txt'
+inImageFileName = os.environ['PROJECTDIR'] + '/Assays/ImageAssoc.txt'
 
 prepFileName = datadir + '/In_Situ_probeprep.txt'
 assayFileName = datadir + '/In_Situ_assay.txt'
@@ -134,7 +139,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile, inSpecimenFile, inResultFile
+    global inAssayFile, inSpecimenFile, inResultFile, inImageFile
     global prepFile, assayFile, specimenFile, resultsFile
  
     try:
@@ -151,6 +156,11 @@ def init():
         inResultFile = open(inResultFileName, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inResultFileName)
+
+    try:
+        inImageFile = open(inImageFileName, 'r')
+    except:
+        exit(1, 'Could not open file %s\n' % inImageFileName)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -277,6 +287,18 @@ def process():
 
     inSpecimenFile.close()
 
+    # create lookup of specimen/image jpg
+
+    imageLookup = {}
+    for iline in inImageFile.readlines():
+        # Split the line into tokens
+        tokens = string.split(iline[:-1], TAB)
+	specimenID = tokens[0]
+	imageName = tokens[1]
+	imageLookup[specimenID] = []
+	imageLookup[specimenID].append(imageName)
+    inImageFile.close()
+
     # write one results per specimen
 
     resultKey = 1
@@ -295,7 +317,12 @@ def process():
 	structureName = tokens[4]
 	structureTheilerStage = tokens[5]
 	resultNote = tokens[6]
-	imageNames = tokens[7]
+	#imageName = tokens[7]
+
+	if imageLookup.has_key(specimenID):
+	    imageName = imageLookup[specimenID][0]
+        else:
+	    imageName = ''
 
 	if markerID != prevMarkerID:
             specimenKey = 1
@@ -315,7 +342,7 @@ def process():
 	    structureName + TAB + \
 	    structureTheilerStage + TAB + \
 	    resultNote + TAB + \
-	    imageNames + CRT)
+	    imageName + CRT)
 
         resultKey = resultKey + 1
 
