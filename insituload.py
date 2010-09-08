@@ -100,6 +100,17 @@
 # 01/20/2010 lec
 #       - TR9560/TR9782; remove verifyPrepCoverage
 #
+# 08/09/2010 dbm
+#     - For TR9695 (EurExpress load), there are multiple markers for some
+#       assays. For these assays, there are multiple records in the assay
+#       input file that only differ by the assayID and marker MGI ID.
+#       In order to maintain the 1:1 relationship between the probe prep
+#       input file and the assay input file (via assayID), it was necessary
+#       to have duplicated records in the probe prep input file that only
+#       differ on assayID. This required addition logic to be added to the
+#       processPrepFile() method to keep it from adding duplicate records
+#       to GXD_ProbePrep.
+#       
 
 import sys
 import os
@@ -446,6 +457,13 @@ def processPrepFile():
 
     global assayProbePrep, prepKey
 
+    # This dictionary is used to keep track of each combination of probe key,
+    # sense key, label key, visualization key and prep type that are added.
+    # If the combination exists on multiple records in the probe prep input
+    # file, only one probe prep record will be created in the database and
+    # it will be shared by multiple assays.
+    probePrepLookup = {}
+
     lineNum = 0
     # For each line in the input file
 
@@ -485,16 +503,39 @@ def processPrepFile():
 
         # if no errors, process
 
-        outPrepFile.write(str(prepKey) + TAB + \
-	    str(probeKey) + TAB + \
-	    str(senseKey) + TAB + \
-	    str(labelKey) + TAB + \
-	    str(visualizationKey) + TAB + \
-	    prepType + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+	# Determine if the current combination of probe key, sense key,
+        # label key, visualization key and prep type has already been added
+        # to the output file.
+        #
+	key = '%s:%s:%s:%s:%s' % (str(probeKey),
+                                  str(senseKey),
+                                  str(labelKey),
+                                  str(visualizationKey),
+                                  prepType)
 
-	assayProbePrep[assayID] = prepKey
-        prepKey = prepKey + 1
+        # If a probe prep record has already been created, add the existing
+        # probe prep key to the lookup for the current assayID.
+        #
+	if probePrepLookup.has_key(key):
+	    assayProbePrep[assayID] = probePrepLookup[key]
+
+        # Otherwise, add a new probe prep key to the lookup for the current
+        # assayID and also add a new entry to the dictionary for this
+        # combination of probe key, sense key, label key, visualization key
+        # and prep type.
+        #
+	else:
+	    outPrepFile.write(str(prepKey) + TAB + \
+	        str(probeKey) + TAB + \
+	        str(senseKey) + TAB + \
+	        str(labelKey) + TAB + \
+	        str(visualizationKey) + TAB + \
+	        prepType + TAB + \
+	        loaddate + TAB + loaddate + CRT)
+
+	    assayProbePrep[assayID] = prepKey
+	    probePrepLookup[key] = prepKey
+	    prepKey = prepKey + 1
 
     #	end of "for line in inPrepFile.readlines():"
 
