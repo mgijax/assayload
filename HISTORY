@@ -1,3 +1,9 @@
+TAG: assayload-4-4-1-2
+DATE: 12/29/2010
+STAFF: dbm
+CHANGES:
+1) tr10449.py - New parser to create input files for the insituload (TR10449)
+
 TAG: assayload-4-4-1-1
 DATE: 12/21/2010
 STAFF: dbm
