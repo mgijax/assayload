@@ -765,6 +765,8 @@ def processResultsFile():
 
 	strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
 	patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
+
+	structureName = string.replace(structureName, '"', '""')
 	structureKey = gxdloadlib.verifyStructure(structureName, structureTS, lineNum, errorFile)
 
         if strengthKey == 0 or patternKey == 0 or structureKey == 0:
