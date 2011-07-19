@@ -60,10 +60,11 @@
 #
 #               field 0: Specimen Label
 #		field 1: EMAP_ID Structure_Name
-#		field 2: Strength
-#		field 3: Pattern
-#		field 4: Result Note
-#		field 5: Image Names
+#		field 2: EMAP name
+#		field 3: Strength
+#		field 4: Pattern
+#		field 5: Result Note
+#		field 6: Image Names
 #
 #	StructureLookup.txt, a tab-delimited file in the format:
 #
@@ -134,7 +135,7 @@ reference = os.environ['REFERENCE']
 createdBy = os.environ['CREATEDBY']
 
 # structure lookup
-imageLookup = {}
+structureLookup = {}
 
 # Purpose: prints error message and exits
 # Returns: nothing
@@ -162,7 +163,7 @@ def exit(
 def init():
     global inAssayFile, inSpecimenFile, inResultFile, inImageFile
     global prepFile, assayFile, specimenFile, resultsFile
-    global imageLookup
+    global structureLookup
  
     try:
         inAssayFile = open(inAssayName, 'r')
@@ -204,11 +205,12 @@ def init():
     except:
         exit(1, 'Could not open file %s\n' % resultsFileName)
 
+    # structure lookup
     for line in inStructureFile.readlines():
 	tokens = string.split(line[:-1], TAB)
 	structureID = int(tokens[0])
-	imageLookup[structureID] = []
-	imageLookup[structureID].append(tokens)
+	structureLookup[structureID] = []
+	structureLookup[structureID].append(tokens)
     inStructureFile.close()
 
     return
@@ -264,14 +266,16 @@ def process():
 	assayKey = assayKey + 1
 
     inAssayFile.close()
+    assayFile.close()
 
     # end of "for line in inAssayFile.readlines():"
 
-    # write one specimen per assay
+    # specimens by specimen label
 
     specimenKey = 1
-    assay2Lookup = {}
-    assay3Lookup = {}
+    specimenLookup = {}
+    specNumLookup = {}
+    probeLookup = {}
 
     for sline in inSpecimenFile.readlines():
 
@@ -291,14 +295,14 @@ def process():
 
 	assayKey = assayLookup[probeID]
 
-	# assay by specimen id
-	if not assay3Lookup.has_key(specimenID):
-	    assay3Lookup[specimenID] = []
+	# assay by probe id
+	if not probeLookup.has_key(probeID):
+	    probeLookup[probeID] = []
 	    specimenKey = 1
 	else:
-	    specimenKey = assay3Lookup[specimenID] + 1
+	    specimenKey = probeLookup[probeID] + 1
 
-        assay3Lookup[specimenID] = specimenKey
+        probeLookup[probeID] = specimenKey
 
 	specimenFile.write(str(assayKey) + TAB + \
 	    str(specimenKey) + TAB + \
@@ -313,11 +317,17 @@ def process():
 	    specimenNote + CRT)
 
 	# assay by specimen id
-	if not assay2Lookup.has_key(specimenID):
-	    assay2Lookup[specimenID] = []
-        assay2Lookup[specimenID] = assayKey
+	if not specimenLookup.has_key(specimenID):
+	    specimenLookup[specimenID] = []
+        specimenLookup[specimenID] = assayKey
+
+	# specimen number by specimen id
+	if not specNumLookup.has_key(specimenID):
+	    specNumLookup[specimenID] = []
+        specNumLookup[specimenID] = specimenKey
 
     inSpecimenFile.close()
+    specimenFile.close()
 
     # write one results per specimen
 
@@ -330,17 +340,17 @@ def process():
 
 	specimenID = tokens[0]
 	edinID = int(tokens[1])
-	strength = tokens[2]
-	pattern = tokens[3]
-	resultNote = tokens[4]
-	imageName = tokens[5]
+	strength = tokens[3]
+	pattern = tokens[4]
+	resultNote = tokens[5]
+	imageName = tokens[6]
 
-	r = imageLookup[edinID]
+	r = structureLookup[edinID]
 	structureName = r[0][4]
 	structureTheilerStage = r[0][3]
 
-	assayKey = assay2Lookup[specimenID]
-	specimentKey = assay3Lookup[specimenID]
+	assayKey = specimenLookup[specimenID]
+	specimenKey = specNumLookup[specimenID]
 
 	if not resultLookup.has_key(specimenID):
 	    resultLookup[specimenID] = []
@@ -361,6 +371,7 @@ def process():
 	    imageName + CRT)
 
     inResultFile.close()
+    resultsFile.close()
 
     # end of "for line in inResultFile.readlines():"
 #
