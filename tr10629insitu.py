@@ -10,7 +10,7 @@
 #	To translate 
 #		10629/LoaderDocuments/LoadFile1.txt 
 #		10629/LoaderDocuments/LoadFile2.txt 
-#		10629/LoaderDocuments/LoadFile3.txt 
+#		10629/LoaderDocuments/LoadFile4.txt 
 #		10629/LoaderDocuments/StructureLookup.txt 
 #	into input files for the insituload.py program.
 #
@@ -24,8 +24,7 @@
 #
 #	LOADFILE1
 #	LOADFILE2
-#	LOADFILE3
-#	STRUCTURE_LOOKUP
+#	LOADFILE4
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	SPECIMEN_FILE
@@ -56,7 +55,7 @@
 #               field 8: Hybridization
 #               field 9: Specimen Note
 #
-#       LoadFile3.txt, a tab-delimited file in the format:
+#       LoadFile4.txt, a tab-delimited file in the format:
 #
 #               field 0: Specimen Label
 #		field 1: EMAP_ID Structure_Name
@@ -65,14 +64,8 @@
 #		field 4: Pattern
 #		field 5: Result Note
 #		field 6: Image Names
-#
-#	StructureLookup.txt, a tab-delimited file in the format:
-#
-#		field 0: EMAP id
-#		field 1: GUDMAP name
-#		field 2: MGI ID of the structure
-#		field 3: Theiler Stage
-#		field 4: GXD Structure Print Name
+#		field 7: Structure Print Name
+#		field 8: Structure Theiler Stage
 #
 # Outputs:
 #
@@ -108,18 +101,15 @@ NULL = ''
 inAssayFile = ''	# file descriptor
 inSpecimenFile = ''	# file descriptor
 inResultFile = ''	# file descriptor
-inStructureFile = ''	# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
 specimenFile = ''       # file descriptor
 resultsFile = ''        # file descriptor
-structureFile = ''      # file descriptor
 
 inAssayName = os.environ['LOADFILE1']
 inSpecimenFileName = os.environ['LOADFILE2']
-inResultFileName = os.environ['LOADFILE3']
-inStructureFileName = os.environ['STRUCTURE_LOOKUP']
+inResultFileName = os.environ['LOADFILE4']
 
 prepFileName = os.environ['PROBEPREP_FILE']
 assayFileName = os.environ['ASSAY_FILE']
@@ -161,9 +151,8 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile, inSpecimenFile, inResultFile, inStructureFile
+    global inAssayFile, inSpecimenFile, inResultFile
     global prepFile, assayFile, specimenFile, resultsFile
-    global structureLookup
  
     try:
         inAssayFile = open(inAssayName, 'r')
@@ -179,11 +168,6 @@ def init():
         inResultFile = open(inResultFileName, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inResultFileName)
-
-    try:
-        inStructureFile = open(inStructureFileName, 'r')
-    except:
-        exit(1, 'Could not open file %s\n' % inStructureFileName)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -204,14 +188,6 @@ def init():
         resultsFile = open(resultsFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % resultsFileName)
-
-    # structure lookup
-    for line in inStructureFile.readlines():
-	tokens = string.split(line[:-1], TAB)
-	structureID = int(string.replace(tokens[0], 'EMAP:', ''))
-	structureLookup[structureID] = []
-	structureLookup[structureID].append(tokens)
-    inStructureFile.close()
 
     return
 
@@ -339,15 +315,15 @@ def process():
         tokens = string.split(rline[:-1], TAB)
 
 	specimenID = tokens[0]
-	emapID = int(string.replace(tokens[1], 'EMAP:', ''))
 	strength = tokens[3]
 	pattern = tokens[4]
 	resultNote = tokens[5]
 	imageName = tokens[6]
+	structureName = tokens[7]
+	structureTheilerStage = tokens[8]
 
-	r = structureLookup[emapID]
-	structureName = r[0][4]
-	structureTheilerStage = r[0][3]
+	structureName = string.replace(structureName, 'testis; germinal', 'testis; "germinal"')
+	structureName = string.replace(structureName, 'gonad primordium; germinal epithelium', 'gonad primordium; "germinal" epithelium')
 
 	assayKey = specimenLookup[specimenID]
 	specimenKey = specNumLookup[specimenID]
