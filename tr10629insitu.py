@@ -11,6 +11,7 @@
 #		10629/LoaderDocuments/LoadFile1.txt 
 #		10629/LoaderDocuments/LoadFile2.txt 
 #		10629/LoaderDocuments/LoadFile3.txt 
+#		10629/LoaderDocuments/StructureLookup.txt 
 #	into input files for the insituload.py program.
 #
 # Requirements Satisfied by This Program:
@@ -21,6 +22,10 @@
 #
 # Envvars:
 #
+#	LOADFILE1
+#	LOADFILE2
+#	LOADFILE3
+#	STRUCTURE_LOOKUP
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	SPECIMEN_FILE
