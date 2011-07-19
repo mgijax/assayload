@@ -161,7 +161,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile, inSpecimenFile, inResultFile, inImageFile
+    global inAssayFile, inSpecimenFile, inResultFile, inStructureFile
     global prepFile, assayFile, specimenFile, resultsFile
     global structureLookup
  
@@ -208,7 +208,7 @@ def init():
     # structure lookup
     for line in inStructureFile.readlines():
 	tokens = string.split(line[:-1], TAB)
-	structureID = int(tokens[0])
+	structureID = int(string.replace(tokens[0], 'EMAP:', ''))
 	structureLookup[structureID] = []
 	structureLookup[structureID].append(tokens)
     inStructureFile.close()
@@ -339,13 +339,13 @@ def process():
         tokens = string.split(rline[:-1], TAB)
 
 	specimenID = tokens[0]
-	edinID = int(tokens[1])
+	emapID = int(string.replace(tokens[1], 'EMAP:', ''))
 	strength = tokens[3]
 	pattern = tokens[4]
 	resultNote = tokens[5]
 	imageName = tokens[6]
 
-	r = structureLookup[edinID]
+	r = structureLookup[emapID]
 	structureName = r[0][4]
 	structureTheilerStage = r[0][3]
 
