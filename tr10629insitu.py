@@ -11,7 +11,6 @@
 #		10629/LoaderDocuments/LoadFile1.txt 
 #		10629/LoaderDocuments/LoadFile2.txt 
 #		10629/LoaderDocuments/LoadFile4.txt 
-#		10629/LoaderDocuments/StructureLookup.txt 
 #	into input files for the insituload.py program.
 #
 # Requirements Satisfied by This Program:
@@ -322,8 +321,10 @@ def process():
 	structureName = tokens[7]
 	structureTheilerStage = tokens[8]
 
-	structureName = string.replace(structureName, 'testis; germinal', 'testis; "germinal"')
-	structureName = string.replace(structureName, 'gonad primordium; germinal epithelium', 'gonad primordium; "germinal" epithelium')
+	structureName = string.replace(structureName, \
+		'testis; germinal', 'testis; "germinal"')
+	structureName = string.replace(structureName, \
+		'gonad primordium; germinal epithelium', 'gonad primordium; "germinal" epithelium')
 
 	assayKey = specimenLookup[specimenID]
 	specimenKey = specNumLookup[specimenID]
