@@ -369,6 +369,10 @@ def processAssay():
 
 	for s in stages:
 
+	    # the age may have a '.0'...the vocbaulary does not
+	    # modify the age so that it can be found in the vocabulary
+	    s = string.replace(s, '.0', '')
+
 	    idxStageKey = gxdloadlib.verifyIdxStage(s, 0, errorFile)
 
 	    indexedTuple = (indexKey, idxAssayKey, idxStageKey)
@@ -392,6 +396,6 @@ def processAssay():
 init()
 verifyMode()
 processAssay()
-bcpFiles()
+#bcpFiles()
 exit(0)
 
