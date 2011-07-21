@@ -19,9 +19,16 @@
 #
 # Envvars:
 #
+#	LOADFILE5	marker notes; leave blank if not individual notes are needed
+#
 # Inputs:
 #
-#	None
+#       LoadFile5.txt, a tab-delimited file in the format:
+#
+#               field 0: J number
+#		field 1: Marker Symbol
+#		field 2: Marker MGI ID
+#		field 3: Comment/Note
 #
 # Outputs:
 #
@@ -76,6 +83,11 @@ bcpon = 1		# can the bcp files be bcp-ed into the database?  default is yes.
 diagFile = ''		# diagnostic file descriptor
 errorFile = ''		# error file descriptor
 
+# input files
+
+inCommentsFile = ''	# file description
+inCommentsFileName = os.environ['LOADFILE5']
+
 # output files
 
 outIndexFile = ''	# file descriptor
@@ -94,6 +106,9 @@ referenceKey = ''	# reference key
 priorityKey = ''	# priority key
 conditionalKey = 4834242 # conditional key defaults to "not applicable"
 createdByKey = ''	# created by key
+
+# comments lookup
+commentsLookup = {}
 
 # constants
 
@@ -133,7 +148,7 @@ def exit(
 
 def init():
     global diagFile, errorFile, errorFileName, diagFileName
-    global outIndexFile, outStagesFile
+    global inCommentsFile, outIndexFile, outStagesFile
     global referenceKey, priorityKey, createdByKey, indexComments
  
     db.useOneConnection(1)
@@ -153,6 +168,13 @@ def init():
     except:
         exit(1, 'Could not open file %s\n' % errorFileName)
 		
+    # Input Files
+
+    try:
+        inCommentsFile = open(inCommentsFileName, 'r')
+    except:
+        exit(1, 'Could not open file %s\n' % inCommentsFileName)
+
     # Output Files
 
     try:
@@ -180,6 +202,15 @@ def init():
     referenceKey = loadlib.verifyReference(reference, 0, errorFile)
     priorityKey = gxdloadlib.verifyIdxPriority(indexpriority, 0, errorFile)
     createdByKey = loadlib.verifyUser(createdBy, 0, errorFile)
+
+    # comments lookup
+    for line in inCommentsFile.readlines():
+	tokens = string.split(line[:-1], TAB)
+	markerID = tokens[2]
+	comments = tokens[3]
+	commentsLookup[markerID] = []
+	commentsLookup[markerID] = comments
+    inCommentsFile.close()
 
     return
 
@@ -252,10 +283,14 @@ def processAssay():
 
     # new indexes
 
-    db.sql('''select distinct a._Refs_key, a._Marker_key
+    db.sql('''select distinct a._Refs_key, a._Marker_key, aa.accID
 	into #indexToAdd
-	from GXD_Assay a
+	from GXD_Assay a, ACC_Accession aa
 	where a._Refs_key = %s
+	and a._Marker_key = aa._Object_key
+	and aa._MGIType_key = 2
+	and aa.prefixPart = "MGI:"
+	and aa.preferred = 1
 	''' % (referenceKey), None)
 
     # store new assyas
@@ -289,16 +324,21 @@ def processAssay():
 	  and a._Marker_key = e._Marker_key)
 	''', 'auto')
 
+    writeIndexComments = indexComments
+
     for r in results:
 
 	indexKey = indexAssay[r['_Marker_key']]
+
+	if commentsLookup.has_key(r['accID']):
+	    writeIndexComments = commentsLookup[r['accID']]
 
 	outIndexFile.write(str(indexKey) + TAB + \
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
 	     str(priorityKey) + TAB + \
 	     str(conditionalKey) + TAB + \
-	     indexComments + TAB + \
+	     writeIndexComments + TAB + \
 	     str(createdByKey) + TAB + str(createdByKey) + TAB + \
 	     loaddate + TAB + loaddate + CRT)
 
@@ -396,6 +436,6 @@ def processAssay():
 init()
 verifyMode()
 processAssay()
-bcpFiles()
+#bcpFiles()
 exit(0)
 
