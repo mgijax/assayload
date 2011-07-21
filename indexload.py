@@ -436,6 +436,6 @@ def processAssay():
 init()
 verifyMode()
 processAssay()
-#bcpFiles()
+bcpFiles()
 exit(0)
 
