@@ -289,6 +289,7 @@ def processAssay():
 	where a._Refs_key = %s
 	and a._Marker_key = aa._Object_key
 	and aa._MGIType_key = 2
+	and aa._LogicalDB_key = 1
 	and aa.prefixPart = "MGI:"
 	and aa.preferred = 1
 	''' % (referenceKey), None)
