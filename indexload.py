@@ -325,21 +325,21 @@ def processAssay():
 	  and a._Marker_key = e._Marker_key)
 	''', 'auto')
 
-    writeIndexComments = indexComments
-
     for r in results:
 
 	indexKey = indexAssay[r['_Marker_key']]
 
 	if commentsLookup.has_key(r['accID']):
 	    writeIndexComments = commentsLookup[r['accID']]
+	else:
+            writeIndexComments = indexComments
 
 	outIndexFile.write(str(indexKey) + TAB + \
 	     str(referenceKey) + TAB + \
 	     str(r['_Marker_key']) + TAB + \
 	     str(priorityKey) + TAB + \
 	     str(conditionalKey) + TAB + \
-	     writeIndexComments + TAB + \
+	     str(writeIndexComments) + TAB + \
 	     str(createdByKey) + TAB + str(createdByKey) + TAB + \
 	     loaddate + TAB + loaddate + CRT)
 
