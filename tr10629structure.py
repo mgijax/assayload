@@ -170,7 +170,7 @@ def process():
 	structureTheilerStage = r[0][3]
 
 	outLoadFile4.write(specimenID + TAB + \
-	    'EMAP:' + str(emapID) + TAB + \
+	    str(emapID) + TAB + \
 	    emapName + TAB + \
 	    strength + TAB + \
 	    pattern + TAB + \
