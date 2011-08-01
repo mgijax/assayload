@@ -135,7 +135,7 @@ def init():
     # structure lookup
     for line in inStructureFile.readlines():
 	tokens = string.split(line[:-1], TAB)
-	structureID = int(string.replace(tokens[0], 'EMAP:', ''))
+	structureID = string.strip(tokens[0])
 	structureLookup[structureID] = []
 	structureLookup[structureID].append(tokens)
     inStructureFile.close()
@@ -158,7 +158,7 @@ def process():
         tokens = string.split(rline[:-1], TAB)
 
 	specimenID = tokens[0]
-	emapID = int(string.replace(tokens[1], 'EMAP:', ''))
+	emapID = tokens[1]
 	emapName = tokens[2]
 	strength = tokens[3]
 	pattern = tokens[4]
