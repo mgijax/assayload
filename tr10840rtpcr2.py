@@ -22,6 +22,7 @@
 #
 #	LOADFILE2
 #	LOADFILE3
+#	PRIMERNAME
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	LANE_FILE
@@ -94,6 +95,8 @@
 #               field 4: StructureName
 #               field 5: TheilerStage
 #
+#       newPrimer.txt (PRIMERNAME)
+#
 # Outputs:
 #
 #       4 tab-delimited files:
@@ -127,6 +130,7 @@ NULL = ''
 
 inAssayFile = ''	# file descriptor
 inLaneFile = ''		# file descriptor
+inPrimerFile = ''	# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
@@ -135,6 +139,7 @@ bandFile = ''           # file descriptor
 
 inAssay = os.environ['LOADFILE2']
 inLane = os.environ['LOADFILE3']
+inPrimer = os.environ['PRIMERNAME']
 
 prepFileName = os.environ['PROBEPREP_FILE']
 assayFileName = os.environ['ASSAY_FILE']
@@ -165,8 +170,8 @@ bandSize = ''
 bandUnits = 'Not Specified'
 rowNote = ''
 
-# structure lookup
-structureLookup = {}
+# primer lookup
+primerLookup = {}
 
 # Purpose: prints error message and exits
 # Returns: nothing
@@ -192,8 +197,9 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile, inLaneFile
+    global inAssayFile, inLaneFile, inPrimerFile
     global prepFile, assayFile, laneFile, bandFile
+    global primerLookup
  
     try:
         inAssayFile = open(inAssay, 'r')
@@ -204,6 +210,11 @@ def init():
         inLaneFile = open(inLane, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inLane)
+
+    try:
+        inPrimerFile = open(inPrimer, 'r')
+    except:
+        exit(1, 'Could not open file %s\n' % inPrimer)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -224,6 +235,14 @@ def init():
         bandFile = open(bandFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % bandFileName)
+
+    for line in inPrimerFile.readlines():
+        tokens = string.split(line[:-1], TAB)
+	primerName = tokens[2]
+	primerID = tokens[11]
+	primerLookup[primerName] = []
+	primerLookup[primerName].append(primerID)
+    inPrimerFile.close()
 
     return
 
@@ -257,12 +276,14 @@ def process():
             tokens = string.split(line[:-1], TAB)
 
 	    markerID = tokens[0]
-	    probeID = tokens[1]
+	    primerName = tokens[1]
 
 	    assayKey = assayKey + 1
 
+	    primerID = primerLookup[primerName][0]
+
 	    prepFile.write(str(assayKey) + TAB + \
-	        probeID + TAB + \
+	        primerID + TAB + \
 	        prepType + TAB + \
 	        hybridization + TAB + \
 	        labelledWith + TAB + \

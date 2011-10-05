@@ -20,6 +20,7 @@
 # Envvars:
 #
 #	LOADFILE1
+#	PRIMERNAME
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	LANE_FILE
@@ -43,6 +44,8 @@
 #		field 9: Theiler Stage
 #		field 10 Band Strength
 #		field 11: Band Note
+#
+#	newPrimer.txt (PRIMERNAME)
 #
 # Outputs:
 #
@@ -76,6 +79,7 @@ CRT = '\n'		# carriage return/newline
 NULL = ''
 
 inAssayFile = ''	# file descriptor
+inPrimerFile = ''	# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
@@ -83,6 +87,7 @@ laneFile = ''       # file descriptor
 bandFile = ''        # file descriptor
 
 inAssay = os.environ['LOADFILE1']
+inPrimer = os.environ['PRIMERNAME']
 
 prepFileName = os.environ['PROBEPREP_FILE']
 assayFileName = os.environ['ASSAY_FILE']
@@ -93,7 +98,7 @@ assayNote = ''
 reference = os.environ['REFERENCE']
 createdBy = os.environ['CREATEDBY']
 
-# constants for probe prep
+# constants for primer prep
 assayType = 'RT-PCR'
 prepType = 'Not Specified'
 hybridization = 'Not Applicable'
@@ -110,8 +115,8 @@ bandSize = ''
 bandUnits = 'Not Specified'
 rowNote = ''
 
-# structure lookup
-structureLookup = {}
+# primer lookup
+primerLookup = {}
 
 # Purpose: prints error message and exits
 # Returns: nothing
@@ -137,13 +142,19 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile
+    global inAssayFile, inPrimerFile
     global prepFile, assayFile, laneFile, bandFile
+    global primerLookup
  
     try:
         inAssayFile = open(inAssay, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inAssay)
+
+    try:
+        inPrimerFile = open(inPrimer, 'r')
+    except:
+        exit(1, 'Could not open file %s\n' % inPrimer)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -165,6 +176,14 @@ def init():
     except:
         exit(1, 'Could not open file %s\n' % bandFileName)
 
+    for line in inPrimerFile.readlines():
+        tokens = string.split(line[:-1], TAB)
+	primerName = tokens[2]
+	primerID = tokens[11]
+	primerLookup[primerName] = []
+	primerLookup[primerName].append(primerID)
+    inPrimerFile.close()
+
     return
 
 # Purpose:  processes data
@@ -179,7 +198,7 @@ def process():
     laneKey = 0
     bandKey = 1
     prevMarker = ''
-    prevProbe = ''
+    prevPrimer = ''
 
     # For each line in the input file
 
@@ -189,7 +208,7 @@ def process():
         tokens = string.split(line[:-1], TAB)
 
 	markerID = tokens[0]
-	probeID = tokens[1]
+	primerName = tokens[1]
 	laneLabel = tokens[2]
 	genotype = tokens[3]
 	rnaType = tokens[4]
@@ -203,16 +222,17 @@ def process():
 
 	if markerID != prevMarker:
 	    prevMarker = markerID
-	    prevProbe = ''
+	    prevPrimer = ''
 
-	if probeID != prevProbe:
+	primerID = primerLookup[primerName][0]
+	if primerID != prevPrimer:
 
 	    assayKey = assayKey + 1
-	    prevProbe = probeID
+	    prevPrimer = primerID
             laneKey = 0
 
 	    prepFile.write(str(assayKey) + TAB + \
-	        probeID + TAB + \
+	        primerID + TAB + \
 	        prepType + TAB + \
 	        hybridization + TAB + \
 	        labelledWith + TAB + \

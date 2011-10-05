@@ -115,9 +115,8 @@ import gxdloadlib
 #
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
-mode = os.environ['LOADMODE']
-createdBy = os.environ['CREATEDBY']
-datadir = os.environ['RTPCRDATADIR']	# file which contains the data files
+mode = os.environ['ASSAYLOADMODE']
+datadir = os.environ['ASSAYLOADDATADIR']	# file which contains the data files
 
 DEBUG = 0		# if 0, not in debug mode
 TAB = '\t'		# tab
@@ -649,14 +648,31 @@ def processGelLaneFile():
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
+	# if control is set to "No", then there *is* a structure
+	# else there are no structures
+
+	hasStructure = 0
+	if control == "No":
+	    hasStructure = 1
+
 	genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
 	rnaTypeKey = gxdloadlib.verifyGelRNAType(rnaType, lineNum, errorFile)
 	controlKey = gxdloadlib.verifyGelControl(control, lineNum, errorFile)
 	ageMin, ageMax = agelib.ageMinMax(age)
-	structureKey = gxdloadlib.verifyStructure(structureName, structureTS, lineNum, errorFile)
 
-        if genotypeKey == 0 or rnaTypeKey == 0 or controlKey == 0 or \
-		ageMin < 0 or ageMax < 0 or structureKey == 0:
+	if hasStructure:
+	    structureName = string.replace(structureName, '"', '""')
+	    structureKey = gxdloadlib.verifyStructure(structureName, structureTS, lineNum, errorFile)
+	    if structureKey == 0:
+                error = 1
+
+	#
+	# if age = "Not Specified", then ageMin/ageMax = -1 which is < 0
+	# so, removed this check:
+	#	ageMin < 0 or ageMax < 0:
+	#
+
+        if genotypeKey == 0 or rnaTypeKey == 0 or controlKey == 0:
             # set error flag to true
             error = 1
 
@@ -689,10 +705,11 @@ def processGelLaneFile():
 	        mgi_utils.prvalue(laneNote) + TAB + \
 	        loaddate + TAB + loaddate + CRT)
 
-	    outGelLaneStFile.write(
-	        str(gelLaneKey) + TAB + \
-	        str(structureKey) + TAB + \
-	        loaddate + TAB + loaddate + CRT)
+	    if hasStructure:
+	        outGelLaneStFile.write(
+	            str(gelLaneKey) + TAB + \
+	            str(structureKey) + TAB + \
+	            loaddate + TAB + loaddate + CRT)
 
 	    assayGelLane[key] = gelLaneKey
             gelLaneKey = gelLaneKey + 1
@@ -700,12 +717,15 @@ def processGelLaneFile():
 	# else if gel lanes has more than one structure...
 
 	else:
-	    outGelLaneStFile.write(
-	        str(assayGelLane[key]) + TAB + \
-	        str(structureKey) + TAB + \
-	        loaddate + TAB + loaddate + CRT)
+	    if hasStructure:
+	        outGelLaneStFile.write(
+	            str(assayGelLane[key]) + TAB + \
+	            str(structureKey) + TAB + \
+	            loaddate + TAB + loaddate + CRT)
 
     #	end of "for line in inGelLaneFile.readlines():"
+
+    #print assayGelLane
 
     return
 
