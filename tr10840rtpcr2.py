@@ -1,25 +1,27 @@
 #!/usr/local/bin/python
 
 #
-# Program: tr10840rtpcr1.py
+# Program: tr10840rtpcr2.py
 #
 # Original Author: Lori Corbani
 #
 # Purpose:
 #
 #	To translate 
-#		10840/SuraniTableS7.txt
+#		10840/SuraniTableS6Bands.txt
+#		10840/SuraniTableS6Lanes.txt
 #	into input files for the gelload.py program.
 #
 # Requirements Satisfied by This Program:
 #
 # Usage:
 #
-#	tr10840rtpcr1.py
+#	tr10840rtpcr2.py
 #
 # Envvars:
 #
-#	LOADFILE1
+#	LOADFILE2
+#	LOADFILE3
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	LANE_FILE
@@ -29,20 +31,68 @@
 #
 # Inputs:
 #
-#       SuraniTableS7.txt (LOADFILE1), a tab-delimited file in the format:
+#       SuraniTableS6Bands.txt (LOADFILE2), a tab-delimited file in the format:
 #
 #               field 0: Marker ID
 #               field 1: Probe Name
-#               field 2: Lane Label
-#               field 3: Genotype
-#	        field 4: RNAType
-#	        field 5: Gel Control
-#		field 6: Age
-#		field 7: Lane Note
-#		field 8: Structure Name
-#		field 9: Theiler Stage
-#		field 10 Band Strength
-#		field 11: Band Note
+#               field 2: GelLane/BandStrength
+#               field 3: GelLane/BandNote
+#
+#	row 0:
+#		field 2: Gel Lane + ' BandStength'
+#		field 3: Gel Lane + ' BandNote'
+#
+#	row every 2:
+#		field 2: BandStrength
+#		field 3: BandNote
+#
+#		field 4: BandStrength
+#		field 5: BandNote
+#
+#		field 6: BandStrength
+#		field 7: BandNote
+#		...
+#
+#	example:
+#		
+#		each assay as 36 gel lanes
+#		each gel lane has 1 band
+#
+#               Marker       Probe          Gel Lane
+#		                            Band Strength  Band Note
+#
+#		MGI:1100518  Mm00484742_m1  2-cell-A1-1
+#                                           Absent         The Ct value of this reaction was 40.
+#
+#		MGI:1100518  Mm00484742_m1  2-cell-A1-2
+#		                            Absent         The Ct value of this reaction was 40.
+#
+#		MGI:1100518  Mm00484742_m1  2-cell-A2-1
+#                                           Absent         The Ct value of this reaction was 40.
+#
+#		MGI:1100518  Mm00484742_m1  2-cell-A2-2
+#                                           Absent         The Ct value of this reaction was 40.
+#
+#		MGI:105081   Mm03053485_s1  2-cell-A1-1
+#                                           Present        The Ct value of this reaction was 31.38.
+#
+#		MGI:105081   Mm03053485_s1  2-cell-A1-2
+#		                            Present        The Ct value of this reaction was 31.38.
+#
+#		MGI:105081   Mm03053485_s1  2-cell-A2-1
+#                                           Present        The Ct value of this reaction was 31.38.
+#
+#		MGI:105081   Mm03053485_s1  2-cell-A2-2
+#                                           Present        The Ct value of this reaction was 31.38.
+#
+#       SuraniTableS6Lanes.txt (LOADFILE3), a tab-delimited file in the format:
+#
+#               field 0: GelLane # (means nothing)
+#               field 1: GelLane ==> SuraniTableS6Band.txt:row 0:field 2,4,6,...
+#               field 2: Age
+#               field 3: LaneNote
+#               field 4: StructureName
+#               field 5: TheilerStage
 #
 # Outputs:
 #
@@ -76,15 +126,15 @@ CRT = '\n'		# carriage return/newline
 NULL = ''
 
 inAssayFile = ''	# file descriptor
-inLaneFile = ''	# file descriptor
-inBandFile = ''	# file descriptor
+inLaneFile = ''		# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
-laneFile = ''       # file descriptor
-bandFile = ''        # file descriptor
+laneFile = ''           # file descriptor
+bandFile = ''           # file descriptor
 
-inAssay = os.environ['LOADFILE1']
+inAssay = os.environ['LOADFILE2']
+inLane = os.environ['LOADFILE3']
 
 prepFileName = os.environ['PROBEPREP_FILE']
 assayFileName = os.environ['ASSAY_FILE']
@@ -98,11 +148,14 @@ createdBy = os.environ['CREATEDBY']
 # constants for probe prep
 assayType = 'RT-PCR'
 prepType = 'Not Specified'
-hybridization = 'Not Specified'
+hybridization = 'Not Applicable'
 labelledWith = 'Not Applicable'
-visualizedWith = 'Not Applicable'
+visualizedWith = 'Not Specified'
 
 # gel lane
+genotype = 'MGI:2169515'
+rnaType = 'total'
+gelControl = 'No'
 sampleAmount = ''
 sex = 'Not Specified'
 ageNote = ''
@@ -139,13 +192,18 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile
+    global inAssayFile, inLaneFile
     global prepFile, assayFile, laneFile, bandFile
  
     try:
         inAssayFile = open(inAssay, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inAssay)
+
+    try:
+        inLaneFile = open(inLane, 'r')
+    except:
+        exit(1, 'Could not open file %s\n' % inLane)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -178,40 +236,30 @@ def init():
 def process():
 
     assayKey = 0
-    laneKey = 0
-    bandKey = 1
-    prevMarker = ''
-    prevProbe = ''
 
-    # For each line in the input file
+    # bandFile
 
+    row = 0
     for line in inAssayFile.readlines():
 
+	row = row + 1
+
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
 
-	markerID = tokens[0]
-	probeID = tokens[1]
-	laneLabel = tokens[2]
-	genotype = tokens[3]
-	rnaType = tokens[4]
-	gelControl = tokens[5]
-	age = tokens[6]
-	laneNote = tokens[7]
-	structureName = tokens[8]
-	structureTheilerStage = tokens[9]
-	bandStrength = tokens[10]
-	bandNote = tokens[11]
+	# 36 instances * 2 = 72 + 2 (marker, probe)
+	# geltokens holds the gelLane "id"
+	if row == 1:
+            geltokens = string.split(line[:-1], TAB)
+	    for s in range(2,74,2):
+	         geltokens[s] = string.replace(geltokens[s], '  BandStrength', '')
+	    #print geltokens
+	else:
+            tokens = string.split(line[:-1], TAB)
 
-	if markerID != prevMarker:
-	    prevMarker = markerID
-	    prevProbe = ''
-
-	if probeID != prevProbe:
+	    markerID = tokens[0]
+	    probeID = tokens[1]
 
 	    assayKey = assayKey + 1
-	    prevProbe = probeID
-            laneKey = 0
 
 	    prepFile.write(str(assayKey) + TAB + \
 	        probeID + TAB + \
@@ -230,35 +278,73 @@ def process():
                 assayNote + TAB + \
                 createdBy + CRT)
 
-        laneKey = laneKey + 1
-	laneFile.write(str(assayKey) + TAB + \
-	    str(laneKey) + TAB + \
-	    laneLabel + TAB + \
-	    genotype + TAB + \
-	    rnaType + TAB + \
-	    gelControl + TAB + \
-	    sampleAmount + TAB + \
-	    sex + TAB + \
-	    age + TAB + \
-	    ageNote + TAB + \
-	    laneNote + TAB + \
-	    structureName + TAB + \
-	    structureTheilerStage + CRT)
+	    #
+	    # band stuff
+	    #
 
-	bandKey = 1
-	bandFile.write(str(assayKey) + TAB + \
-	    str(laneKey) + TAB + \
-	    str(bandKey) + TAB + \
-	    bandSize + TAB + \
-	    bandUnits + TAB + \
-	    bandStrength + TAB + \
-	    rowNote + TAB +
-	    bandNote + CRT)
+	    laneKey = 0
+	    for s in range(2,74,2):
+	        laneKey = laneKey + 1
+	        bandKey = 1
+		bandStrength = tokens[s]
+		bandNote = tokens[s+1]
+
+		#print markerID, geltokens[s], bandStrength
+
+	        bandFile.write(str(assayKey) + TAB + \
+	            str(laneKey) + TAB + \
+	            str(bandKey) + TAB + \
+	            bandSize + TAB + \
+	            bandUnits + TAB + \
+	            bandStrength + TAB + \
+	            rowNote + TAB +
+	            bandNote + CRT)
+
+    # end of bandFile
+
+    #
+    # laneFile
+    #
+
+    for assayKey in range(1,37):
+
+	laneKey = 0
+
+        for line in inLaneFile.readlines():
+
+            tokens = string.split(line[:-1], TAB)
+
+	    gelLane = tokens[1]
+	    age = tokens[2]
+	    laneNote = tokens[3]
+	    structureName = tokens[4]
+	    structureTheilerStage = tokens[5]
+
+            laneKey = laneKey + 1
+
+	    laneFile.write(str(assayKey) + TAB + \
+	        str(laneKey) + TAB + \
+	        gelLane + TAB + \
+	        genotype + TAB + \
+	        rnaType + TAB + \
+	        gelControl + TAB + \
+	        sampleAmount + TAB + \
+	        sex + TAB + \
+	        age + TAB + \
+	        ageNote + TAB + \
+	        laneNote + TAB + \
+	        structureName + TAB + \
+	        structureTheilerStage + CRT)
+
+	# reset file pointer to the beginning
+	inLaneFile.seek(0)
 
     inAssayFile.close()
+    inLaneFile.close()
+
     assayFile.close()
-    laneFile.close()
     bandFile.close()
+    laneFile.close()
 
     # end of "for line in inAssayFile.readlines():"
 

@@ -76,8 +76,6 @@ CRT = '\n'		# carriage return/newline
 NULL = ''
 
 inAssayFile = ''	# file descriptor
-inLaneFile = ''	# file descriptor
-inBandFile = ''	# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
@@ -98,9 +96,9 @@ createdBy = os.environ['CREATEDBY']
 # constants for probe prep
 assayType = 'RT-PCR'
 prepType = 'Not Specified'
-hybridization = 'Not Specified'
+hybridization = 'Not Applicable'
 labelledWith = 'Not Applicable'
-visualizedWith = 'Not Applicable'
+visualizedWith = 'Not Specified'
 
 # gel lane
 sampleAmount = ''
