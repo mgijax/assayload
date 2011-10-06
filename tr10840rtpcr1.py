@@ -76,7 +76,6 @@ CRT = '\n'		# carriage return/newline
 NULL = ''
 
 inAssayFile = ''	# file descriptor
-inPrimerFile = ''	# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
@@ -139,7 +138,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile, inPrimerFile
+    global inAssayFile
     global prepFile, assayFile, laneFile, bandFile
     global primerLookup
  
@@ -147,11 +146,6 @@ def init():
         inAssayFile = open(inAssay, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inAssay)
-
-    try:
-        inPrimerFile = open(inPrimer, 'r')
-    except:
-        exit(1, 'Could not open file %s\n' % inPrimer)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -184,6 +178,14 @@ def init():
     for r in results:
 	primerID = r['accID']
 	primerName = r['name']
+
+	primerName = string.replace(primerName, 'Kif20a,Cdc23-assay_14/19-FP_first allele', \
+						'Kif20a,Cdc23-assay_14/19-FP_first allele, RP')
+	primerName = string.replace(primerName, 'Kif20a,Cdc23-assay_14/19-FP_second allel', \
+						'Kif20a,Cdc23-assay_14/19-FP_second allele, RP')
+	primerName = string.replace(primerName, 'Klf17-assay_12/16/21-FP_second allele, R', \
+						'Klf17-assay_12/16/21-FP_second allele, RP')
+
 	primerLookup[primerName] = []
 	primerLookup[primerName].append(primerID)
 
