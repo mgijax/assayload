@@ -20,7 +20,6 @@
 # Envvars:
 #
 #	LOADFILE1
-#	PRIMERNAME
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	LANE_FILE
@@ -44,8 +43,6 @@
 #		field 9: Theiler Stage
 #		field 10 Band Strength
 #		field 11: Band Note
-#
-#	newPrimer.txt (PRIMERNAME)
 #
 # Outputs:
 #
@@ -87,7 +84,6 @@ laneFile = ''       # file descriptor
 bandFile = ''        # file descriptor
 
 inAssay = os.environ['LOADFILE1']
-inPrimer = os.environ['PRIMERNAME']
 
 prepFileName = os.environ['PROBEPREP_FILE']
 assayFileName = os.environ['ASSAY_FILE']
@@ -177,13 +173,19 @@ def init():
     except:
         exit(1, 'Could not open file %s\n' % bandFileName)
 
-    for line in inPrimerFile.readlines():
-        tokens = string.split(line[:-1], TAB)
-	primerName = tokens[2]
-	primerID = tokens[11]
+    results = db.sql('''
+	select a.accID, p.name 
+	from ACC_Accession a, PRB_Probe p, PRB_Reference r
+	where a._MGITYpe_key = 3
+	and a._Object_key = p._Probe_key
+	and p._Probe_key = r._Probe_key
+	and r._Refs_key = 175863
+	''', 'auto')
+    for r in results:
+	primerID = r['accID']
+	primerName = r['name']
 	primerLookup[primerName] = []
 	primerLookup[primerName].append(primerID)
-    inPrimerFile.close()
 
     return
 

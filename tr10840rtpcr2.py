@@ -22,7 +22,6 @@
 #
 #	LOADFILE2
 #	LOADFILE3
-#	PRIMERNAME
 #	PROBEPREP_FILE
 #	ASSAY_FILE
 #	LANE_FILE
@@ -34,24 +33,25 @@
 #
 #       SuraniTableS6Bands.txt (LOADFILE2), a tab-delimited file in the format:
 #
-#               field 0: Marker ID
-#               field 1: Probe Name
-#               field 2: GelLane/BandStrength
-#               field 3: GelLane/BandNote
+#               field 0: Marker Symbol
+#               field 1: Marker ID
+#               field 2: Probe Name
+#               field 3: GelLane/BandStrength
+#               field 4: GelLane/BandNote
 #
 #	row 0:
-#		field 2: Gel Lane + ' BandStength'
-#		field 3: Gel Lane + ' BandNote'
+#		field 3: Gel Lane + ' BandStength'
+#		field 4: Gel Lane + ' BandNote'
 #
 #	row every 2:
-#		field 2: BandStrength
-#		field 3: BandNote
+#		field 3: BandStrength
+#		field 4: BandNote
 #
-#		field 4: BandStrength
-#		field 5: BandNote
+#		field 5: BandStrength
+#		field 6: BandNote
 #
-#		field 6: BandStrength
-#		field 7: BandNote
+#		field 7: BandStrength
+#		field 8: BandNote
 #		...
 #
 #	example:
@@ -95,8 +95,6 @@
 #               field 4: StructureName
 #               field 5: TheilerStage
 #
-#       newPrimer.txt (PRIMERNAME)
-#
 # Outputs:
 #
 #       4 tab-delimited files:
@@ -130,7 +128,6 @@ NULL = ''
 
 inAssayFile = ''	# file descriptor
 inLaneFile = ''		# file descriptor
-inPrimerFile = ''	# file descriptor
 
 prepFile = ''		# file descriptor
 assayFile = ''          # file descriptor
@@ -139,14 +136,14 @@ bandFile = ''           # file descriptor
 
 inAssay = os.environ['LOADFILE2']
 inLane = os.environ['LOADFILE3']
-inPrimer = os.environ['PRIMERNAME']
 
 prepFileName = os.environ['PROBEPREP_FILE']
 assayFileName = os.environ['ASSAY_FILE']
 laneFileName = os.environ['LANE_FILE']
 bandFileName = os.environ['BAND_FILE']
 
-assayNote = ''
+assayNote = '''These results were reported in Table S6.  They were obtained using TaqMan real time PCR using individual blastomeres from either 2- or 4-cell embryos.  In the Supplementary Materials and Methods, the authors reported that a gene was detected when the real-time PCR reaction had a Ct value of <32.  Thus, we have interpreted Ct values of <=31.5 as present, >=32.5 as absent, and 31.6-32.4 as not specified.'''
+
 reference = os.environ['REFERENCE']
 createdBy = os.environ['CREATEDBY']
 
@@ -197,7 +194,7 @@ def exit(
 # Throws: nothing
 
 def init():
-    global inAssayFile, inLaneFile, inPrimerFile
+    global inAssayFile, inLaneFile
     global prepFile, assayFile, laneFile, bandFile
     global primerLookup
  
@@ -210,11 +207,6 @@ def init():
         inLaneFile = open(inLane, 'r')
     except:
         exit(1, 'Could not open file %s\n' % inLane)
-
-    try:
-        inPrimerFile = open(inPrimer, 'r')
-    except:
-        exit(1, 'Could not open file %s\n' % inPrimer)
 
     try:
         prepFile = open(prepFileName, 'w')
@@ -236,13 +228,19 @@ def init():
     except:
         exit(1, 'Could not open file %s\n' % bandFileName)
 
-    for line in inPrimerFile.readlines():
-        tokens = string.split(line[:-1], TAB)
-	primerName = tokens[2]
-	primerID = tokens[11]
+    results = db.sql('''
+	select a.accID, p.name 
+	from ACC_Accession a, PRB_Probe p, PRB_Reference r
+	where a._MGITYpe_key = 3
+	and a._Object_key = p._Probe_key
+	and p._Probe_key = r._Probe_key
+	and r._Refs_key = 175863
+	''', 'auto')
+    for r in results:
+	primerID = r['accID']
+	primerName = r['name']
 	primerLookup[primerName] = []
 	primerLookup[primerName].append(primerID)
-    inPrimerFile.close()
 
     return
 
@@ -269,14 +267,14 @@ def process():
 	# geltokens holds the gelLane "id"
 	if row == 1:
             geltokens = string.split(line[:-1], TAB)
-	    for s in range(2,74,2):
+	    for s in range(3,75,2):
 	         geltokens[s] = string.replace(geltokens[s], '  BandStrength', '')
 	    #print geltokens
 	else:
             tokens = string.split(line[:-1], TAB)
 
-	    markerID = tokens[0]
-	    primerName = tokens[1]
+	    markerID = tokens[1]
+	    primerName = tokens[2]
 
 	    assayKey = assayKey + 1
 
@@ -304,7 +302,7 @@ def process():
 	    #
 
 	    laneKey = 0
-	    for s in range(2,74,2):
+	    for s in range(3,75,2):
 	        laneKey = laneKey + 1
 	        bandKey = 1
 		bandStrength = tokens[s]
@@ -327,7 +325,7 @@ def process():
     # laneFile
     #
 
-    for assayKey in range(1,37):
+    for assayKey in range(1,383):
 
 	laneKey = 0
 
