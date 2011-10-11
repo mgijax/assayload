@@ -281,6 +281,7 @@ def process():
 	    # the value + image specifies the result it is attached to
 	    value = tokens[s]
 	    image = tokens[s+1]
+	    image = string.replace(image, '|', ',')
 
 	    if len(value) == 0:
 		continue
@@ -327,27 +328,24 @@ def process():
 	    resultKey = 1
 	    resultID = specimenLabel + ':' + value
 	    #print specimenLabel, value, image
-	    if not resultLookup.has_key(resultID):
-		print 'Invalid Result:  ', resultID 
-	    else:
-	        for r in resultLookup[resultID]:
-	            #print r[0], r[1], r[2], r[3], r[4]
-		    strength = r[0]
-		    pattern = r[1]
-		    structureName = r[2]
-		    structureTheilerStage = r[3]
-		    resultNote = r[4]
-	            resultsFile.write(str(assayKey) + TAB + \
-	                str(specimenKey) + TAB + \
-	                str(resultKey) + TAB + \
-	                strength + TAB + \
-	                pattern + TAB + \
-	                structureName + TAB + \
-	                structureTheilerStage + TAB + \
-	                resultNote + TAB + \
-	                CRT)
+	    for r in resultLookup[resultID]:
+	        #print r[0], r[1], r[2], r[3], r[4]
+		strength = r[0]
+		pattern = r[1]
+		structureName = r[2]
+		structureTheilerStage = r[3]
+		resultNote = r[4]
+	        resultsFile.write(str(assayKey) + TAB + \
+	            str(specimenKey) + TAB + \
+	            str(resultKey) + TAB + \
+	            strength + TAB + \
+	            pattern + TAB + \
+	            structureName + TAB + \
+	            structureTheilerStage + TAB + \
+	            resultNote + TAB + \
+	            image + CRT)
 
-	            resultKey = resultKey + 1
+	        resultKey = resultKey + 1
 
             specimenKey = specimenKey + 1
 
