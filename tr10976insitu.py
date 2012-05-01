@@ -300,7 +300,7 @@ def process():
 		elif pattern == 'none':
 			pattern = 'Not Specified'
 		else:
-			pattern = ''
+			pattern = 'Not Applicable'
 
         	resultsFile.write(str(assayKey) + TAB + \
                      	str(specimenKey) + TAB + \
