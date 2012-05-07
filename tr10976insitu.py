@@ -310,7 +310,7 @@ def process():
 			structureName + TAB + \
 			'22' + TAB + \
 			resultNote + TAB + \
-			imagejpg + CRT)
+			figureLabel + CRT)
 
 		resultsKey = resultsKey + 1
 
