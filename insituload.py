@@ -486,6 +486,7 @@ def processPrepFile():
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
 	if gxdloadlib.verifyPrepType(prepType, lineNum, errorFile) == 0:
+	    errorFile.write('\ngxdloadlib.verifyPrepType:  %s', prepType)
 	    error = 1
 
 	probeKey = loadlib.verifyProbe(probeID, lineNum, errorFile)
@@ -493,8 +494,24 @@ def processPrepFile():
 	labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
 	visualizationKey = gxdloadlib.verifyPrepVisualization(visualization, lineNum, errorFile)
 
-        if probeKey == 0 or senseKey == 0 or labelKey == 0:
+        if probeKey == 0:
             # set error flag to true
+	    errorFile.write('\nloadlib.verifyProbe:  %s' % (probeID))
+            error = 1
+
+	if senseKey == 0: 
+            # set error flag to true
+	    errorFile.write('\ngxdloadlib.verifyPrepSense:  %s' % (hybridization))
+            error = 1
+
+	if labelKey == 0:
+            # set error flag to true
+	    errorFile.write('\ngxdloadlib.verifyPrepLabel:  %s' % (labelledWith))
+            error = 1
+
+	if visualizationKey == 0:
+            # set error flag to true
+	    errorFile.write('\ngxdloadlib.verifyPrepVisualization:  %s' % (visualization))
             error = 1
 
         # if errors, continue to next record
