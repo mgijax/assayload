@@ -826,7 +826,8 @@ def processResultsFile():
             for image in string.split(images,','):
                 if image != '':
                     outResultImageFile.write(str(resultKey) + TAB + \
-                                             image + CRT)
+					image + TAB + \
+	        			loaddate + TAB + loaddate + CRT)
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
