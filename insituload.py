@@ -222,8 +222,6 @@ def exit(
     message = None   # exit message (string)
     ):
 
-    outResultImageFile.close()
-
     if message is not None:
         sys.stderr.write('\n' + str(message) + '\n')
  
@@ -248,8 +246,7 @@ def exit(
 def init():
     global diagFile, errorFile, errorFileName, diagFileName
     global outAccFile, outPrepFile, outAssayFile, outAssayNoteFile
-    global outSpecimenFile, outResultStFile, outResultFile
-    global outResultImageFile
+    global outSpecimenFile, outResultStFile, outResultFile, outResultImageFile
     global inPrepFile, inAssayFile, inSpecimenFile, inResultsFile
  
     db.useOneConnection(1)
@@ -426,7 +423,7 @@ def bcpFiles(
     bcp5 = '%s%s in %s %s' % (bcpI, resultStTable, outResultStFileName, bcpII)
     bcp6 = '%s%s in %s %s' % (bcpI, resultTable, outResultFileName, bcpII)
     bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
-    bcp8 = '%s%s in %s %s' % (bcpI, resultImageTable, outResultImageFile, bcpII)
+    bcp8 = '%s%s in %s %s' % (bcpI, resultImageTable, outResultImageFileName, bcpII)
 
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
