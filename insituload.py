@@ -172,6 +172,7 @@ specimenTable = 'GXD_Specimen'
 resultTable = 'GXD_InSituResult'
 resultStTable = 'GXD_ISResultStructure'
 accTable = 'ACC_Accession'
+resultImageTable = 'GXD_InSituResultImage'
 
 outPrepFileName = datadir + '/' + probeprepTable + '.bcp'
 outAssayFileName = datadir + '/' + assayTable + '.bcp'
@@ -180,7 +181,7 @@ outSpecimenFileName = datadir + '/' + specimenTable + '.bcp'
 outResultFileName = datadir + '/' + resultTable + '.bcp'
 outResultStFileName = datadir + '/' + resultStTable + '.bcp'
 outAccFileName = datadir + '/' + accTable + '.bcp'
-outResultImageFileName = datadir + '/Result_Image.txt'
+outResultImageFileName = datadir + '/' + resultImageTable + '.bcp'
 
 diagFileName = ''	# diagnostic file name
 errorFileName = ''	# error file name
@@ -413,6 +414,7 @@ def bcpFiles(
     outResultStFile.close()
     outResultFile.close()
     outAccFile.close()
+    outResultImageFile.close()
 
     bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
     bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
@@ -424,8 +426,9 @@ def bcpFiles(
     bcp5 = '%s%s in %s %s' % (bcpI, resultStTable, outResultStFileName, bcpII)
     bcp6 = '%s%s in %s %s' % (bcpI, resultTable, outResultFileName, bcpII)
     bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
+    bcp8 = '%s%s in %s %s' % (bcpI, resultImageTable, outResultImageFile, bcpII)
 
-    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7]:
+    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
 
@@ -444,6 +447,7 @@ def bcpFiles(
     db.sql('update statistics %s' % (specimenTable), None)
     db.sql('update statistics %s' % (resultStTable), None)
     db.sql('update statistics %s' % (resultTable), None)
+    db.sql('update statistics %s' % (resultImageTable), None)
 
     return
 
