@@ -225,7 +225,7 @@ def process():
     for r in results:
 	key = r['figureLabel']
 	imageLookup[key] = []
-	imageLookup[key].append(r['_Image_key'])
+	imageLookup[key].append(r['_ImagePane_key'])
 
     # For each line in the input file
 
