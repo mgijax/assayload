@@ -309,6 +309,7 @@ def process():
 	fixation = tokens[6]
 	embedding = tokens[7]
 	specimenHybridization = tokens[8]
+	specimenNote = tokens[9]
 
 	if probeID != prevProbeID:
             specimenKey = 1
@@ -325,7 +326,7 @@ def process():
 	    fixation + TAB + \
 	    embedding + TAB + \
 	    specimenHybridization + TAB + \
-	    CRT)
+	    specimenNote + CRT)
 
 	if not specimenLookup.has_key(specimenID):
 	    specimenLookup[specimenID] = []
