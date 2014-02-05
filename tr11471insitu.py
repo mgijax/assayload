@@ -219,7 +219,7 @@ def process():
 	select ii._ImagePane_key, i.figureLabel 
 	from IMG_Image i, IMG_ImagePane ii
 	where i.figureLabel like "GUDMAP:%"
-	and i.creation_date = "02/03/2014"
+	and i._Refs_key = 172505
 	and i._Image_key = ii._Image_key
 	''', 'auto')
     for r in results:
