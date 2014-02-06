@@ -86,7 +86,6 @@ errorFile = ''		# error file descriptor
 # input files
 
 inCommentsFile = ''	# file description
-inCommentsFileName = os.environ['LOADFILE5']
 
 # output files
 
@@ -171,9 +170,11 @@ def init():
     # Input Files
 
     try:
+	inCommentsFileName = os.environ['LOADFILE5']
         inCommentsFile = open(inCommentsFileName, 'r')
     except:
-        exit(1, 'Could not open file %s\n' % inCommentsFileName)
+	pass
+        #exit(1, 'Could not open file %s\n' % inCommentsFileName)
 
     # Output Files
 
@@ -204,13 +205,16 @@ def init():
     createdByKey = loadlib.verifyUser(createdBy, 0, errorFile)
 
     # comments lookup
-    for line in inCommentsFile.readlines():
-	tokens = string.split(line[:-1], TAB)
-	markerID = tokens[2]
-	comments = tokens[3]
-	commentsLookup[markerID] = []
-	commentsLookup[markerID] = comments
-    inCommentsFile.close()
+    try:
+    	for line in inCommentsFile.readlines():
+		tokens = string.split(line[:-1], TAB)
+		markerID = tokens[2]
+		comments = tokens[3]
+		commentsLookup[markerID] = []
+		commentsLookup[markerID] = comments
+    	inCommentsFile.close()
+    except:
+	pass
 
     return
 
