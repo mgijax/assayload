@@ -205,10 +205,13 @@ def process():
     for line in inStructureFile.readlines():
         tokens = string.split(line[:-1], TAB)
 	results = db.sql('select s.printName as structure, t.stage from GXD_Structure s, GXD_TheilerStage t where s._Structure_key = %s and s._Stage_key = t._Stage_key' % tokens[1], 'auto')
-	key = tokens[0]
-	value = results[0]
-	emapLookup[key] = []
-	emapLookup[key].append(value)
+	if len(results) > 0:
+		key = tokens[0]
+		value = results[0]
+		emapLookup[key] = []
+		emapLookup[key].append(value)
+	else:
+		print 'missing structure key : ', tokens[1]
     inStructureFile.close()
     #print emapLookup
 

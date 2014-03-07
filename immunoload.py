@@ -175,7 +175,7 @@ errorFileName = ''	# error file name
 
 # primary keys
 
-antibodyKey = 0		# GXD_AntibodyPrep._AntibodyPrep_key
+antibodyPrepKey = 0	# GXD_AntibodyPrep._AntibodyPrep_key
 assayKey = 0		# GXD_Assay._Assay_key
 specimenKey = 0		# GXD_GelLane._GelLane_key
 resultKey = 0		# GXD_GelRow._GelRow_key
@@ -356,11 +356,11 @@ def verifyMode():
 
 def setPrimaryKeys():
 
-    global accKey, mgiKey, antibodyKey, assayKey
+    global accKey, mgiKey, antibodyPrepKey, assayKey
     global specimenKey, resultKey
 
     results = db.sql('select maxKey = max(_AntibodyPrep_key) + 1 from GXD_AntibodyPrep', 'auto')
-    antibodyKey = results[0]['maxKey']
+    antibodyPrepKey = results[0]['maxKey']
 
     results = db.sql('select maxKey = max(_Assay_key) + 1 from GXD_Assay', 'auto')
     assayKey = results[0]['maxKey']
@@ -443,7 +443,7 @@ def bcpFiles(
 
 def processPrepFile():
 
-    global assayPrep, antibodyKey
+    global assayPrep, antibodyPrepKey
 
     # This dictionary is used to keep track of each combination of antibody key,
     # secondary key, label key that are added.
@@ -515,15 +515,15 @@ def processPrepFile():
         # combination of probe key, secondary key, label key. 
         #
 	else:
-	    outPrepFile.write(str(antibodyKey) + TAB + \
+	    outPrepFile.write(str(antibodyPrepKey) + TAB + \
 	        str(antibodyKey) + TAB + \
 	        str(secondaryKey) + TAB + \
 	        str(labelKey) + TAB + \
 	        loaddate + TAB + loaddate + CRT)
 
-	    assayPrep[assayID] = antibodyKey
-	    prepLookup[key] = antibodyKey
-	    antibodyKey = antibodyKey + 1
+	    assayPrep[assayID] = antibodyPrepKey
+	    prepLookup[key] = antibodyPrepKey
+	    antibodyPrepKey = antibodyPrepKey + 1
 
     #	end of "for line in inPrepFile.readlines():"
 
@@ -582,9 +582,9 @@ def processAssayFile():
             continue
 
 	if assayPrep.has_key(assayID):
-	    antibodyKey = assayPrep[assayID]
+	    antibodyPrepKey = assayPrep[assayID]
 	else:
-	    antibodyKey = ''
+	    antibodyPrepKey = ''
 
         # if no errors, process
 
@@ -592,8 +592,8 @@ def processAssayFile():
 	    str(assayTypeKey) + TAB + \
 	    str(referenceKey) + TAB + \
 	    str(markerKey) + TAB + \
-	    str(antibodyKey) + TAB + \
 	    TAB + \
+	    str(antibodyPrepKey) + TAB + \
 	    TAB + \
             str(reporterGeneKey) + TAB + \
             str(createdByKey) + TAB + \
