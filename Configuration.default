@@ -13,3 +13,5 @@ endif
 
 source ${MGICONFIG}/master.config.csh
 
+# need python module for gxdexpression cache load
+setenv PYTHONPATH ${PYTHONPATH}:${USRLOCALMGI}/live/mgicacheload

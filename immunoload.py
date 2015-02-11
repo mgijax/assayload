@@ -107,6 +107,7 @@ import mgi_utils
 import agelib
 import loadlib
 import gxdloadlib
+import gxdexpression
 
 #globals
 
@@ -419,7 +420,8 @@ def bcpFiles(
     # load the cache tables for the records processed (by assay Key)
 
     for i in range(assayKey - recordsProcessed, assayKey + 1):
-	db.sql('exec GXD_loadCacheByAssay %d' % (i), None)
+	# run cache load by assayKey
+        gxdexpression.process(i)
 
     # update the max Accession ID value
     db.sql('exec ACC_setMax %d' % (recordsProcessed), None)
