@@ -2,7 +2,7 @@ TAG: assayload-5-2-1-1
 DATE: 02/12/2014
 STAFF: lec
 CHANGES:
-1) TR11750/"exec GXD_loadCacheByAssay" is obsolete => mgicacheload/gxdexpression.*
+1) TR11750/"GXD_loadCacheByAssay" is obsolete => mgicacheload/gxdexpression.*
 
 TAG: assayload-5-1-7-2
 DATE: 03/07/2014

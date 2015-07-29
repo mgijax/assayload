@@ -424,7 +424,7 @@ def bcpFiles(
         gxdexpression.process(i)
 
     # update the max Accession ID value
-    db.sql('exec ACC_setMax %d' % (recordsProcessed), None)
+    db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
 
     # update statistics
     db.sql('update statistics %s' % (prepTable), None)
