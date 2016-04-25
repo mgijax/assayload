@@ -120,7 +120,6 @@ import mgi_utils
 import agelib
 import loadlib
 import gxdloadlib
-import gxdexpression
 
 #globals
 
@@ -332,9 +331,6 @@ def init():
     # Log all SQL
     db.set_sqlLogFunction(db.sqlLogAll)
 
-    # Set Log File Descriptor
-    db.set_sqlLogFD(diagFile)
-
     diagFile.write('Start Date/Time: %s\n' % (mgi_utils.date()))
     diagFile.write('Server: %s\n' % (db.get_sqlServer()))
     diagFile.write('Database: %s\n' % (db.get_sqlDatabase()))
@@ -371,23 +367,22 @@ def setPrimaryKeys():
     global accKey, mgiKey, prepKey, assayKey
     global specimenKey, resultKey
 
-    results = db.sql('select maxKey = max(_ProbePrep_key) + 1 from GXD_ProbePrep', 'auto')
+    results = db.sql('select max(_ProbePrep_key) + 1 as maxKey from GXD_ProbePrep', 'auto')
     prepKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Assay_key) + 1 from GXD_Assay', 'auto')
+    results = db.sql('select max(_Assay_key) + 1 as maxKey from GXD_Assay', 'auto')
     assayKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Specimen_key) + 1 from GXD_Specimen', 'auto')
+    results = db.sql('select max(_Specimen_key) + 1 as maxKey from GXD_Specimen', 'auto')
     specimenKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Result_key) from GXD_InSituResult', 'auto')
+    results = db.sql('select max(_Result_key) as maxKey from GXD_InSituResult', 'auto')
     resultKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Accession_key) + 1 from ACC_Accession', 'auto')
+    results = db.sql('select max(_Accession_key) + 1 as maxKey from ACC_Accession', 'auto')
     accKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = maxNumericPart + 1 from ACC_AccessionMax ' + \
-        'where prefixPart = "%s"' % (mgiPrefix), 'auto')
+    results = db.sql('''select maxNumericPart + 1 as maxKey from ACC_AccessionMax where prefixPart = '%s' ''' % (mgiPrefix), 'auto')
     mgiKey = results[0]['maxKey']
 
 # Purpose:  BCPs the data into the database
@@ -435,12 +430,6 @@ def bcpFiles(
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
-
-    # load the cache tables for the records processed (by assay Key)
-
-    for i in range(assayKey - recordsProcessed, assayKey + 1):
-	# run cache load by assayKey
-        gxdexpression.process(i)
 
     # update the max Accession ID value
     db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
