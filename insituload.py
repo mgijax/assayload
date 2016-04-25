@@ -208,8 +208,6 @@ assayProbePrep = {}	# Assay ID/Probe Prep keys
 assayAssay= {}		# Assay ID/Assay keys
 assaySpecimen = {}	# Assay ID/Specimen ID and Specimen keys
 
-ASSAY_NOTE_LENGTH = 255
-
 loaddate = loadlib.loaddate
 
 # Purpose: prints error message and exits
@@ -414,17 +412,25 @@ def bcpFiles(
     outAccFile.close()
     outResultImageFile.close()
 
-    bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
-    bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
+    bcpCommand = os.environ['PG_DBUTILS'] + '/bin/bcpin.csh'
+    currentDir = os.getcwd()
 
-    bcp1 = '%s%s in %s %s' % (bcpI, probeprepTable, outPrepFileName, bcpII)
-    bcp2 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
-    bcp3 = '%s%s in %s %s' % (bcpI, assaynoteTable, outAssayNoteFileName, bcpII)
-    bcp4 = '%s%s in %s %s' % (bcpI, specimenTable, outSpecimenFileName, bcpII)
-    bcp5 = '%s%s in %s %s' % (bcpI, resultStTable, outResultStFileName, bcpII)
-    bcp6 = '%s%s in %s %s' % (bcpI, resultTable, outResultFileName, bcpII)
-    bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
-    bcp8 = '%s%s in %s %s' % (bcpI, resultImageTable, outResultImageFileName, bcpII)
+    bcp1 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
+    bcp2 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
+    bcp3 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
+    bcp4 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), specimenTable, currentDir, outSpecimenFileName)
+    bcp5 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultStTable, currentDir, outResultStFileName)
+    bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultTable, currentDir, outResultFileName)
+    bcp7 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
+    bcp8 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultImageTable, currentDir, outResultImageFileName)
 
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
@@ -438,15 +444,6 @@ def bcpFiles(
 
     # update the max Accession ID value
     db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
-
-    # update statistics
-    db.sql('update statistics %s' % (probeprepTable), None)
-    db.sql('update statistics %s' % (assayTable), None)
-    db.sql('update statistics %s' % (assaynoteTable), None)
-    db.sql('update statistics %s' % (specimenTable), None)
-    db.sql('update statistics %s' % (resultStTable), None)
-    db.sql('update statistics %s' % (resultTable), None)
-    db.sql('update statistics %s' % (resultImageTable), None)
 
     return
 
@@ -633,15 +630,11 @@ def processAssayFile():
 	    loaddate + TAB + loaddate + CRT)
 
 	if len(note) > 0:
-	    i = 0
 	    sequenceNum = 1
-	    while i < len(note):
-		outAssayNoteFile.write(str(assayKey) + TAB + \
+	    outAssayNoteFile.write(str(assayKey) + TAB + \
 		    str(sequenceNum) + TAB + \
-		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+		    note + TAB + \
 		    loaddate + TAB + loaddate + CRT)
-		i = i + ASSAY_NOTE_LENGTH
-		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
