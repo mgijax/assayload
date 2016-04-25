@@ -768,7 +768,7 @@ def processResultsFile():
 	strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
 	patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
 
-	structureKey = gxdloadlib.verifyStructure(emapaID, structureTS, lineNum, errorFile)
+	structureKey = gxdloadlib.verifyStructure(emapaID, lineNum, errorFile)
 
         if strengthKey == 0 or patternKey == 0 or structureKey == 0:
             # set error flag to true
