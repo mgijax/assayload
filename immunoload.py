@@ -746,7 +746,7 @@ def processResultsFile():
 	    resultID = tokens[2]
 	    strength = tokens[3]
 	    pattern = tokens[4]
-	    structureName = tokens[5]
+	    emapaID = tokens[5]
 	    structureTS = tokens[6]
 	    resultNote = tokens[7]
 	    images = tokens[8]
@@ -756,8 +756,7 @@ def processResultsFile():
 	strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
 	patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
 
-	structureName = string.replace(structureName, '"', '""')
-	structureKey = gxdloadlib.verifyStructure(structureName, structureTS, lineNum, errorFile)
+	structureKey = gxdloadlib.verifyStructure(emapaID, structureTS, lineNum, errorFile)
 
         if strengthKey == 0 or patternKey == 0 or structureKey == 0:
             # set error flag to true

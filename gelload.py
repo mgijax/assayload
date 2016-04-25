@@ -645,7 +645,7 @@ def processGelLaneFile():
 	    age = tokens[8]
 	    ageNote = tokens[9]
 	    laneNote = tokens[10]
-	    structureName = tokens[11]
+	    emapaID = tokens[11]
 	    structureTS = tokens[12]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
@@ -663,8 +663,7 @@ def processGelLaneFile():
 	ageMin, ageMax = agelib.ageMinMax(age)
 
 	if hasStructure:
-	    structureName = string.replace(structureName, '"', '""')
-	    structureKey = gxdloadlib.verifyStructure(structureName, structureTS, lineNum, errorFile)
+	    structureKey = gxdloadlib.verifyStructure(emapaID, structureTS, lineNum, errorFile)
 	    if structureKey == 0:
                 error = 1
 
