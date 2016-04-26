@@ -59,7 +59,8 @@ import mgi_utils
 import loadlib
 import gxdloadlib
 
-#globals
+db.setAutoTranslate(False)
+db.setAutoTranslateBE(False)
 
 #
 # from configuration file
