@@ -663,7 +663,7 @@ def processGelLaneFile():
 	ageMin, ageMax = agelib.ageMinMax(age)
 
 	if hasStructure:
-	    structureKey = gxdloadlib.verifyStructure(emapaID, lineNum, errorFile)
+	    structureKey = gxdloadlib.verifyTerm(emapaID, 90, '', lineNum, errorFile)
 	    if structureKey == 0:
                 error = 1
 

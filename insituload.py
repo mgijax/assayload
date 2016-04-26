@@ -129,7 +129,6 @@ import gxdloadlib
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
 mode = os.environ['ASSAYLOADMODE']
-datadir = os.environ['ASSAYLOADDATADIR']
 
 DEBUG = 0		# if 0, not in debug mode
 TAB = '\t'		# tab
@@ -149,10 +148,10 @@ inAssayNoteFile = ''      # file descriptor
 inSpecimenFile = ''       # file descriptor
 inResultsFile = ''        # file descriptor
 
-inPrepFileName = datadir + '/In_Situ_probeprep.txt'
-inAssayFileName = datadir + '/In_Situ_assay.txt'
-inSpecimenFileName = datadir + '/In_Situ_specimen.txt'
-inResultsFileName = datadir + '/In_Situ_results.txt'
+inPrepFileName = 'In_Situ_probeprep.txt'
+inAssayFileName = 'In_Situ_assay.txt'
+inSpecimenFileName = 'In_Situ_specimen.txt'
+inResultsFileName = 'In_Situ_results.txt'
 
 # output files
 
@@ -174,14 +173,14 @@ resultStTable = 'GXD_ISResultStructure'
 accTable = 'ACC_Accession'
 resultImageTable = 'GXD_InSituResultImage'
 
-outPrepFileName = datadir + '/' + probeprepTable + '.bcp'
-outAssayFileName = datadir + '/' + assayTable + '.bcp'
-outAssayNoteFileName = datadir + '/' + assaynoteTable + '.bcp'
-outSpecimenFileName = datadir + '/' + specimenTable + '.bcp'
-outResultFileName = datadir + '/' + resultTable + '.bcp'
-outResultStFileName = datadir + '/' + resultStTable + '.bcp'
-outAccFileName = datadir + '/' + accTable + '.bcp'
-outResultImageFileName = datadir + '/' + resultImageTable + '.bcp'
+outPrepFileName = probeprepTable + '.bcp'
+outAssayFileName = assayTable + '.bcp'
+outAssayNoteFileName = assaynoteTable + '.bcp'
+outSpecimenFileName = specimenTable + '.bcp'
+outResultFileName = resultTable + '.bcp'
+outResultStFileName = resultStTable + '.bcp'
+outAccFileName = accTable + '.bcp'
+outResultImageFileName = resultImageTable + '.bcp'
 
 diagFileName = ''	# diagnostic file name
 errorFileName = ''	# error file name
@@ -251,8 +250,8 @@ def init():
     db.set_sqlUser(user)
     db.set_sqlPasswordFromFile(passwordFileName)
  
-    diagFileName = datadir + '/insituload.diagnostics'
-    errorFileName = datadir + '/insituload.error'
+    diagFileName = 'insituload.diagnostics'
+    errorFileName = 'insituload.error'
 
     try:
         diagFile = open(diagFileName, 'w')
@@ -395,17 +394,20 @@ def bcpFiles(
    recordsProcessed	# number of records processed (integer)
    ):
 
-    if DEBUG or not bcpon:
-        return
-
     outPrepFile.close()
     outAssayFile.close()
     outAssayNoteFile.close()
     outSpecimenFile.close()
-    outResultStFile.close()
     outResultFile.close()
+    outResultStFile.close()
     outAccFile.close()
     outResultImageFile.close()
+
+    db.commit()
+    db.useOneConnection(0)
+
+    if DEBUG or not bcpon:
+        return
 
     bcpCommand = os.environ['PG_DBUTILS'] + '/bin/bcpin.csh'
     currentDir = os.getcwd()
@@ -419,9 +421,9 @@ def bcpFiles(
     bcp4 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
 	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), specimenTable, currentDir, outSpecimenFileName)
     bcp5 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultStTable, currentDir, outResultStFileName)
-    bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
 	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultTable, currentDir, outResultFileName)
+    bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultStTable, currentDir, outResultStFileName)
     bcp7 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
 	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
     bcp8 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
@@ -768,7 +770,7 @@ def processResultsFile():
 	strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
 	patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
 
-	structureKey = gxdloadlib.verifyStructure(emapaID, lineNum, errorFile)
+	structureKey = loadlib.verifyTerm(emapaID, 90, '', lineNum, errorFile)
 
         if strengthKey == 0 or patternKey == 0 or structureKey == 0:
             # set error flag to true
@@ -816,6 +818,7 @@ def processResultsFile():
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
 	    str(structureKey) + TAB + \
+	    str(structureTS) + TAB + \
 	    loaddate + TAB + loaddate + CRT)
 
 	prevAssay = assayID
