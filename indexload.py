@@ -281,8 +281,9 @@ def processAssay():
 
     # new indexes
 
-    db.sql('''select distinct a._Refs_key, a._Marker_key, aa.accID
-	into indexToAdd
+    db.sql('''
+	create temporary table indexToAdd on commit drop as
+        select distinct a._Refs_key, a._Marker_key, aa.accID
 	from GXD_Assay a, ACC_Accession aa
 	where a._Refs_key = %s
 	and a._Marker_key = aa._Object_key
