@@ -11,9 +11,10 @@
 #
 #	GXD_ProbePrep
 #	GXD_Assay
-#	GXD_AssayNote***new
+#	GXD_AssayNote
 #	GXD_Specimen
 #	GXD_InSituResults
+#       GXD_InSituResultImage
 #	GXD_ISResultStructure
 #	ACC_Accession
 #
