@@ -268,8 +268,9 @@ def processAssay():
 
     # currently existing indexes
 
-    db.sql('''select distinct a._Refs_key, a._Marker_key, i._Index_key, s._IndexAssay_key, s._StageID_key
-	into temporary table indexExist
+    db.sql('''
+	create temporary table indexExist on commit drop as
+        select distinct a._Refs_key, a._Marker_key, i._Index_key, s._IndexAssay_key, s._StageID_key
 	from GXD_Assay a, GXD_Index i, GXD_Index_Stages s
 	where a._Refs_key = %s 
 	and a._Refs_key = i._Refs_key
