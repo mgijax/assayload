@@ -4,6 +4,9 @@ STAFF: lec
 CHANGES:
 TR12026/lacz
 1) converted to Git
+2) changes for postgres
+3) delete older tr scripts
+4) see gxdload for tr12026 scripts
 
 TAG: assayload-5-2-1-1
 DATE: 02/12/2014
