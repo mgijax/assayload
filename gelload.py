@@ -393,9 +393,6 @@ def bcpFiles(
    recordsProcessed	# number of records processed (integer)
    ):
 
-    if DEBUG or not bcpon:
-        return
-
     outPrepFile.close()
     outAssayFile.close()
     outAssayNoteFile.close()
@@ -405,39 +402,38 @@ def bcpFiles(
     outGelBandFile.close()
     outAccFile.close()
 
-    bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
-    bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
+    # update the max Accession ID value
+    db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
 
-    bcp1 = '%s%s in %s %s' % (bcpI, probeprepTable, outPrepFileName, bcpII)
-    bcp2 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
-    bcp3 = '%s%s in %s %s' % (bcpI, assaynoteTable, outAssayNoteFileName, bcpII)
-    bcp4 = '%s%s in %s %s' % (bcpI, gelLaneTable, outGelLaneFileName, bcpII)
-    bcp5 = '%s%s in %s %s' % (bcpI, gelLaneStTable, outGelLaneStFileName, bcpII)
-    bcp6 = '%s%s in %s %s' % (bcpI, gelRowTable, outGelRowFileName, bcpII)
-    bcp7 = '%s%s in %s %s' % (bcpI, gelBandTable, outGelBandFileName, bcpII)
-    bcp8 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
+    db.commit()
+    db.useOneConnection(0)
+
+    if DEBUG or not bcpon:
+        return
+
+    bcpCommand = os.environ['PG_DBUTILS'] + '/bin/bcpin.csh'
+    currentDir = os.getcwd()
+
+    bcp1 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
+    bcp2 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
+    bcp3 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
+    bcp4 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelLaneTable, currentDir, outGelLaneFileName)
+    bcp5 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelLaneStTable, currentDir, outGelLaneStFileName)
+    bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelRowTable, currentDir, outGelRowFileName)
+    bcp7 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelBandTable, currentDir, outGelBandFileName)
+    bcp8 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
 
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
-
-    # load the cache tables for the records processed (by assay Key)
-
-    for i in range(assayKey - recordsProcessed, assayKey + 1):
-	# run cache load by assayKey
-	gxdexpression.process(i)
-
-    # update the max Accession ID value
-    db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
-
-    # update statistics
-#    db.sql('update statistics %s' % (probeprepTable), None)
-#    db.sql('update statistics %s' % (assayTable), None)
-#    db.sql('update statistics %s' % (gelLaneTable), None)
-#    db.sql('update statistics %s' % (gelLaneStTable), None)
-#    db.sql('update statistics %s' % (gelRowTable), None)
-#    db.sql('update statistics %s' % (gelBandTable), None)
-#    db.sql('update statistics %s' % (accTable), None)
 
     return
 
