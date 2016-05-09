@@ -405,6 +405,9 @@ def bcpFiles(
     outAccFile.close()
     outResultImageFile.close()
 
+    # update the max Accession ID value
+    db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
+
     db.commit()
     db.useOneConnection(0)
 
@@ -434,9 +437,6 @@ def bcpFiles(
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
 	diagFile.write('%s\n' % bcpCmd)
 	os.system(bcpCmd)
-
-    # update the max Accession ID value
-    db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
 
     return
 
