@@ -117,7 +117,6 @@ import gxdexpression
 user = os.environ['MGD_DBUSER']
 passwordFileName = os.environ['MGD_DBPASSWORDFILE']
 mode = os.environ['ASSAYLOADMODE']
-datadir = os.environ['ASSAYLOADDATADIR']
 
 DEBUG = 0		# if 0, not in debug mode
 TAB = '\t'		# tab
@@ -137,10 +136,10 @@ inAssayNoteFile = ''      # file descriptor
 inSpecimenFile = ''       # file descriptor
 inResultsFile = ''        # file descriptor
 
-inPrepFileName = datadir + '/Immuno_prep.txt'
-inAssayFileName = datadir + '/Immuno_assay.txt'
-inSpecimenFileName = datadir + '/Immuno_specimen.txt'
-inResultsFileName = datadir + '/Immuno_results.txt'
+inPrepFileName = 'Immuno_prep.txt'
+inAssayFileName = 'Immuno_assay.txt'
+inSpecimenFileName = 'Immuno_specimen.txt'
+inResultsFileName = 'Immuno_results.txt'
 
 # output files
 
@@ -162,14 +161,14 @@ resultStTable = 'GXD_ISResultStructure'
 accTable = 'ACC_Accession'
 resultImageTable = 'GXD_InSituResultImage'
 
-outPrepFileName = datadir + '/' + prepTable + '.bcp'
-outAssayFileName = datadir + '/' + assayTable + '.bcp'
-outAssayNoteFileName = datadir + '/' + assaynoteTable + '.bcp'
-outSpecimenFileName = datadir + '/' + specimenTable + '.bcp'
-outResultFileName = datadir + '/' + resultTable + '.bcp'
-outResultStFileName = datadir + '/' + resultStTable + '.bcp'
-outAccFileName = datadir + '/' + accTable + '.bcp'
-outResultImageFileName = datadir + '/' + resultImageTable + '.bcp'
+outPrepFileName = prepTable + '.bcp'
+outAssayFileName = assayTable + '.bcp'
+outAssayNoteFileName = assaynoteTable + '.bcp'
+outSpecimenFileName = specimenTable + '.bcp'
+outResultFileName = resultTable + '.bcp'
+outResultStFileName = resultStTable + '.bcp'
+outAccFileName = accTable + '.bcp'
+outResultImageFileName = resultImageTable + '.bcp'
 
 diagFileName = ''	# diagnostic file name
 errorFileName = ''	# error file name
@@ -241,8 +240,8 @@ def init():
     db.set_sqlUser(user)
     db.set_sqlPasswordFromFile(passwordFileName)
  
-    diagFileName = datadir + '/immunoload.diagnostics'
-    errorFileName = datadir + '/immunoload.error'
+    diagFileName = 'immunoload.diagnostics'
+    errorFileName = 'immunoload.error'
 
     try:
         diagFile = open(diagFileName, 'w')
@@ -321,9 +320,6 @@ def init():
     # Log all SQL
     db.set_sqlLogFunction(db.sqlLogAll)
 
-    # Set Log File Descriptor
-    db.set_sqlLogFD(diagFile)
-
     diagFile.write('Start Date/Time: %s\n' % (mgi_utils.date()))
     diagFile.write('Server: %s\n' % (db.get_sqlServer()))
     diagFile.write('Database: %s\n' % (db.get_sqlDatabase()))
@@ -360,80 +356,69 @@ def setPrimaryKeys():
     global accKey, mgiKey, antibodyPrepKey, assayKey
     global specimenKey, resultKey
 
-    results = db.sql('select maxKey = max(_AntibodyPrep_key) + 1 from GXD_AntibodyPrep', 'auto')
+    results = db.sql('select max(_AntibodyPrep_key) + 1 as maxKey from GXD_AntibodyPrep', 'auto')
     antibodyPrepKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Assay_key) + 1 from GXD_Assay', 'auto')
+    results = db.sql('select max(_Assay_key) + 1 as maxKey from GXD_Assay', 'auto')
     assayKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Specimen_key) + 1 from GXD_Specimen', 'auto')
+    results = db.sql('select max(_Specimen_key) + 1 as maxKey from GXD_Specimen', 'auto')
     specimenKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Result_key) from GXD_InSituResult', 'auto')
+    results = db.sql('select max(_Result_key) as maxKey from GXD_InSituResult', 'auto')
     resultKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Accession_key) + 1 from ACC_Accession', 'auto')
+    results = db.sql('select max(_Accession_key) + 1 as maxKey from ACC_Accession', 'auto')
     accKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = maxNumericPart + 1 from ACC_AccessionMax ' + \
-        'where prefixPart = "%s"' % (mgiPrefix), 'auto')
+    results = db.sql('select maxNumericPart + 1 as maxKey from ACC_AccessionMax where prefixPart = "%s"' % (mgiPrefix), 'auto')
     mgiKey = results[0]['maxKey']
-
-# Purpose:  BCPs the data into the database
-# Returns:  nothing
-# Assumes:  nothing
-# Effects:  BCPs the data into the database
-# Throws:   nothing
 
 def bcpFiles(
    recordsProcessed	# number of records processed (integer)
    ):
 
-    if DEBUG or not bcpon:
-        return
-
     outPrepFile.close()
     outAssayFile.close()
     outAssayNoteFile.close()
     outSpecimenFile.close()
-    outResultStFile.close()
     outResultFile.close()
+    outResultStFile.close()
     outAccFile.close()
     outResultImageFile.close()
-
-    bcpI = 'cat %s | bcp %s..' % (passwordFileName, db.get_sqlDatabase())
-    bcpII = '-c -t\"%s' % (bcpdelim) + '" -S%s -U%s' % (db.get_sqlServer(), db.get_sqlUser())
-
-    bcp1 = '%s%s in %s %s' % (bcpI, prepTable, outPrepFileName, bcpII)
-    bcp2 = '%s%s in %s %s' % (bcpI, assayTable, outAssayFileName, bcpII)
-    bcp3 = '%s%s in %s %s' % (bcpI, assaynoteTable, outAssayNoteFileName, bcpII)
-    bcp4 = '%s%s in %s %s' % (bcpI, specimenTable, outSpecimenFileName, bcpII)
-    bcp5 = '%s%s in %s %s' % (bcpI, resultStTable, outResultStFileName, bcpII)
-    bcp6 = '%s%s in %s %s' % (bcpI, resultTable, outResultFileName, bcpII)
-    bcp7 = '%s%s in %s %s' % (bcpI, accTable, outAccFileName, bcpII)
-    bcp8 = '%s%s in %s %s' % (bcpI, resultImageTable, outResultImageFileName, bcpII)
-
-    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
-	diagFile.write('%s\n' % bcpCmd)
-	os.system(bcpCmd)
-
-    # load the cache tables for the records processed (by assay Key)
-
-    for i in range(assayKey - recordsProcessed, assayKey + 1):
-	# run cache load by assayKey
-        gxdexpression.process(i)
 
     # update the max Accession ID value
     db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
 
-    # update statistics
-    db.sql('update statistics %s' % (prepTable), None)
-    db.sql('update statistics %s' % (assayTable), None)
-    db.sql('update statistics %s' % (assaynoteTable), None)
-    db.sql('update statistics %s' % (specimenTable), None)
-    db.sql('update statistics %s' % (resultStTable), None)
-    db.sql('update statistics %s' % (resultTable), None)
-    db.sql('update statistics %s' % (resultImageTable), None)
+    db.commit()
+    db.useOneConnection(0)
+
+    if DEBUG or not bcpon:
+        return
+
+    bcpCommand = os.environ['PG_DBUTILS'] + '/bin/bcpin.csh'
+    currentDir = os.getcwd()
+
+    bcp1 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
+    bcp2 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
+    bcp3 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
+    bcp4 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), specimenTable, currentDir, outSpecimenFileName)
+    bcp5 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultTable, currentDir, outResultFileName)
+    bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultStTable, currentDir, outResultStFileName)
+    bcp7 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
+    bcp8 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
+	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultImageTable, currentDir, outResultImageFileName)
+
+    for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
+	diagFile.write('%s\n' % bcpCmd)
+	os.system(bcpCmd)
 
     return
 
@@ -602,16 +587,12 @@ def processAssayFile():
             str(createdByKey) + TAB + \
 	    loaddate + TAB + loaddate + CRT)
 
-	if len(note) > 0:
-	    i = 0
+	if len(note) > 1:
 	    sequenceNum = 1
-	    while i < len(note):
-		outAssayNoteFile.write(str(assayKey) + TAB + \
+	    outAssayNoteFile.write(str(assayKey) + TAB + \
 		    str(sequenceNum) + TAB + \
-		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+		    note + TAB + \
 		    loaddate + TAB + loaddate + CRT)
-		i = i + ASSAY_NOTE_LENGTH
-		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
