@@ -15,28 +15,17 @@ touch $LOG
  
 date >> $LOG
  
-cat - <<EOSQL | doisql.csh ${MGD_DBSERVER} ${MGD_DBNAME} $0 >> $LOG
-
-use ${MGD_DBNAME}
-go
-
-declare @refsKey integer
-select @refsKey = _Object_key from BIB_Acc_View where accID = "${JNUM}"
+cat - <<EOSQL | ${PG_DBUTILS}/bin/doisql.csh $0 | tee -a $LOG
 
 update PRB_Marker
-set relationship = "E"
+set relationship = 'E'
 from PRB_Marker p, GXD_ProbePrep pp, GXD_Assay a
-where a._Refs_key = @refsKey
+where a._Refs_key = (select _Refs_key from BIB_Citation_Cache where jnumID = '${JNUM}')
 and a._ProbePrep_key = pp._ProbePrep_key
 and pp._Probe_key = p._Probe_key
 and a._Marker_key = p._Marker_key
-and p.relationship = "P"
-go
-
-checkpoint
-go
-
-end
+and p.relationship = 'P'
+;
 
 EOSQL
 

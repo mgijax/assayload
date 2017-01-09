@@ -66,7 +66,16 @@
 #		field 6: MGI Structure Name
 #		field 7: MGI Structure Theiler Stage
 #		field 8: Result Note
-#		field 9: Comma-Separated Image Names (if any)
+#		field 9: Comma-Separated list of Image Panes (figure label|pane label)
+#                       the Image Pane Label needs to match exactly with what is in the database
+#			and this includes any spaces (see example below)
+#			example with pane:  J:226028
+#				1|C Gli1
+#				2|A Calml4 - E11.5
+#				1| Fam181b
+#				3| Lypd6
+#			example with null pane/include pipe "|"
+#				4|
 #
 # Outputs:
 #
@@ -121,9 +130,6 @@ import mgi_utils
 import agelib
 import loadlib
 import gxdloadlib
-
-db.setAutoTranslate(False)
-db.setAutoTranslateBE(False)
 
 #
 # from configuration file
@@ -207,6 +213,8 @@ accPreferred = '1'      # Preferred status MGI accession ID (true)
 assayProbePrep = {}	# Assay ID/Probe Prep keys
 assayAssay= {}		# Assay ID/Assay keys
 assaySpecimen = {}	# Assay ID/Specimen ID and Specimen keys
+
+imagePaneLookup = {}	# Image Figure Label|Pane Label = pane key
 
 loaddate = loadlib.loaddate
 
@@ -651,7 +659,7 @@ def processAssayFile():
 
     #	end of "for line in inAssayFile.readlines():"
 
-    return lineNum
+    return lineNum, referenceKey
 
 # Purpose:  processes specimen data
 # Returns:  nothing
@@ -738,14 +746,33 @@ def processSpecimenFile():
 # Effects:  verifies and processes each line in the input file
 # Throws:   nothing
 
-def processResultsFile():
+def processResultsFile(referenceKey):
 
     global resultKey
+    global imagePaneLookup
 
     prevAssay = 0
     prevSpecimen = 0
     prevResult = 0
     lineNum = 0
+
+    #
+    # build imagePaneLookup lookup of figure label|pane label keys
+    # J:226028/227123
+    #
+    reuslts = db.sql('''
+	select i.figureLabel || '|' ||  p.paneLabel as label, p._ImagePane_key 
+	from IMG_Image i, IMG_ImagePane p 
+	where i._Image_key = p._Image_key
+	and i._Refs_key = %s
+    	''' % (referenceKey), 'auto')
+    for r in results:
+	key = r['label']
+    	value =  r['_ImagePane_key']
+	imagePaneLookup[key] = []
+	imagePaneLookup[key].append(value)
+    print imagePaneLookup
+
     # For each line in the input file
 
     for line in inResultsFile.readlines():
@@ -765,7 +792,7 @@ def processResultsFile():
 	    emapaID = tokens[5]
 	    structureTS = tokens[6]
 	    resultNote = tokens[7]
-	    images = tokens[8]
+	    imagePanes = tokens[8]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
@@ -811,10 +838,11 @@ def processResultsFile():
 	        mgi_utils.prvalue(resultNote) + TAB + \
 	        loaddate + TAB + loaddate + CRT)
 
-            for image in string.split(images,','):
-                if image != '':
+            for image in string.split(imagePanes,','):
+		if image in imagePaneLookup:
+		    imageKey = imagePaneLookup[image]
                     outResultImageFile.write(str(resultKey) + TAB + \
-					image + TAB + \
+					imageKey + TAB + \
 	        			loaddate + TAB + loaddate + CRT)
 
 	outResultStFile.write(
@@ -834,9 +862,9 @@ def processResultsFile():
 def process():
 
     processPrepFile()
-    recordsProcessed = processAssayFile()
+    recordsProcessed, referenceKey = processAssayFile()
     processSpecimenFile()
-    processResultsFile()
+    processResultsFile(referenceKey)
     bcpFiles(recordsProcessed)
 
 #
