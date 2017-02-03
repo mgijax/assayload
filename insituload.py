@@ -600,6 +600,10 @@ def processAssayFile():
             # set error flag to true
             error = 1
 
+        if referenceKey == 0 or referenceKey == 0 or assayTypeKey == 0:
+            # set error flag to true
+            error = 1
+
         if len(reporterGene) > 0:
             reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
 	    if reporterGeneKey == 0:
@@ -698,6 +702,7 @@ def processSpecimenFile():
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
 	if gxdloadlib.verifyHybridization(hybridization, lineNum, errorFile) == 0:
+	    errorFile.write('LORI:hybridization value not found : %s\n' % (hybridization))
 	    error = 1
 
 	genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
@@ -706,7 +711,8 @@ def processSpecimenFile():
 	ageMin, ageMax = agelib.ageMinMax(age)
 
         if genotypeKey == 0 or ageMin < 0 or ageMax < 0:
-            # set error flag to true
+	    errorFile.write('LORI:genotype or ageMin/ageMax error\n')
+	    errorFile.write(str(tokens) + '\n')
             error = 1
 
         # if errors, continue to next record
@@ -760,18 +766,21 @@ def processResultsFile(referenceKey):
     # build imagePaneLookup lookup of figure label|pane label keys
     # J:226028/227123
     #
-    reuslts = db.sql('''
-	select i.figureLabel || '|' ||  p.paneLabel as label, p._ImagePane_key 
+    results = db.sql('''
+	select i.figureLabel, p.paneLabel, p._ImagePane_key 
 	from IMG_Image i, IMG_ImagePane p 
 	where i._Image_key = p._Image_key
 	and i._Refs_key = %s
     	''' % (referenceKey), 'auto')
     for r in results:
-	key = r['label']
+	paneLabel = r['paneLabel']
+	if paneLabel == None:
+	    paneLabel = ''
+	key = r['figureLabel'] + '|' + paneLabel
     	value =  r['_ImagePane_key']
 	imagePaneLookup[key] = []
 	imagePaneLookup[key].append(value)
-    print imagePaneLookup
+    #print imagePaneLookup['Zmiz1_b41_E11.5b_JL|']
 
     # For each line in the input file
 
@@ -815,6 +824,7 @@ def processResultsFile(referenceKey):
 
 	if not assaySpecimen.has_key(key):
 	    errorFile.write('Cannot find Assay:Speciman key "%s"\n' % (key))
+	    errorFile.write(str(tokens) + '\n\n')
 	    continue
 
 	specimenKey = assaySpecimen[key]
@@ -840,10 +850,12 @@ def processResultsFile(referenceKey):
 
             for image in string.split(imagePanes,','):
 		if image in imagePaneLookup:
-		    imageKey = imagePaneLookup[image]
+		    imageKey = imagePaneLookup[image][0]
                     outResultImageFile.write(str(resultKey) + TAB + \
-					imageKey + TAB + \
+					str(imageKey) + TAB + \
 	        			loaddate + TAB + loaddate + CRT)
+		#else:
+		    #print image
 
 	outResultStFile.write(
 	    str(resultKey) + TAB + \
