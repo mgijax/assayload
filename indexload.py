@@ -402,6 +402,9 @@ def processAssay():
 	    for i in allstages:
 		i = string.replace(i, '7.25', '7.5')
 		i = string.replace(i, '7.75', '8')
+		i = string.replace(i, '10.25', '10.5')
+		i = string.replace(i, '10.75', '11.0')
+		i = string.replace(i, '11.25', '11.5')
 	        stages.append(i)
 	elif string.find(r['age'], 'postnatal') >= 0:
 	    stages.append('A')
