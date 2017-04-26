@@ -156,10 +156,10 @@ inAssayNoteFile = ''      # file descriptor
 inSpecimenFile = ''       # file descriptor
 inResultsFile = ''        # file descriptor
 
-inPrepFileName = 'In_Situ_probeprep.txt'
-inAssayFileName = 'In_Situ_assay.txt'
-inSpecimenFileName = 'In_Situ_specimen.txt'
-inResultsFileName = 'In_Situ_results.txt'
+inPrepFileName = 'InSituProbeprep.txt'
+inAssayFileName = 'InSituAssay.txt'
+inSpecimenFileName = 'InSituSpecimen.txt'
+inResultsFileName = 'InSituResults.txt'
 
 # output files
 
@@ -463,6 +463,7 @@ def processPrepFile():
     # If the combination exists on multiple records in the probe prep input
     # file, only one probe prep record will be created in the database and
     # it will be shared by multiple assays.
+
     probePrepLookup = {}
 
     lineNum = 0
