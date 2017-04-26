@@ -703,7 +703,7 @@ def processSpecimenFile():
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
 	if gxdloadlib.verifyHybridization(hybridization, lineNum, errorFile) == 0:
-	    errorFile.write('LORI:hybridization value not found : %s\n' % (hybridization))
+	    errorFile.write('hybridization value not found : %s\n' % (hybridization))
 	    error = 1
 
 	genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
@@ -712,7 +712,7 @@ def processSpecimenFile():
 	ageMin, ageMax = agelib.ageMinMax(age)
 
         if genotypeKey == 0 or ageMin < 0 or ageMax < 0:
-	    errorFile.write('LORI:genotype or ageMin/ageMax error\n')
+	    errorFile.write('genotype or ageMin/ageMax error\n')
 	    errorFile.write(str(tokens) + '\n')
             error = 1
 
