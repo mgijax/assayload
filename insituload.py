@@ -156,10 +156,10 @@ inAssayNoteFile = ''      # file descriptor
 inSpecimenFile = ''       # file descriptor
 inResultsFile = ''        # file descriptor
 
-inPrepFileName = 'InSituProbeprep.txt'
-inAssayFileName = 'InSituAssay.txt'
-inSpecimenFileName = 'InSituSpecimen.txt'
-inResultsFileName = 'InSituResults.txt'
+inPrepFileName = 'In_Situ_probeprep.txt'
+inAssayFileName = 'In_Situ_assay.txt'
+inSpecimenFileName = 'In_Situ_specimen.txt'
+inResultsFileName = 'In_Situ_results.txt'
 
 # output files
 
