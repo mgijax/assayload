@@ -161,11 +161,11 @@ def init():
 		
     # Input Files
 
-    try:
-	inCommentsFileName = os.environ['LOADFILE5']
-        inCommentsFile = open(inCommentsFileName, 'r')
-    except:
-	pass
+    #try:
+#	inCommentsFileName = os.environ['LOADFILE5']
+#        inCommentsFile = open(inCommentsFileName, 'r')
+#    except:
+#	pass
         #exit(1, 'Could not open file %s\n' % inCommentsFileName)
 
     # Output Files
