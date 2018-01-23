@@ -636,9 +636,7 @@ def processAssayFile():
 	    loaddate + TAB + loaddate + CRT)
 
 	if len(note) > 0:
-	    sequenceNum = 1
 	    outAssayNoteFile.write(str(assayKey) + TAB + \
-		    str(sequenceNum) + TAB + \
 		    note + TAB + \
 		    loaddate + TAB + loaddate + CRT)
 

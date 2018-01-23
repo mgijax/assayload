@@ -571,14 +571,11 @@ def processAssayFile():
 
 	if len(note) > 0:
 	    i = 0
-	    sequenceNum = 1
 	    while i < len(note):
 		outAssayNoteFile.write(str(assayKey) + TAB + \
-		    str(sequenceNum) + TAB + \
 		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
 		    loaddate + TAB + loaddate + CRT)
 		i = i + ASSAY_NOTE_LENGTH
-		sequenceNum = sequenceNum + 1
 
         # MGI Accession ID for the assay
 
