@@ -1,4 +1,3 @@
-#!/usr/local/bin/python
 
 #
 # Program: rnainsitu10.py
@@ -130,7 +129,7 @@ strengthTrans = {'+':'Present', '++':'Strong', '+/-':'Ambiguous', '':'Absent'}
 
 def exit(
     status,          # numeric exit status (integer)
-    message = None   # exit message (string)
+    message = None   # exit message (str.
     ):
 
     if message is not None:
@@ -197,27 +196,27 @@ def process():
     probeTrans = {}	# maps probe to MGI Gene
 
     for line in inTissueFile.readlines():
-	tokens = string.split(line[:-1], TAB)
-	badTissue = tokens[0]
-	goodTissue = tokens[1]
-	theilerStage = tokens[2]
+        tokens = str.split(line[:-1], TAB)
+        badTissue = tokens[0]
+        goodTissue = tokens[1]
+        theilerStage = tokens[2]
 
-	key = badTissue
-	value = goodTissue + '|' + theilerStage
-	tissueTrans[key] = value
+        key = badTissue
+        value = goodTissue + '|' + theilerStage
+        tissueTrans[key] = value
 
     for line in inProbeFile.readlines():
-	tokens = string.split(line[:-1], TAB)
-	mgiID = tokens[2]
-	probeID = tokens[7]
+        tokens = str.split(line[:-1], TAB)
+        mgiID = tokens[2]
+        probeID = tokens[7]
 
-	if len(mgiID) == 0:
-	    continue
+        if len(mgiID) == 0:
+            continue
 
-	key = mgiID
-	value = probeID
-	if not probeTrans.has_key(key):
-	    probeTrans[key] = []
+        key = mgiID
+        value = probeID
+        if key not in probeTrans:
+            probeTrans[key] = []
         probeTrans[key].append(value)
 
     assay = 0	# unique Assay ID
@@ -227,99 +226,99 @@ def process():
     for line in inInSituFile.readlines():
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
-	# processing first line (header)
-	# grab the Tissue headings
+        # processing first line (header)
+        # grab the Tissue headings
 
-	if assay == 0:
-	    tissueLabels = tokens[4:]
-	    assay = assay + 1
-	    continue
+        if assay == 0:
+            tissueLabels = tokens[4:]
+            assay = assay + 1
+            continue
 
-	# else process an actual data line
+        # else process an actual data line
 
         try:
-	    vial = tokens[0]
-	    mouseGene = tokens[1]
-	    accID = tokens[2]
-	    humanGene = tokens[3]
-	    results = tokens[4:14]
-	    imageFileName = tokens[15]
+            vial = tokens[0]
+            mouseGene = tokens[1]
+            accID = tokens[2]
+            humanGene = tokens[3]
+            results = tokens[4:14]
+            imageFileName = tokens[15]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (assay, line)
+            print('Invalid Line (%d): %s\n' % (assay, line))
 
-	if len(mouseGene) == 0:
-	    continue
+        if len(mouseGene) == 0:
+            continue
 
-	# create one assay per probe for given marker
+        # create one assay per probe for given marker
 
-	for probeID in probeTrans[accID]:
+        for probeID in probeTrans[accID]:
 
-	    # write the probe prep information
+            # write the probe prep information
 
-	    prepFile.write(str(assay) + TAB + \
-	        probeID + TAB + \
-	        prepType + TAB + \
-	        hybridization + TAB + \
-	        labelledWith + TAB + \
-	        labelCoverage + TAB + \
-	        visualizedWith + CRT)
+            prepFile.write(str(assay) + TAB + \
+                probeID + TAB + \
+                prepType + TAB + \
+                hybridization + TAB + \
+                labelledWith + TAB + \
+                labelCoverage + TAB + \
+                visualizedWith + CRT)
 
-	    # write the assay information
+            # write the assay information
 
-	    assayFile.write(str(assay) + TAB + \
-	        accID + TAB + \
-	        reference + TAB + \
-	        assayType + TAB + \
-		TAB + \
-		createdBy + CRT)
+            assayFile.write(str(assay) + TAB + \
+                accID + TAB + \
+                reference + TAB + \
+                assayType + TAB + \
+                TAB + \
+                createdBy + CRT)
 
-	    # write the specimen (one for each Assay)
+            # write the specimen (one for each Assay)
 
-	    specimen = 1
+            specimen = 1
 
-	    specimenFile.write(str(assay) + TAB + \
-		    str(specimen) + TAB + \
-		    specimenLabel % (mouseGene) + TAB + \
-		    genotype + TAB + \
-		    age + TAB + \
-		    ageNote + TAB + \
-		    sex + TAB + \
-		    fixation + TAB + \
-		    embedding + TAB + \
-		    specimenHybridization + TAB + \
-		    specimenNote + CRT)
+            specimenFile.write(str(assay) + TAB + \
+                    str(specimen) + TAB + \
+                    specimenLabel % (mouseGene) + TAB + \
+                    genotype + TAB + \
+                    age + TAB + \
+                    ageNote + TAB + \
+                    sex + TAB + \
+                    fixation + TAB + \
+                    embedding + TAB + \
+                    specimenHybridization + TAB + \
+                    specimenNote + CRT)
 
-	    # one result for each Tissue 
+            # one result for each Tissue 
 
-	    result = 1
-	    for i in range(len(tissueLabels)):
+            result = 1
+            for i in range(len(tissueLabels)):
     
-	        # Translate the Tissue into a Tissue and Age
-	        [tissue, theilerStage] = string.split(tissueTrans[tissueLabels[i]], '|')
+                # Translate the Tissue into a Tissue and Age
+                [tissue, theilerStage] = str.split(tissueTrans[tissueLabels[i]], '|')
 
-	        if strengthTrans.has_key(results[i]):
-		    strength = strengthTrans[results[i]]
-		    pattern = pattern1
-	        elif len(results[i]) > 3:
-		    strength = strengthTrans['+']
-		    pattern = pattern2
+                if results[i] in strengthTrans:
+                    strength = strengthTrans[results[i]]
+                    pattern = pattern1
+                elif len(results[i]) > 3:
+                    strength = strengthTrans['+']
+                    pattern = pattern2
 
-	        resultsFile.write(str(assay) + TAB + \
-	            str(specimen) + TAB + \
-	            str(result) + TAB + \
-		    strength + TAB + \
-		    pattern + TAB + \
-		    tissue + TAB + \
-		    theilerStage + TAB + \
-		    resultNote + CRT)
+                resultsFile.write(str(assay) + TAB + \
+                    str(specimen) + TAB + \
+                    str(result) + TAB + \
+                    strength + TAB + \
+                    pattern + TAB + \
+                    tissue + TAB + \
+                    theilerStage + TAB + \
+                    resultNote + CRT)
 
-	        result = result + 1
+                result = result + 1
 
-	    specimen = specimen + 1
-	    assay = assay + 1
+            specimen = specimen + 1
+            assay = assay + 1
 
         # end of "for line in inProbeFile.readlines():"
     # end of "for line in inInSituFile.readlines():"
@@ -331,4 +330,3 @@ def process():
 init()
 process()
 exit(0)
-

@@ -1,4 +1,3 @@
-#!/usr/local/bin/python
 
 #
 # Program: immunoload.py
@@ -206,7 +205,7 @@ loaddate = loadlib.loaddate
 
 def exit(
     status,          # numeric exit status (integer)
-    message = None   # exit message (string)
+    message = None   # exit message (str.
     ):
 
     if message is not None:
@@ -247,12 +246,12 @@ def init():
         diagFile = open(diagFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % diagFileName)
-		
+                
     try:
         errorFile = open(errorFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % errorFileName)
-		
+                
     # Input Files
 
     try:
@@ -400,25 +399,25 @@ def bcpFiles(
     currentDir = os.getcwd()
 
     bcp1 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
     bcp2 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
     bcp3 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
     bcp4 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), specimenTable, currentDir, outSpecimenFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), specimenTable, currentDir, outSpecimenFileName)
     bcp5 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultTable, currentDir, outResultFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultTable, currentDir, outResultFileName)
     bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultStTable, currentDir, outResultStFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultStTable, currentDir, outResultStFileName)
     bcp7 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
     bcp8 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultImageTable, currentDir, outResultImageFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), resultImageTable, currentDir, outResultImageFileName)
 
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
-	diagFile.write('%s\n' % bcpCmd)
-	os.system(bcpCmd)
+        diagFile.write('%s\n' % bcpCmd)
+        os.system(bcpCmd)
 
     return
 
@@ -448,33 +447,33 @@ def processPrepFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
         try:
-	    assayID = tokens[0]
-	    prepID = tokens[1]
-	    secondary = tokens[2]
-	    labelledWith = tokens[3]
+            assayID = tokens[0]
+            prepID = tokens[1]
+            secondary = tokens[2]
+            labelledWith = tokens[3]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	antibodyKey = gxdloadlib.verifyAntibody(prepID, lineNum, errorFile)
-	secondaryKey = gxdloadlib.verifyPrepSecondary(secondary, lineNum, errorFile)
-	labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
+        antibodyKey = gxdloadlib.verifyAntibody(prepID, lineNum, errorFile)
+        secondaryKey = gxdloadlib.verifyPrepSecondary(secondary, lineNum, errorFile)
+        labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
 
         if antibodyKey == 0:
             # set error flag to true
-	    errorFile.write('\ngxdloadlib.verifyAntibody  %s' % (prepID))
+            errorFile.write('\ngxdloadlib.verifyAntibody  %s' % (prepID))
             error = 1
 
-	if secondaryKey == 0: 
+        if secondaryKey == 0: 
             # set error flag to true
-	    errorFile.write('\ngxdloadlib.verifyPrepSecondary:  %s' % (secondary))
+            errorFile.write('\ngxdloadlib.verifyPrepSecondary:  %s' % (secondary))
             error = 1
 
-	if labelKey == 0:
+        if labelKey == 0:
             # set error flag to true
-	    errorFile.write('\ngxdloadlib.verifyPrepLabel:  %s' % (labelledWith))
+            errorFile.write('\ngxdloadlib.verifyPrepLabel:  %s' % (labelledWith))
             error = 1
 
         # if errors, continue to next record
@@ -483,34 +482,34 @@ def processPrepFile():
 
         # if no errors, process
 
-	# Determine if the current combination of antibody key, secondary key,
+        # Determine if the current combination of antibody key, secondary key,
         # label key has already been added
         # to the output file.
         #
-	key = '%s:%s:%s' % (str(antibodyKey),
+        key = '%s:%s:%s' % (str(antibodyKey),
                                   str(secondaryKey),
                                   str(labelKey))
 
         # If a probe prep record has already been created, add the existing
         # probe prep key to the lookup for the current assayID.
         #
-	if prepLookup.has_key(key):
-	    assayPrep[assayID] = prepLookup[key]
+        if key in prepLookup:
+            assayPrep[assayID] = prepLookup[key]
 
         # Otherwise, add a new probe prep key to the lookup for the current
         # assayID and also add a new entry to the dictionary for this
         # combination of probe key, secondary key, label key. 
         #
-	else:
-	    outPrepFile.write(str(antibodyPrepKey) + TAB + \
-	        str(antibodyKey) + TAB + \
-	        str(secondaryKey) + TAB + \
-	        str(labelKey) + TAB + \
-	        loaddate + TAB + loaddate + CRT)
+        else:
+            outPrepFile.write(str(antibodyPrepKey) + TAB + \
+                str(antibodyKey) + TAB + \
+                str(secondaryKey) + TAB + \
+                str(labelKey) + TAB + \
+                loaddate + TAB + loaddate + CRT)
 
-	    assayPrep[assayID] = antibodyPrepKey
-	    prepLookup[key] = antibodyPrepKey
-	    antibodyPrepKey = antibodyPrepKey + 1
+            assayPrep[assayID] = antibodyPrepKey
+            prepLookup[key] = antibodyPrepKey
+            antibodyPrepKey = antibodyPrepKey + 1
 
     #	end of "for line in inPrepFile.readlines():"
 
@@ -535,23 +534,23 @@ def processAssayFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
         try:
-	    assayID = tokens[0]
-	    markerID = tokens[1]
-	    jnum = tokens[2]
-	    assayType = tokens[3]
-	    reporterGene = tokens[4]
-	    note = tokens[5]
-	    createdBy = tokens[6]
+            assayID = tokens[0]
+            markerID = tokens[1]
+            jnum = tokens[2]
+            assayType = tokens[3]
+            reporterGene = tokens[4]
+            note = tokens[5]
+            createdBy = tokens[6]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
+        markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
         referenceKey = loadlib.verifyReference(jnum, lineNum, errorFile)
-	assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
-	createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
+        assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
+        createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
 
         if markerKey == 0 or referenceKey == 0 or assayTypeKey == 0:
             # set error flag to true
@@ -559,7 +558,7 @@ def processAssayFile():
 
         if len(reporterGene) > 0:
             reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
-	    if reporterGeneKey == 0:
+            if reporterGeneKey == 0:
                 error = 1
         else:
             reporterGeneKey = ''
@@ -568,48 +567,48 @@ def processAssayFile():
         if error:
             continue
 
-	if assayPrep.has_key(assayID):
-	    antibodyPrepKey = assayPrep[assayID]
-	else:
-	    antibodyPrepKey = ''
+        if assayID in assayPrep:
+            antibodyPrepKey = assayPrep[assayID]
+        else:
+            antibodyPrepKey = ''
 
         # if no errors, process
 
         outAssayFile.write(str(assayKey) + TAB + \
-	    str(assayTypeKey) + TAB + \
-	    str(referenceKey) + TAB + \
-	    str(markerKey) + TAB + \
-	    TAB + \
-	    str(antibodyPrepKey) + TAB + \
-	    TAB + \
+            str(assayTypeKey) + TAB + \
+            str(referenceKey) + TAB + \
+            str(markerKey) + TAB + \
+            TAB + \
+            str(antibodyPrepKey) + TAB + \
+            TAB + \
             str(reporterGeneKey) + TAB + \
             str(createdByKey) + TAB + \
             str(createdByKey) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+            loaddate + TAB + loaddate + CRT)
 
-	if len(note) > 1:
-	    outAssayNoteFile.write(str(assayKey) + TAB + \
-		    note + TAB + \
-		    loaddate + TAB + loaddate + CRT)
+        if len(note) > 1:
+            outAssayNoteFile.write(str(assayKey) + TAB + \
+                    note + TAB + \
+                    loaddate + TAB + loaddate + CRT)
 
         # MGI Accession ID for the assay
 
-	outAccFile.write(str(accKey) + TAB + \
-	    mgiPrefix + str(mgiKey) + TAB + \
-	    mgiPrefix + TAB + \
-	    str(mgiKey) + TAB + \
-	    accLogicalDBKey + TAB + \
-	    str(assayKey) + TAB + \
-	    assayMgiTypeKey + TAB + \
-	    accPrivate + TAB + \
-	    accPreferred + TAB + \
+        outAccFile.write(str(accKey) + TAB + \
+            mgiPrefix + str(mgiKey) + TAB + \
+            mgiPrefix + TAB + \
+            str(mgiKey) + TAB + \
+            accLogicalDBKey + TAB + \
+            str(assayKey) + TAB + \
+            assayMgiTypeKey + TAB + \
+            accPrivate + TAB + \
+            accPreferred + TAB + \
             str(createdByKey) + TAB + \
             str(createdByKey) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+            loaddate + TAB + loaddate + CRT)
 
-	assayAssay[assayID] = assayKey
-	accKey = accKey + 1
-	mgiKey = mgiKey + 1
+        assayAssay[assayID] = assayKey
+        accKey = accKey + 1
+        mgiKey = mgiKey + 1
         assayKey = assayKey + 1
 
     #	end of "for line in inAssayFile.readlines():"
@@ -635,30 +634,30 @@ def processSpecimenFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
         try:
-	    assayID = tokens[0]
-	    specimenID = tokens[1]
-	    specimenLabel = tokens[2]
-	    genotypeID = tokens[3]
-	    age = tokens[4]
-	    ageNote = tokens[5]
-	    gender = tokens[6]
-	    fixation = tokens[7]
-	    embedding = tokens[8]
-	    hybridization = tokens[9]
-	    specimenNote = tokens[10]
+            assayID = tokens[0]
+            specimenID = tokens[1]
+            specimenLabel = tokens[2]
+            genotypeID = tokens[3]
+            age = tokens[4]
+            ageNote = tokens[5]
+            gender = tokens[6]
+            fixation = tokens[7]
+            embedding = tokens[8]
+            hybridization = tokens[9]
+            specimenNote = tokens[10]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	if gxdloadlib.verifyHybridization(hybridization, lineNum, errorFile) == 0:
-	    error = 1
+        if gxdloadlib.verifyHybridization(hybridization, lineNum, errorFile) == 0:
+            error = 1
 
-	genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
-	fixationKey = gxdloadlib.verifyFixationMethod(fixation, lineNum, errorFile)
-	embeddingKey = gxdloadlib.verifyEmbeddingMethod(embedding, lineNum, errorFile)
-	ageMin, ageMax = agelib.ageMinMax(age)
+        genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
+        fixationKey = gxdloadlib.verifyFixationMethod(fixation, lineNum, errorFile)
+        embeddingKey = gxdloadlib.verifyEmbeddingMethod(embedding, lineNum, errorFile)
+        ageMin, ageMax = agelib.ageMinMax(age)
 
         if genotypeKey == 0 or ageMin < 0 or ageMax < 0:
             # set error flag to true
@@ -671,24 +670,24 @@ def processSpecimenFile():
         # if no errors, process
 
         outSpecimenFile.write(
-	    str(specimenKey) + TAB + \
-	    str(assayAssay[assayID]) + TAB + \
-	    str(embeddingKey) + TAB + \
-	    str(fixationKey) + TAB + \
-	    str(genotypeKey) + TAB + \
-	    specimenID + TAB + \
-	    specimenLabel + TAB + \
-	    gender + TAB + \
-	    age + TAB + \
-	    str(ageMin) + TAB + \
-	    str(ageMax) + TAB + \
-	    mgi_utils.prvalue(ageNote) + TAB + \
-	    hybridization + TAB + \
-	    mgi_utils.prvalue(specimenNote) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+            str(specimenKey) + TAB + \
+            str(assayAssay[assayID]) + TAB + \
+            str(embeddingKey) + TAB + \
+            str(fixationKey) + TAB + \
+            str(genotypeKey) + TAB + \
+            specimenID + TAB + \
+            specimenLabel + TAB + \
+            gender + TAB + \
+            age + TAB + \
+            str(ageMin) + TAB + \
+            str(ageMax) + TAB + \
+            mgi_utils.prvalue(ageNote) + TAB + \
+            hybridization + TAB + \
+            mgi_utils.prvalue(specimenNote) + TAB + \
+            loaddate + TAB + loaddate + CRT)
 
-	key = '%s:%s' % (assayID, specimenID)
-	assaySpecimen[key] = specimenKey
+        key = '%s:%s' % (assayID, specimenID)
+        assaySpecimen[key] = specimenKey
         specimenKey = specimenKey + 1
 
     #	end of "for line in inSpecimenFile.readlines():"
@@ -717,25 +716,25 @@ def processResultsFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
         try:
-	    assayID = tokens[0]
-	    specimenID = tokens[1]
-	    resultID = tokens[2]
-	    strength = tokens[3]
-	    pattern = tokens[4]
-	    emapaID = tokens[5]
-	    structureTS = tokens[6]
-	    resultNote = tokens[7]
-	    images = tokens[8]
+            assayID = tokens[0]
+            specimenID = tokens[1]
+            resultID = tokens[2]
+            strength = tokens[3]
+            pattern = tokens[4]
+            emapaID = tokens[5]
+            structureTS = tokens[6]
+            resultNote = tokens[7]
+            images = tokens[8]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
-	patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
+        strengthKey = gxdloadlib.verifyStrength(strength, lineNum, errorFile)
+        patternKey = gxdloadlib.verifyPattern(pattern, lineNum, errorFile)
 
-	structureKey = gxdloadlib.verifyTerm(emapaID, 90, '', lineNum, errorFile)
+        structureKey = gxdloadlib.verifyTerm(emapaID, 90, '', lineNum, errorFile)
 
         if strengthKey == 0 or patternKey == 0 or structureKey == 0:
             # set error flag to true
@@ -747,47 +746,47 @@ def processResultsFile():
 
         # if no errors, process
 
-	key = '%s:%s' % (assayID, specimenID)
+        key = '%s:%s' % (assayID, specimenID)
 
-	if not assaySpecimen.has_key(key):
-	    errorFile.write('Cannot find Assay:Speciman key "%s"\n' % (key))
-	    continue
+        if key not in assaySpecimen:
+            errorFile.write('Cannot find Assay:Speciman key "%s"\n' % (key))
+            continue
 
-	specimenKey = assaySpecimen[key]
+        specimenKey = assaySpecimen[key]
 
-	if prevAssay != assayID:
-	    prevSpecimen = 0
+        if prevAssay != assayID:
+            prevSpecimen = 0
 
         if prevSpecimen != specimenKey:
-	    prevResult = 0
+            prevResult = 0
 
-	if prevResult != resultID:
+        if prevResult != resultID:
 
             resultKey = resultKey + 1
 
             outResultFile.write(
-	        str(resultKey) + TAB + \
-	        str(specimenKey) + TAB + \
-	        str(strengthKey) + TAB + \
-	        str(patternKey) + TAB + \
-	        resultID + TAB + \
-	        mgi_utils.prvalue(resultNote) + TAB + \
-	        loaddate + TAB + loaddate + CRT)
+                str(resultKey) + TAB + \
+                str(specimenKey) + TAB + \
+                str(strengthKey) + TAB + \
+                str(patternKey) + TAB + \
+                resultID + TAB + \
+                mgi_utils.prvalue(resultNote) + TAB + \
+                loaddate + TAB + loaddate + CRT)
 
-            for image in string.split(images,','):
+            for image in str.split(images,','):
                 if image != '':
                     outResultImageFile.write(str(resultKey) + TAB + \
-					image + TAB + \
-	        			loaddate + TAB + loaddate + CRT)
+                                        image + TAB + \
+                                        loaddate + TAB + loaddate + CRT)
 
-	outResultStFile.write(
-	    str(resultKey) + TAB + \
-	    str(structureKey) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+        outResultStFile.write(
+            str(resultKey) + TAB + \
+            str(structureKey) + TAB + \
+            loaddate + TAB + loaddate + CRT)
 
-	prevAssay = assayID
-	prevSpecimen = specimenKey
-	prevResult = resultID
+        prevAssay = assayID
+        prevSpecimen = specimenKey
+        prevResult = resultID
 
     #	end of "for line in inResultsFile.readlines():"
 
@@ -810,4 +809,3 @@ verifyMode()
 setPrimaryKeys()
 process()
 exit(0)
-

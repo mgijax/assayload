@@ -1,4 +1,3 @@
-#!/usr/local/bin/python
 
 #
 # Program: rnainsitu14.py
@@ -147,7 +146,7 @@ presentStrength = ['U,R', 'R,U']
 
 def exit(
     status,          # numeric exit status (integer)
-    message = None   # exit message (string)
+    message = None   # exit message (str.
     ):
 
     if message is not None:
@@ -216,29 +215,29 @@ def process():
     probeTrans = {}	# maps probe to MGI Gene
 
     for line in inTissueFile.readlines():
-	tokens = string.split(line[:-1], TAB)
-	badTissue = tokens[0]
-	goodTissue = tokens[1]
-	theilerStage = tokens[2]
+        tokens = str.split(line[:-1], TAB)
+        badTissue = tokens[0]
+        goodTissue = tokens[1]
+        theilerStage = tokens[2]
 
-	key = badTissue
-	value = goodTissue + '|' + theilerStage
-	if not tissueTrans.has_key(key):
-	    tissueTrans[key] = []
-	tissueTrans[key].append(value)
+        key = badTissue
+        value = goodTissue + '|' + theilerStage
+        if key not in tissueTrans:
+            tissueTrans[key] = []
+        tissueTrans[key].append(value)
 
     for line in inProbeFile.readlines():
-	tokens = string.split(line[:-1], TAB)
-	mgiID = tokens[2]
-	probeID = tokens[7]
+        tokens = str.split(line[:-1], TAB)
+        mgiID = tokens[2]
+        probeID = tokens[7]
 
-	if len(mgiID) == 0:
-	    continue
+        if len(mgiID) == 0:
+            continue
 
-	key = mgiID
-	value = probeID
-	if not probeTrans.has_key(key):
-	    probeTrans[key] = []
+        key = mgiID
+        value = probeID
+        if key not in probeTrans:
+            probeTrans[key] = []
         probeTrans[key].append(value)
 
     assay = 0	# unique Assay ID
@@ -248,151 +247,151 @@ def process():
     for line in inInSituFile.readlines():
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
-	# processing first line (header)
-	# grab the Tissue headings
+        # processing first line (header)
+        # grab the Tissue headings
 
-	if assay == 0:
-	    tissueLabels = tokens[7:50]
-	    assay = assay + 1
-	    continue
+        if assay == 0:
+            tissueLabels = tokens[7:50]
+            assay = assay + 1
+            continue
 
-	# else process an actual data line
+        # else process an actual data line
 
         try:
-	    humanGene = tokens[0]
-	    mouseGene = tokens[1]
-	    accID = string.strip(tokens[2])
-	    ishNumber = tokens[3]
-	    specimen = tokens[4]
-	    tissueQuality = tokens[5]
-	    overallExpression = tokens[6]
-	    results = tokens[7:50]
-	    imageFileName1 = tokens[50]
-	    imageFileName2= tokens[51]
+            humanGene = tokens[0]
+            mouseGene = tokens[1]
+            accID = str.strip(tokens[2])
+            ishNumber = tokens[3]
+            specimen = tokens[4]
+            tissueQuality = tokens[5]
+            overallExpression = tokens[6]
+            results = tokens[7:50]
+            imageFileName1 = tokens[50]
+            imageFileName2= tokens[51]
 
         except:
-            print 'Invalid Line (%d): %s\n' % (assay, line)
+            print('Invalid Line (%d): %s\n' % (assay, line))
 
-	if len(mouseGene) == 0:
-	    continue
+        if len(mouseGene) == 0:
+            continue
 
-	# create one assay per probe for given marker
+        # create one assay per probe for given marker
 
-	if not probeTrans.has_key(accID):
-	    print 'Cannot find MGI ID in Probe file: %s\n' % (accID)
-	    continue
+        if accID not in probeTrans:
+            print('Cannot find MGI ID in Probe file: %s\n' % (accID))
+            continue
 
-	for probeID in probeTrans[accID]:
+        for probeID in probeTrans[accID]:
 
-	    # write the probe prep information
+            # write the probe prep information
 
-	    prepFile.write(str(assay) + TAB + \
-	        probeID + TAB + \
-	        prepType + TAB + \
-	        hybridization + TAB + \
-	        labelledWith + TAB + \
-	        labelCoverage + TAB + \
-	        visualizedWith + CRT)
+            prepFile.write(str(assay) + TAB + \
+                probeID + TAB + \
+                prepType + TAB + \
+                hybridization + TAB + \
+                labelledWith + TAB + \
+                labelCoverage + TAB + \
+                visualizedWith + CRT)
 
-	    # write the assay information
+            # write the assay information
 
-	    assayFile.write(str(assay) + TAB + \
-	        accID + TAB + \
-	        reference + TAB + \
-	        assayType + TAB + \
-		TAB + \
-		createdBy + CRT)
+            assayFile.write(str(assay) + TAB + \
+                accID + TAB + \
+                reference + TAB + \
+                assayType + TAB + \
+                TAB + \
+                createdBy + CRT)
 
-	    # write the specimen (one for each Assay)
+            # write the specimen (one for each Assay)
 
-	    specimen = 1
+            specimen = 1
 
-	    specimenFile.write(str(assay) + TAB + \
-		    str(specimen) + TAB + \
-		    specimenLabel % (mouseGene) + TAB + \
-		    genotype + TAB + \
-		    age + TAB + \
-		    ageNote + TAB + \
-		    sex + TAB + \
-		    fixation + TAB + \
-		    embedding + TAB + \
-		    specimenHybridization + TAB + \
-		    specimenNote + CRT)
+            specimenFile.write(str(assay) + TAB + \
+                    str(specimen) + TAB + \
+                    specimenLabel % (mouseGene) + TAB + \
+                    genotype + TAB + \
+                    age + TAB + \
+                    ageNote + TAB + \
+                    sex + TAB + \
+                    fixation + TAB + \
+                    embedding + TAB + \
+                    specimenHybridization + TAB + \
+                    specimenNote + CRT)
 
-	    # set defaults
-	    defaultStrength = ABSENT
-	    defaultPattern = NA
+            # set defaults
+            defaultStrength = ABSENT
+            defaultPattern = NA
 
-	    # if overall expression is ubiquitous, then set the default Strength to
-	    # the strength value specified in this column
+            # if overall expression is ubiquitous, then set the default Strength to
+            # the strength value specified in this column
 
-	    if len(overallExpression) > 0:
-	        try:
-	            [oExpression, oStrength] = string.split(overallExpression, ' ')
+            if len(overallExpression) > 0:
+                try:
+                    [oExpression, oStrength] = str.split(overallExpression, ' ')
 
-	            if oExpression == ubiExpression:
-		        defaultStrength = strengthTrans[oStrength]
-		        defaultPattern = patternTrans[ubiPattern]
+                    if oExpression == ubiExpression:
+                        defaultStrength = strengthTrans[oStrength]
+                        defaultPattern = patternTrans[ubiPattern]
 
                 except:
-		    pass
+                    pass
 
-	    # one result for each Tissue 
+            # one result for each Tissue 
 
-	    result = 1
-	    for i in range(len(tissueLabels)):
+            result = 1
+            for i in range(len(tissueLabels)):
 
-	        # Translate the Tissue into a Tissue and Age
+                # Translate the Tissue into a Tissue and Age
 
-	        for t in tissueTrans[tissueLabels[i]]:
+                for t in tissueTrans[tissueLabels[i]]:
 
-	            [tissue, theilerStage] = string.split(t, '|')
+                    [tissue, theilerStage] = str.split(t, '|')
                     resultNote = NULL
 
-	            if len(results) < i + 1:
+                    if len(results) < i + 1:
                         # not every tissue was assayed; no results
-		        continue
+                        continue
 
-		    # if there are results...
+                    # if there are results...
 
-	            if len(results[i]) > 1:
+                    if len(results[i]) > 1:
 
-	                [inStrength, inPattern] = string.split(results[i], ' ')
+                        [inStrength, inPattern] = str.split(results[i], ' ')
 
-		        if inPattern in presentStrength:
-		            strength = strengthTrans[inPattern]
-		            pattern = patternTrans[inPattern]
-		        else:
-	                    strength = strengthTrans[inStrength]
-	                    pattern = patternTrans[inPattern]
+                        if inPattern in presentStrength:
+                            strength = strengthTrans[inPattern]
+                            pattern = patternTrans[inPattern]
+                        else:
+                            strength = strengthTrans[inStrength]
+                            pattern = patternTrans[inPattern]
 
-		        if tissue == epiTissue:
-		           resultNote = epiNote
-	                   pattern = patternTrans['R']
+                        if tissue == epiTissue:
+                           resultNote = epiNote
+                           pattern = patternTrans['R']
 
-	            # no strength or pattern given
+                    # no strength or pattern given
 
-	            else:
-	                strength = defaultStrength
-	                pattern = defaultPattern
+                    else:
+                        strength = defaultStrength
+                        pattern = defaultPattern
 
-	            resultsFile.write(str(assay) + TAB + \
-	                str(specimen) + TAB + \
-	                str(result) + TAB + \
-		        strength + TAB + \
-		        pattern + TAB + \
-		        tissue + TAB + \
-		        theilerStage + TAB + \
-		        resultNote + CRT)
+                    resultsFile.write(str(assay) + TAB + \
+                        str(specimen) + TAB + \
+                        str(result) + TAB + \
+                        strength + TAB + \
+                        pattern + TAB + \
+                        tissue + TAB + \
+                        theilerStage + TAB + \
+                        resultNote + CRT)
 
-	        result = result + 1
+                result = result + 1
 
-	    specimen = specimen + 1
-	    assay = assay + 1
+            specimen = specimen + 1
+            assay = assay + 1
 
-	# end of for probeID in probeTrans[accID]
+        # end of for probeID in probeTrans[accID]
     # end of "for line in inInSituFile.readlines():"
 
 #
@@ -402,4 +401,3 @@ def process():
 init()
 process()
 exit(0)
-

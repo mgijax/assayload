@@ -1,4 +1,3 @@
-#!/usr/local/bin/python
 
 #
 # Program: gelload.py
@@ -207,7 +206,7 @@ loaddate = loadlib.loaddate
 
 def exit(
     status,          # numeric exit status (integer)
-    message = None   # exit message (string)
+    message = None   # exit message (str.
     ):
 
     if message is not None:
@@ -249,12 +248,12 @@ def init():
         diagFile = open(diagFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % diagFileName)
-		
+                
     try:
         errorFile = open(errorFileName, 'w')
     except:
         exit(1, 'Could not open file %s\n' % errorFileName)
-		
+                
     # Input Files
 
     try:
@@ -412,25 +411,25 @@ def bcpFiles(
     currentDir = os.getcwd()
 
     bcp1 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), probeprepTable, currentDir, outPrepFileName)
     bcp2 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assayTable, currentDir, outAssayFileName)
     bcp3 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), assaynoteTable, currentDir, outAssayNoteFileName)
     bcp4 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelLaneTable, currentDir, outGelLaneFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelLaneTable, currentDir, outGelLaneFileName)
     bcp5 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelLaneStTable, currentDir, outGelLaneStFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelLaneStTable, currentDir, outGelLaneStFileName)
     bcp6 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelRowTable, currentDir, outGelRowFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelRowTable, currentDir, outGelRowFileName)
     bcp7 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelBandTable, currentDir, outGelBandFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), gelBandTable, currentDir, outGelBandFileName)
     bcp8 =  '%s %s %s %s %s %s "\\t" "\\n" mgd' \
-	% (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
+        % (bcpCommand, db.get_sqlServer(), db.get_sqlDatabase(), accTable, currentDir, outAccFileName)
 
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
-	diagFile.write('%s\n' % bcpCmd)
-	os.system(bcpCmd)
+        diagFile.write('%s\n' % bcpCmd)
+        os.system(bcpCmd)
 
     return
 
@@ -453,25 +452,25 @@ def processPrepFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
         try:
-	    assayID = tokens[0]
-	    probeID = tokens[1]
-	    prepType = tokens[2]
-	    hybridization = tokens[3]
-	    labelledWith = tokens[4]
-	    visualization = tokens[5]
+            assayID = tokens[0]
+            probeID = tokens[1]
+            prepType = tokens[2]
+            hybridization = tokens[3]
+            labelledWith = tokens[4]
+            visualization = tokens[5]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	if gxdloadlib.verifyPrepType(prepType, lineNum, errorFile) == 0:
-	    error = 1
+        if gxdloadlib.verifyPrepType(prepType, lineNum, errorFile) == 0:
+            error = 1
 
-	probeKey = loadlib.verifyProbe(probeID, lineNum, errorFile)
-	senseKey = gxdloadlib.verifyPrepSense(hybridization, lineNum, errorFile)
-	labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
-	visualizationKey = gxdloadlib.verifyPrepVisualization(visualization, lineNum, errorFile)
+        probeKey = loadlib.verifyProbe(probeID, lineNum, errorFile)
+        senseKey = gxdloadlib.verifyPrepSense(hybridization, lineNum, errorFile)
+        labelKey = gxdloadlib.verifyPrepLabel(labelledWith, lineNum, errorFile)
+        visualizationKey = gxdloadlib.verifyPrepVisualization(visualization, lineNum, errorFile)
 
         if probeKey == 0 or senseKey == 0 or labelKey == 0:
             # set error flag to true
@@ -484,14 +483,14 @@ def processPrepFile():
         # if no errors, process
 
         outPrepFile.write(str(prepKey) + TAB + \
-	    str(probeKey) + TAB + \
-	    str(senseKey) + TAB + \
-	    str(labelKey) + TAB + \
-	    str(visualizationKey) + TAB + \
-	    prepType + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+            str(probeKey) + TAB + \
+            str(senseKey) + TAB + \
+            str(labelKey) + TAB + \
+            str(visualizationKey) + TAB + \
+            prepType + TAB + \
+            loaddate + TAB + loaddate + CRT)
 
-	assayProbePrep[assayID] = prepKey
+        assayProbePrep[assayID] = prepKey
         prepKey = prepKey + 1
 
     #	end of "for line in inPrepFile.readlines():"
@@ -517,23 +516,23 @@ def processAssayFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], TAB)
+        tokens = str.split(line[:-1], TAB)
 
         try:
-	    assayID = tokens[0]
-	    markerID = tokens[1]
-	    jnum = tokens[2]
-	    assayType = tokens[3]
-	    reporterGene = tokens[4]
-	    note = tokens[5]
-	    createdBy = tokens[6]
+            assayID = tokens[0]
+            markerID = tokens[1]
+            jnum = tokens[2]
+            assayType = tokens[3]
+            reporterGene = tokens[4]
+            note = tokens[5]
+            createdBy = tokens[6]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
+        markerKey = loadlib.verifyMarker(markerID, lineNum, errorFile)
         referenceKey = loadlib.verifyReference(jnum, lineNum, errorFile)
-	assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
-	createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
+        assayTypeKey = gxdloadlib.verifyAssayType(assayType, lineNum, errorFile)
+        createdByKey = loadlib.verifyUser(createdBy, lineNum, errorFile)
 
         if markerKey == 0 or referenceKey == 0 or assayTypeKey == 0:
             # set error flag to true
@@ -541,7 +540,7 @@ def processAssayFile():
 
         if len(reporterGene) > 0:
             reporterGeneKey = gxdloadlib.verifyReporterGene(reporterGene, lineNum, errorFile)
-	    if reporterGeneKey == 0:
+            if reporterGeneKey == 0:
                 error = 1
         else:
             reporterGeneKey = ''
@@ -550,51 +549,51 @@ def processAssayFile():
         if error:
             continue
 
-	if assayProbePrep.has_key(assayID):
-	    probePrepKey = assayProbePrep[assayID]
-	else:
-	    probePrepKey = ''
+        if assayID in assayProbePrep:
+            probePrepKey = assayProbePrep[assayID]
+        else:
+            probePrepKey = ''
 
         # if no errors, process
 
         outAssayFile.write(str(assayKey) + TAB + \
-	    str(assayTypeKey) + TAB + \
-	    str(referenceKey) + TAB + \
-	    str(markerKey) + TAB + \
-	    str(probePrepKey) + TAB + \
-	    TAB + \
-	    TAB + \
+            str(assayTypeKey) + TAB + \
+            str(referenceKey) + TAB + \
+            str(markerKey) + TAB + \
+            str(probePrepKey) + TAB + \
+            TAB + \
+            TAB + \
             str(reporterGeneKey) + TAB + \
             str(createdByKey) + TAB + \
             str(createdByKey) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+            loaddate + TAB + loaddate + CRT)
 
-	if len(note) > 0:
-	    i = 0
-	    while i < len(note):
-		outAssayNoteFile.write(str(assayKey) + TAB + \
-		    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
-		    loaddate + TAB + loaddate + CRT)
-		i = i + ASSAY_NOTE_LENGTH
+        if len(note) > 0:
+            i = 0
+            while i < len(note):
+                outAssayNoteFile.write(str(assayKey) + TAB + \
+                    note[i:i+ASSAY_NOTE_LENGTH] + TAB + \
+                    loaddate + TAB + loaddate + CRT)
+                i = i + ASSAY_NOTE_LENGTH
 
         # MGI Accession ID for the assay
 
-	outAccFile.write(str(accKey) + TAB + \
-	    mgiPrefix + str(mgiKey) + TAB + \
-	    mgiPrefix + TAB + \
-	    str(mgiKey) + TAB + \
-	    accLogicalDBKey + TAB + \
-	    str(assayKey) + TAB + \
-	    assayMgiTypeKey + TAB + \
-	    accPrivate + TAB + \
-	    accPreferred + TAB + \
+        outAccFile.write(str(accKey) + TAB + \
+            mgiPrefix + str(mgiKey) + TAB + \
+            mgiPrefix + TAB + \
+            str(mgiKey) + TAB + \
+            accLogicalDBKey + TAB + \
+            str(assayKey) + TAB + \
+            assayMgiTypeKey + TAB + \
+            accPrivate + TAB + \
+            accPreferred + TAB + \
             str(createdByKey) + TAB + \
             str(createdByKey) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+            loaddate + TAB + loaddate + CRT)
 
-	assayAssay[assayID] = assayKey
-	accKey = accKey + 1
-	mgiKey = mgiKey + 1
+        assayAssay[assayID] = assayKey
+        accKey = accKey + 1
+        mgiKey = mgiKey + 1
         assayKey = assayKey + 1
 
     #	end of "for line in inAssayFile.readlines():"
@@ -621,47 +620,47 @@ def processGelLaneFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = str.split(line[:-1], '\t')
 
         try:
-	    assayID = tokens[0]
-	    laneID = tokens[1]
-	    laneLabel = tokens[2]
-	    genotypeID = tokens[3]
-	    rnaType = tokens[4]
-	    control = tokens[5]
-	    sampleAmount = tokens[6]
-	    gender = tokens[7]
-	    age = tokens[8]
-	    ageNote = tokens[9]
-	    laneNote = tokens[10]
-	    emapaID = tokens[11]
-	    structureTS = tokens[12]
+            assayID = tokens[0]
+            laneID = tokens[1]
+            laneLabel = tokens[2]
+            genotypeID = tokens[3]
+            rnaType = tokens[4]
+            control = tokens[5]
+            sampleAmount = tokens[6]
+            gender = tokens[7]
+            age = tokens[8]
+            ageNote = tokens[9]
+            laneNote = tokens[10]
+            emapaID = tokens[11]
+            structureTS = tokens[12]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	# if control is set to "No", then there *is* a structure
-	# else there are no structures
+        # if control is set to "No", then there *is* a structure
+        # else there are no structures
 
-	hasStructure = 0
-	if control == "No":
-	    hasStructure = 1
+        hasStructure = 0
+        if control == "No":
+            hasStructure = 1
 
-	genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
-	rnaTypeKey = gxdloadlib.verifyGelRNAType(rnaType, lineNum, errorFile)
-	controlKey = gxdloadlib.verifyGelControl(control, lineNum, errorFile)
-	ageMin, ageMax = agelib.ageMinMax(age)
+        genotypeKey = gxdloadlib.verifyGenotype(genotypeID, lineNum, errorFile)
+        rnaTypeKey = gxdloadlib.verifyGelRNAType(rnaType, lineNum, errorFile)
+        controlKey = gxdloadlib.verifyGelControl(control, lineNum, errorFile)
+        ageMin, ageMax = agelib.ageMinMax(age)
 
-	if hasStructure:
-	    structureKey = gxdloadlib.verifyTerm(emapaID, 90, '', lineNum, errorFile)
-	    if structureKey == 0:
+        if hasStructure:
+            structureKey = gxdloadlib.verifyTerm(emapaID, 90, '', lineNum, errorFile)
+            if structureKey == 0:
                 error = 1
 
-	#
-	# if age = "Not Specified", then ageMin/ageMax = -1 which is < 0
-	# so, removed this check:
-	#	ageMin < 0 or ageMax < 0:
-	#
+        #
+        # if age = "Not Specified", then ageMin/ageMax = -1 which is < 0
+        # so, removed this check:
+        #	ageMin < 0 or ageMax < 0:
+        #
 
         if genotypeKey == 0 or rnaTypeKey == 0 or controlKey == 0:
             # set error flag to true
@@ -673,46 +672,46 @@ def processGelLaneFile():
 
         # if no errors, process
 
-	key = '%s:%s' % (assayID, laneID)
+        key = '%s:%s' % (assayID, laneID)
 
-	# if this is a lane that has not been added to the gel lane yet...
+        # if this is a lane that has not been added to the gel lane yet...
 
-	if not assayGelLane.has_key(key):
+        if key not in assayGelLane:
 
             outGelLaneFile.write(
-	        str(gelLaneKey) + TAB + \
-	        str(assayAssay[assayID]) + TAB + \
-	        str(genotypeKey) + TAB + \
-	        str(rnaTypeKey) + TAB + \
-	        str(controlKey) + TAB + \
-	        str(laneID) + TAB + \
-	        laneLabel + TAB + \
-	        mgi_utils.prvalue(sampleAmount) + TAB + \
-	        gender + TAB + \
-	        age + TAB + \
-	        str(ageMin) + TAB + \
-	        str(ageMax) + TAB + \
-	        mgi_utils.prvalue(ageNote) + TAB + \
-	        mgi_utils.prvalue(laneNote) + TAB + \
-	        loaddate + TAB + loaddate + CRT)
+                str(gelLaneKey) + TAB + \
+                str(assayAssay[assayID]) + TAB + \
+                str(genotypeKey) + TAB + \
+                str(rnaTypeKey) + TAB + \
+                str(controlKey) + TAB + \
+                str(laneID) + TAB + \
+                laneLabel + TAB + \
+                mgi_utils.prvalue(sampleAmount) + TAB + \
+                gender + TAB + \
+                age + TAB + \
+                str(ageMin) + TAB + \
+                str(ageMax) + TAB + \
+                mgi_utils.prvalue(ageNote) + TAB + \
+                mgi_utils.prvalue(laneNote) + TAB + \
+                loaddate + TAB + loaddate + CRT)
 
-	    if hasStructure:
-	        outGelLaneStFile.write(
-	            str(gelLaneKey) + TAB + \
-	            str(structureKey) + TAB + \
-	            loaddate + TAB + loaddate + CRT)
+            if hasStructure:
+                outGelLaneStFile.write(
+                    str(gelLaneKey) + TAB + \
+                    str(structureKey) + TAB + \
+                    loaddate + TAB + loaddate + CRT)
 
-	    assayGelLane[key] = gelLaneKey
+            assayGelLane[key] = gelLaneKey
             gelLaneKey = gelLaneKey + 1
 
-	# else if gel lanes has more than one structure...
+        # else if gel lanes has more than one structure...
 
-	else:
-	    if hasStructure:
-	        outGelLaneStFile.write(
-	            str(assayGelLane[key]) + TAB + \
-	            str(structureKey) + TAB + \
-	            loaddate + TAB + loaddate + CRT)
+        else:
+            if hasStructure:
+                outGelLaneStFile.write(
+                    str(assayGelLane[key]) + TAB + \
+                    str(structureKey) + TAB + \
+                    loaddate + TAB + loaddate + CRT)
 
     #	end of "for line in inGelLaneFile.readlines():"
 
@@ -743,22 +742,22 @@ def processGelBandFile():
         lineNum = lineNum + 1
 
         # Split the line into tokens
-        tokens = string.split(line[:-1], '\t')
+        tokens = str.split(line[:-1], '\t')
 
         try:
-	    assayID = tokens[0]
-	    laneID = tokens[1]
-	    rowID = tokens[2]
-	    bandSize = tokens[3]
-	    bandUnits = tokens[4]
-	    bandStrength = tokens[5]
-	    rowNote = tokens[6]
-	    bandNote = tokens[7]
+            assayID = tokens[0]
+            laneID = tokens[1]
+            rowID = tokens[2]
+            bandSize = tokens[3]
+            bandUnits = tokens[4]
+            bandStrength = tokens[5]
+            rowNote = tokens[6]
+            bandNote = tokens[7]
         except:
             exit(1, 'Invalid Line (%d): %s\n' % (lineNum, line))
 
-	unitsKey = gxdloadlib.verifyGelUnits(bandUnits, lineNum, errorFile)
-	strengthKey = gxdloadlib.verifyGelStrength(bandStrength, lineNum, errorFile)
+        unitsKey = gxdloadlib.verifyGelUnits(bandUnits, lineNum, errorFile)
+        strengthKey = gxdloadlib.verifyGelStrength(bandStrength, lineNum, errorFile)
 
         if unitsKey == 0 or strengthKey == 0:
             # set error flag to true
@@ -768,34 +767,34 @@ def processGelBandFile():
         if error:
             continue
 
-	# new Assay means new Row
+        # new Assay means new Row
 
-	if prevAssay != assayID:
+        if prevAssay != assayID:
 
           gelRowKey = gelRowKey + 1
 
           outGelRowFile.write(
-	      str(gelRowKey) + TAB + \
-	      str(assayAssay[assayID]) + TAB + \
-	      str(unitsKey) + TAB + \
-	      str(rowID) + TAB + \
-	      mgi_utils.prvalue(bandSize) + TAB + \
-	      mgi_utils.prvalue(rowNote) + TAB + \
-	      loaddate + TAB + loaddate + CRT)
+              str(gelRowKey) + TAB + \
+              str(assayAssay[assayID]) + TAB + \
+              str(unitsKey) + TAB + \
+              str(rowID) + TAB + \
+              mgi_utils.prvalue(bandSize) + TAB + \
+              mgi_utils.prvalue(rowNote) + TAB + \
+              loaddate + TAB + loaddate + CRT)
 
-	  prevAssay = assayID
+          prevAssay = assayID
 
-	# determine the lane key based on assayID and laneID
-	key = '%s:%s' % (assayID, laneID)
-	laneKey = assayGelLane[key]
+        # determine the lane key based on assayID and laneID
+        key = '%s:%s' % (assayID, laneID)
+        laneKey = assayGelLane[key]
 
-	outGelBandFile.write(
-	    str(gelBandKey) + TAB + \
-	    str(laneKey) + TAB + \
-	    str(gelRowKey) + TAB + \
-	    str(strengthKey) + TAB + \
-	    mgi_utils.prvalue(bandNote) + TAB + \
-	    loaddate + TAB + loaddate + CRT)
+        outGelBandFile.write(
+            str(gelBandKey) + TAB + \
+            str(laneKey) + TAB + \
+            str(gelRowKey) + TAB + \
+            str(strengthKey) + TAB + \
+            mgi_utils.prvalue(bandNote) + TAB + \
+            loaddate + TAB + loaddate + CRT)
 
         gelBandKey = gelBandKey + 1
 
@@ -820,4 +819,3 @@ verifyMode()
 setPrimaryKeys()
 process()
 exit(0)
-
