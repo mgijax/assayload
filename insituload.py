@@ -378,10 +378,10 @@ def setPrimaryKeys():
     global specimenKey, resultKey
     global resultImageKey, resultStructureKey
 
-    results = db.sql('select max(_ProbePrep_key) + 1 as maxKey from GXD_ProbePrep', 'auto')
+    results = db.sql('select nextval('gxd_probeprep_seq') as maxKey from GXD_ProbePrep', 'auto')
     prepKey = results[0]['maxKey']
 
-    results = db.sql(''' select nextval('gxd_assay_seq') as maxKey ''', 'auto')
+    results = db.sql('select nextval('gxd_assay_seq') as maxKey from GXD_Assay', 'auto')
     assayKey = results[0]['maxKey']
 
     results = db.sql(''' select nextval('gxd_specimen_seq') as maxKey ''', 'auto')
@@ -456,18 +456,11 @@ def bcpFiles(
 
     db.commit()
 
+    db.sql(''' select setval('gxd_probeprep_seq', (select max(_ProbePrep) from GXD_Assay)) ''', None)
     db.sql(''' select setval('gxd_assay_seq', (select max(_Assay_key) from GXD_Assay)) ''', None)
-    db.commit()
-
     db.sql(''' select setval('gxd_specimen_seq', (select max(_Specimen_key) from GXD_Specimen)) ''', None)
-    db.commit()
-
     db.sql(''' select setval('gxd_insituresult_seq', (select max(_result_key) from GXD_InSituResult)) ''', None)
-    db.commit()
-
     db.sql(''' select setval('gxd_isresultstructure_seq', (select max(_resultstructure_key) from GXD_ISResultStructure)) ''', None)
-    db.commit()
-
     db.sql(''' select setval('gxd_insituresultimage_seq', (select max(_resultimage_key) from GXD_InSituResultImage)) ''', None)
     db.commit()
 

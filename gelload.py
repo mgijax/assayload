@@ -357,26 +357,25 @@ def setPrimaryKeys():
     global accKey, mgiKey, prepKey, assayKey
     global gelLaneKey, gelRowKey, gelBandKey
 
-    results = db.sql('select maxKey = max(_ProbePrep_key) + 1 from GXD_ProbePrep', 'auto')
+    results = db.sql('select nextval('gxd_probeprep_seq') as maxKey from GXD_ProbePrep', 'auto')
     prepKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_Assay_key) + 1 from GXD_Assay', 'auto')
+    results = db.sql('select nextval('gxd_assay_seq') as maxKey from GXD_Assay', 'auto')
     assayKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_GelLane_key) + 1 from GXD_GelLane', 'auto')
+    results = db.sql('select nextval('gxd_gellane_seq') as maxKey from GXD_GelLane', 'auto')
     gelLaneKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_GelRow_key) from GXD_GelRow', 'auto')
+    results = db.sql('select nextval('gxd_gelrow_seq') as maxKey from GXD_GelRow', 'auto')
     gelRowKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = max(_GelBand_key) + 1 from GXD_GelBand', 'auto')
+    results = db.sql('select nextval('gxd_gelband_seq') as maxKey from GXD_GelBand', 'auto')
     gelBandKey = results[0]['maxKey']
 
     results = db.sql('select maxKey = max(_Accession_key) + 1 from ACC_Accession', 'auto')
     accKey = results[0]['maxKey']
 
-    results = db.sql('select maxKey = maxNumericPart + 1 from ACC_AccessionMax ' + \
-        'where prefixPart = "%s"' % (mgiPrefix), 'auto')
+    results = db.sql('select maxKey = maxNumericPart + 1 from ACC_AccessionMax where prefixPart = "%s"' % (mgiPrefix), 'auto')
     mgiKey = results[0]['maxKey']
 
 # Purpose:  BCPs the data into the database
@@ -430,6 +429,14 @@ def bcpFiles(
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
         diagFile.write('%s\n' % bcpCmd)
         os.system(bcpCmd)
+
+    # update auto-sequence
+    db.sql(''' select setval('gxd_probeprep_seq', (select max(_probeprep_key) from GXD_ProbePrep)) ''', None)
+    db.sql(''' select setval('gxd_assay_seq', (select max(_assay_key) from GXD_Assay)) ''', None)
+    db.sql(''' select setval('gxd_gellane_seq', (select max(_gellane_key) from GXD_GelLane)) ''', None)
+    db.sql(''' select setval('gxd_gelrow_seq', (select max(_gelrow_key) from GXD_GelRow)) ''', None)
+    db.sql(''' select setval('gxd_gelband_seq', (select max(_gelband_key) from GXD_GelBand)) ''', None)
+    db.commit()
 
     return
 

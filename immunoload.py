@@ -355,17 +355,17 @@ def setPrimaryKeys():
     global accKey, mgiKey, antibodyPrepKey, assayKey
     global specimenKey, resultKey
 
-    results = db.sql('select max(_AntibodyPrep_key) + 1 as maxKey from GXD_AntibodyPrep', 'auto')
-    antibodyPrepKey = results[0]['maxKey']
+    results = db.sql('select nextval('gxd_antibodyprep_seq') as maxKey from GXD_AntibodyePrep', 'auto')
+    prepKey = results[0]['maxKey']
 
-    results = db.sql('select max(_Assay_key) + 1 as maxKey from GXD_Assay', 'auto')
+    results = db.sql('select nextval('gxd_assay_seq') as maxKey from GXD_Assay', 'auto')
     assayKey = results[0]['maxKey']
 
-    results = db.sql('select max(_Specimen_key) + 1 as maxKey from GXD_Specimen', 'auto')
-    specimenKey = results[0]['maxKey']
+    results = db.sql('select nextval('gxd_specimen_seq') as maxKey from GXD_Specimen', 'auto')
+    assayKey = results[0]['maxKey']
 
-    results = db.sql('select max(_Result_key) as maxKey from GXD_InSituResult', 'auto')
-    resultKey = results[0]['maxKey']
+    results = db.sql('select nextval('gxd_insituresult_seq') as maxKey from GXD_InSituResult', 'auto')
+    assayKey = results[0]['maxKey']
 
     results = db.sql('select max(_Accession_key) + 1 as maxKey from ACC_Accession', 'auto')
     accKey = results[0]['maxKey']
@@ -418,6 +418,13 @@ def bcpFiles(
     for bcpCmd in [bcp1, bcp2, bcp3, bcp4, bcp5, bcp6, bcp7, bcp8]:
         diagFile.write('%s\n' % bcpCmd)
         os.system(bcpCmd)
+
+    # update auto-sequence
+    db.sql(''' select setval('gxd_antibodyprep_seq', (select max(_antibodyprep_key) from GXD_ProbePrep)) ''', None)
+    db.sql(''' select setval('gxd_assay_seq', (select max(_assay_key) from GXD_Assay)) ''', None)
+    db.sql(''' select setval('gxd_specimen_seq', (select max(_specimen_key) from GXD_Specimen)) ''', None)
+    db.sql(''' select setval('gxd_insituresult_seq', (select max(_result_key) from GXD_InSItuResult)) ''', None)
+    db.commit()
 
     return
 
