@@ -1,8 +1,10 @@
 TAG: assayload-6-0-??-?
+DATE: 12/06/2022
 DATE: 01/11/2022
 STAFF: lec
 CHANGES:  no tag, did not test
 autosequence changes
+moved gxdloadlib.py from lib_py_dataload to assayload/lib
 
 TAG: assayload-6-0-16-1
 DATE: 04/09/2021
