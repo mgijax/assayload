@@ -105,8 +105,11 @@ import db
 import mgi_utils
 import agelib
 import loadlib
-import gxdloadlib
 import gxdexpression
+
+libpath = os.environ['ASSAYLOAD'] + '/lib'
+sys.path.insert(0, libpath)
+import gxdloadlib
 
 #globals
 
