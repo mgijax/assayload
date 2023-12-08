@@ -131,7 +131,6 @@ def exit(
     except:
         pass
 
-    db.useOneConnection(0)
     sys.exit(status)
  
 # Purpose: process command line options
@@ -145,8 +144,6 @@ def init():
     global diagFile, errorFile, errorFileName, diagFileName
     global inCommentsFile, outIndexFile, outStagesFile
     global referenceKey, priorityKey, createdByKey, indexComments
- 
-    db.useOneConnection(1)
  
     diagFileName = 'indexload.diagnostics'
     errorFileName = 'indexload.error'
@@ -238,7 +235,6 @@ def bcpFiles():
     outStagesFile.close()
 
     db.commit()
-    db.useOneConnection(0)
 
     if DEBUG or not bcpon:
         return

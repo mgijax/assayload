@@ -244,7 +244,6 @@ def exit(
     except:
         pass
 
-    db.useOneConnection(0)
     sys.exit(status)
  
 # Purpose: process command line options
@@ -260,7 +259,6 @@ def init():
     global outSpecimenFile, outResultStFile, outResultFile, outResultImageFile
     global inPrepFile, inAssayFile, inSpecimenFile, inResultsFile
  
-    db.useOneConnection(1)
     db.set_sqlUser(user)
     db.set_sqlPasswordFromFile(passwordFileName)
  
@@ -428,7 +426,6 @@ def bcpFiles(
     db.sql('select * from ACC_setMax (%d)' % (recordsProcessed), None)
 
     db.commit()
-    db.useOneConnection(0)
 
     if DEBUG or not bcpon:
         return
